@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.Yamm.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Body2" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Button" parent="TextAppearance.AppCompat.Button">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Caption" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Display1" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Display2" parent="TextAppearance.AppCompat.Display2">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Display3" parent="TextAppearance.AppCompat.Display3">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Display4" parent="TextAppearance.AppCompat.Display4">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Headline" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Inverse" parent="TextAppearance.AppCompat.Inverse">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Large.Inverse" parent="TextAppearance.AppCompat.Large.Inverse">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Medium.Inverse" parent="TextAppearance.AppCompat.Medium.Inverse">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Menu" parent="TextAppearance.AppCompat.Menu">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+</resources>
