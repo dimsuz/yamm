@@ -27,6 +27,18 @@
     <style name="TextAppearance.Yamm.Headline" parent="TextAppearance.AppCompat.Headline">
         <item name="android:fontFamily">@font/roboto</item>
     </style>
+    <style name="TextAppearance.Yamm.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Title.Inverse" parent="TextAppearance.AppCompat.Title.Inverse">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Title.Subhead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+    <style name="TextAppearance.Yamm.Title.Subhead.Inverse" parent="TextAppearance.AppCompat.Subhead.Inverse">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
     <style name="TextAppearance.Yamm.Inverse" parent="TextAppearance.AppCompat.Inverse">
         <item name="android:fontFamily">@font/roboto</item>
     </style>
