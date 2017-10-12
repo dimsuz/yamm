@@ -44,22 +44,9 @@ class ResettableReferencesManager {
 }
 
 /**
- * Create a delegate to automatically clear (nullify) strong view references.
- */
-fun <R, T : Any> bindView(viewId: Int): ReadOnlyProperty<R, T>
-  where R : ResettableSupport, R : Controller {
-  return BindView(viewId)
-}
-
-fun <R, T : Any> resettable(): ReadWriteProperty<R, T>
-  where R : ResettableSupport, R : Controller {
-  return Resettable()
-}
-
-/**
  * Kotlin delegate to automatically clear (nullify) strong view references.
  */
-private class BindView<in R, out T : Any>(@IdRes private val viewId: Int) : ReadOnlyProperty<R, T>, ResettableProperty
+class BindView<in R, out T : Any>(@IdRes private val viewId: Int) : ReadOnlyProperty<R, T>, ResettableProperty
 where R : ResettableSupport, R : Controller
 {
   private var isRegistered = false
