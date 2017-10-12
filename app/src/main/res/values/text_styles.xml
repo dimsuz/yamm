@@ -57,4 +57,8 @@
     <style name="TextAppearance.Yamm.Menu" parent="TextAppearance.AppCompat.Menu">
         <item name="android:fontFamily">@font/roboto</item>
     </style>
+
+    <style name="TextAppearance.Yamm.HelperText" parent="TextAppearance.Yamm.Caption">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
 </resources>

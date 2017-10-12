@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Yamm</string>
+    <string name="login_server_select_hint">Server address</string>
+    <string name="login_server_select_helper_text">Enter your Mattermost server address</string>
+
+    <string name="action_continue">Continue</string>
 </resources>
