@@ -5,7 +5,6 @@ import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.baseui.BaseController
 import com.dimsuz.yamm.baseui.BindView
-import com.dimsuz.yamm.baseui.bindView
 import com.dimsuz.yamm.baseui.util.resourcesUnsafe
 
 class ServerSelectController : BaseController() {
