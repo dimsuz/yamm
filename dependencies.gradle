@@ -32,6 +32,9 @@ ext {
   okhttp = 'com.squareup.okhttp3:okhttp:3.7.0'
   okhttpLoggingInterceptor = 'com.squareup.okhttp3:logging-interceptor:3.7.0'
 
+  toothpickRuntime = 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.1'
+  toothpickProcessor = 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.1'
+
   junit = 'junit:junit:4.12'
   assertJ = 'org.assertj:assertj-core:3.6.2'
 }
