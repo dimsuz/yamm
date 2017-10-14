@@ -27,7 +27,6 @@ ext {
   firebaseConfig = "com.google.firebase:firebase-config:$firebaseVersion"
   firebaseInvites = "com.google.firebase:firebase-invites:$firebaseVersion"
   firebaseMessaging = "com.google.firebase:firebase-messaging:$firebaseVersion"
-  walletServices = "com.google.android.gms:play-services-wallet:$firebaseVersion"
 
   okhttp = 'com.squareup.okhttp3:okhttp:3.7.0'
   okhttpLoggingInterceptor = 'com.squareup.okhttp3:logging-interceptor:3.7.0'
