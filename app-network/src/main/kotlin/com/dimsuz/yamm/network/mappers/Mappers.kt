@@ -1,11 +1,7 @@
 package com.dimsuz.yamm.network.mappers
 
+import com.dimsuz.yamm.domain.ServerConfig
 import com.dimsuz.yamm.network.models.ServerConfigJson
-
-data class ServerConfig(
-  val isEmailSignInEnabled: Boolean,
-  val isGitlabSignInEnabled: Boolean
-)
 
 internal fun ServerConfigJson.toDomainModel(): ServerConfig {
   return ServerConfig(

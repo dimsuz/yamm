@@ -11,6 +11,8 @@ compileKotlin {
 }
 
 dependencies {
+    compile project(path: ':app-domain')
+
     compile rootProject.ext.kotlinStdLib
 
     compile rootProject.ext.toothpickRuntime
