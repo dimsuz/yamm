@@ -1,6 +1,11 @@
 package com.dimsuz.yamm.login
 
-import android.support.v7.app.AppCompatActivity
+import com.bluelinelabs.conductor.Controller
+import com.dimsuz.yamm.baseui.BaseControllerActivity
+import com.dimsuz.yamm.login.server_select.ServerSelectController
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseControllerActivity() {
+  override fun createController(): Controller? {
+    return ServerSelectController()
+  }
 }
