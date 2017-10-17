@@ -4,4 +4,18 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
+
+    <style name="YammButton">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.Yamm.Button</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Widget.Yamm.Button.Colored.Bottom" parent="YammButton">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
 </resources>

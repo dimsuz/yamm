@@ -4,4 +4,5 @@
     <string name="login_server_select_helper_text">Enter your Mattermost server address</string>
 
     <string name="action_continue">Continue</string>
+    <string name="login_server_select_error_invalid_url">Invalid server address, expecting \"https://\" or \"http://\" url</string>
 </resources>
