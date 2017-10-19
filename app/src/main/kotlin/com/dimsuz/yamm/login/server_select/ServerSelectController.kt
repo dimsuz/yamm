@@ -7,7 +7,9 @@ import com.dimsuz.yamm.YammApplication
 import com.dimsuz.yamm.baseui.BaseController
 import com.dimsuz.yamm.baseui.BindView
 import com.dimsuz.yamm.baseui.util.appScope
+import com.dimsuz.yamm.baseui.util.pushControllerHorizontal
 import com.dimsuz.yamm.baseui.util.resourcesUnsafe
+import com.dimsuz.yamm.login.method_select.LoginMethodSelectController
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 
@@ -45,7 +47,8 @@ class ServerSelectController : BaseController() {
   }
 
   private fun routeToNextScreen() {
-
+    val controller = LoginMethodSelectController()
+    router.pushControllerHorizontal(controller)
   }
 
   private fun showValidationError() {
