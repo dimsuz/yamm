@@ -7,7 +7,6 @@ import com.dimsuz.yamm.network.MattermostService
 import com.dimsuz.yamm.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 
 sealed class ScreenEvent
@@ -34,7 +33,6 @@ class LoginMethodSelectPresenter @Inject constructor(private val mattermostServi
   }
 
   override fun viewStateReducer(previousState: LoginMethodSelect.ViewState, event: ScreenEvent): LoginMethodSelect.ViewState {
-    Timber.d("computing state for event $event")
     val nextStateDraft = previousState.clearTransientState()
     return when (event) {
       is ServerConfigLoading -> nextStateDraft.copy(showProgressBar = true)

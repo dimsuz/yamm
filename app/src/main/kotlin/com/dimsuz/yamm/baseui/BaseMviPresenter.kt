@@ -1,18 +1,24 @@
 package com.dimsuz.yamm.baseui
 
+import com.dimsuz.yamm.BuildConfig
 import com.dimsuz.yamm.util.AppSchedulers
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
+import timber.log.Timber
 
 typealias RoutingAction = () -> Unit
 
 abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(private val schedulers: AppSchedulers,
-                                                         private val skipRenderOfInitialState: Boolean = false) : MviBasePresenter<V, VS>() {
+                                                         private val skipRenderOfInitialState: Boolean = false,
+                                                         private val logStateChanges: Boolean = BuildConfig.DEBUG) : MviBasePresenter<V, VS>() {
   final override fun bindIntents() {
     val stateChanges = Observable.merge(createIntents())
       .scan(ViewIntentResult(createInitialState(), null), { s, ev ->
         val ns = viewStateReducer(s.viewState, ev)
         val rs = routingStateReducer(s.viewState, ns, ev)
+        if (logStateChanges) {
+          Timber.d("reduce after event $ev\nnew state is:\n$ns")
+        }
         ViewIntentResult(ns, rs)
       })
       .skipFirstIf(skipRenderOfInitialState)
