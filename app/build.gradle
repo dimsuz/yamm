@@ -42,6 +42,8 @@ dependencies {
     compile rootProject.ext.conductorMvi
     compile rootProject.ext.rxAndroid
 
+    compile rootProject.ext.constraintLayout
+
     compile rootProject.ext.toothpickRuntime
     kapt rootProject.ext.toothpickProcessor
 }

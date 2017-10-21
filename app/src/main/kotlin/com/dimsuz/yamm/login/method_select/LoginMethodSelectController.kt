@@ -30,7 +30,7 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.View, Lo
   }
 
   override fun getViewLayout(): Int {
-    return R.layout.login_server_select
+    return R.layout.login_method_select
   }
 
   override fun createPresenter(): LoginMethodSelectPresenter {

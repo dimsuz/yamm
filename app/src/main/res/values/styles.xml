@@ -7,4 +7,13 @@
         <item name="android:fontFamily">@font/roboto</item>
     </style>
 
+    <style name="AppToolbar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+    </style>
+
+    <style name="AppToolbar.White">
+        <item name="navigationIcon">@drawable/ic_arrow_back_accent_24dp</item>
+    </style>
+
 </resources>

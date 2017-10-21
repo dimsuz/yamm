@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Yamm</string>
+    <string name="action_login">Login</string>
+
     <string name="login_server_select_hint">Server address</string>
     <string name="login_server_select_helper_text">Enter your Mattermost server address</string>
 
     <string name="action_continue">Continue</string>
     <string name="login_server_select_error_invalid_url">Invalid server address, expecting \"https://\" or \"http://\" url</string>
+
+    <string name="login_method_select_email_hint">Email</string>
+    <string name="login_method_select_password_hint">Password</string>
+    <string name="login_method_select_gitlab_label">Gitlab</string>
 </resources>

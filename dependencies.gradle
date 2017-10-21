@@ -22,6 +22,8 @@ ext {
   supportLibRecyclerView = "com.android.support:recyclerview-v7:$supportLibVersion"
   supportLibDesign = "com.android.support:design:$supportLibVersion"
 
+  constraintLayout = 'com.android.support.constraint:constraint-layout:1.0.2'
+
   def firebaseVersion = '11.0.2'
   firebaseCore = "com.google.firebase:firebase-core:$firebaseVersion"
   firebaseCrash = "com.google.firebase:firebase-crash:$firebaseVersion"
