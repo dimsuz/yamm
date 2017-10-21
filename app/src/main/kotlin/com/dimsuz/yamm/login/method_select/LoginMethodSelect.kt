@@ -1,8 +1,8 @@
 package com.dimsuz.yamm.login.method_select
 
-import com.hannesdorfmann.mosby3.mvp.MvpView
+import com.dimsuz.yamm.baseui.MviView
 
 interface LoginMethodSelect {
-  interface View : MvpView
+  interface View : MviView<ViewState>
   class ViewState
 }

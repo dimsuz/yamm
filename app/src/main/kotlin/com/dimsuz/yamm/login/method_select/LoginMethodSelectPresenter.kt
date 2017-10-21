@@ -1,17 +1,29 @@
 package com.dimsuz.yamm.login.method_select
 
+import com.dimsuz.yamm.baseui.BaseMviPresenter
+import com.dimsuz.yamm.baseui.models.ViewIntentResult
 import com.dimsuz.yamm.network.MattermostService
-import com.hannesdorfmann.mosby3.mvi.MviPresenter
-import timber.log.Timber
+import com.dimsuz.yamm.util.AppSchedulers
+import io.reactivex.Observable
 import javax.inject.Inject
 
-class LoginMethodSelectPresenter @Inject constructor(private val mattermostService: MattermostService)
-  : MviPresenter<LoginMethodSelect.View, LoginMethodSelect.ViewState> {
+sealed class ScreenEvent
+private object ServerConfigLoading : ScreenEvent()
 
-  override fun attachView(view: LoginMethodSelect.View) {
-    Timber.e("Attached view to LoginMethodSelectPresenter, service is $mattermostService")
+class LoginMethodSelectPresenter @Inject constructor(private val mattermostService: MattermostService,
+                                                     schedulers: AppSchedulers)
+  : BaseMviPresenter<LoginMethodSelect.View, LoginMethodSelect.ViewState, ScreenEvent>(schedulers) {
+
+  override fun createIntents(): List<Observable<out ScreenEvent>> {
+    return emptyList()
   }
 
-  override fun detachView(retainInstance: Boolean) {
+  override fun viewStateReducer(previousState: LoginMethodSelect.ViewState, event: ScreenEvent): ViewIntentResult<LoginMethodSelect.ViewState> {
+    return ViewIntentResult(previousState, null)
   }
+
+  override fun createInitialState(): LoginMethodSelect.ViewState {
+    return LoginMethodSelect.ViewState()
+  }
+
 }

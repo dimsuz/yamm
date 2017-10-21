@@ -39,4 +39,7 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.View, Lo
 
   override fun initializeView(rootView: View) {
   }
+
+  override fun render(viewState: LoginMethodSelect.ViewState) {
+  }
 }
