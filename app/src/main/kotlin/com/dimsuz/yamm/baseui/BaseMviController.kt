@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dimsuz.yamm.baseui.state_render.StateRenderer
 import com.hannesdorfmann.mosby3.MviController
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
 
@@ -25,6 +26,8 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
   final override     val refManager = ResettableReferencesManager()
   final override     var bindPropsRootView: View? = null
 
+  private            var stateRenderHelpers: List<StateRenderer<VS>> = emptyList()
+
   constructor()
   constructor(args: Bundle) : super(args)
 
@@ -33,8 +36,12 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
     bindPropsRootView = rootView
     // initialization can happen only after bindPropsRootView is assigned, this is required for BindView delegate to work
     initializeView(rootView)
+    stateRenderHelpers = createStateRenderHelpers()
+    stateRenderHelpers.forEach { it.onViewCreated(rootView) }
     return rootView
   }
+
+  open fun createStateRenderHelpers(): List<StateRenderer<VS>> = emptyList()
 
   abstract fun initializeView(rootView: View)
 
@@ -44,10 +51,13 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
     if (cachedConfig.clearPreviousStateOnDestroy) {
       previousViewState = null
     }
+    stateRenderHelpers.forEach { it.onViewDestroyed() }
+    stateRenderHelpers = emptyList()
   }
 
   final override fun render(viewState: VS) {
     if (previousViewState == null || previousViewState != viewState) {
+      stateRenderHelpers.forEach { it.render(viewState, previousViewState) }
       renderViewState(viewState)
     }
     previousViewState = viewState
