@@ -39,7 +39,7 @@ class LoginMethodSelectPresenter @Inject constructor(private val mattermostServi
       is ServerConfigLoaded -> nextStateDraft.copy(
         showGitlabSignIn = event.serverConfig.isGitlabSignInEnabled,
         showEmailSignIn = event.serverConfig.isEmailSignInEnabled)
-      is ServerConfigLoadFailed -> nextStateDraft.copy(loadingError = errorDetailsExtractor.extractErrorText(event.error))
+      is ServerConfigLoadFailed -> nextStateDraft.copy(contentLoadingError = errorDetailsExtractor.extractErrorText(event.error))
     }
   }
 
@@ -50,7 +50,7 @@ class LoginMethodSelectPresenter @Inject constructor(private val mattermostServi
   override fun createInitialState(): LoginMethodSelect.ViewState {
     return LoginMethodSelect.ViewState(
       showProgressBar = false,
-      loadingError = null,
+      contentLoadingError = null,
       showEmailSignIn = false,
       showGitlabSignIn = false
     )

@@ -4,15 +4,21 @@ import android.content.Context
 import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.baseui.BaseMviController
+import com.dimsuz.yamm.baseui.BindView
 import com.dimsuz.yamm.baseui.util.appScope
 import com.dimsuz.yamm.util.instance
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.config.Module
 
-class LoginMethodSelectController : BaseMviController<LoginMethodSelect.View, LoginMethodSelectPresenter>(), LoginMethodSelect.View {
+class LoginMethodSelectController : BaseMviController<LoginMethodSelect.ViewState, LoginMethodSelect.View, LoginMethodSelectPresenter>(), LoginMethodSelect.View {
+
+  override val config: Config get() = object : Config {
+    override val viewLayoutResource: Int = R.layout.login_method_select
+  }
 
   private lateinit var screenScope: Scope
+  private val progressBar: View by BindView(R.id.progress_bar)
 
   override fun onContextAvailable(context: Context) {
     super.onContextAvailable(context)
@@ -29,10 +35,6 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.View, Lo
     Toothpick.closeScope(this)
   }
 
-  override fun getViewLayout(): Int {
-    return R.layout.login_method_select
-  }
-
   override fun createPresenter(): LoginMethodSelectPresenter {
     return screenScope.instance()
   }
@@ -40,6 +42,6 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.View, Lo
   override fun initializeView(rootView: View) {
   }
 
-  override fun render(viewState: LoginMethodSelect.ViewState) {
+  override fun renderViewState(viewState: LoginMethodSelect.ViewState) {
   }
 }
