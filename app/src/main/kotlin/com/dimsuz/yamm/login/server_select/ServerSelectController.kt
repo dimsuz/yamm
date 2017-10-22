@@ -23,6 +23,11 @@ class ServerSelectController : BaseController() {
 
   override fun initializeView(rootView: View) {
     resetValidationError()
+    val serverUrl = appScope.instance<AppConfig>().getServerUrl()
+    if (serverUrl != null) {
+      serverInputLayout.editText!!.setText(serverUrl)
+      serverInputLayout.editText!!.setSelection(serverUrl.length)
+    }
     continueButton.setOnClickListener { onContinueButtonClicked() }
   }
 
