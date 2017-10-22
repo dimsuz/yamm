@@ -5,9 +5,9 @@ import com.dimsuz.yamm.network.models.ServerConfigJson
 
 internal fun ServerConfigJson.toDomainModel(): ServerConfig {
   return ServerConfig(
-    isEmailSignInEnabled = this.EnableSignInWithEmail,
+    isEmailSignInEnabled = this.EnableSignInWithEmail.toBoolean(),
     // this is weird, but SignUp means actually sign in
     // (I guess that's because its an SSO option)
-    isGitlabSignInEnabled = this.EnableSignUpWithGitLab
+    isGitlabSignInEnabled = this.EnableSignUpWithGitLab.toBoolean()
   )
 }
