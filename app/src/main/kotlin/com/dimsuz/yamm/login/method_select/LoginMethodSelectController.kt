@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.baseui.BaseMviController
-import com.dimsuz.yamm.baseui.state_render.LceStateRenderHelper
+import com.dimsuz.yamm.baseui.state_render.LceStateRenderer
 import com.dimsuz.yamm.baseui.state_render.StateRenderer
 import com.dimsuz.yamm.baseui.util.appScope
 import com.dimsuz.yamm.util.instance
@@ -19,7 +19,7 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.ViewStat
   }
 
   override fun createStateRenderHelpers(): List<StateRenderer<LoginMethodSelect.ViewState>> {
-    return listOf(LceStateRenderHelper(R.id.scroll_view, R.id.progress_bar, intArrayOf(R.id.toolbar)))
+    return listOf(LceStateRenderer(R.id.scroll_view, R.id.progress_bar, intArrayOf(R.id.toolbar)))
   }
 
   private lateinit var screenScope: Scope

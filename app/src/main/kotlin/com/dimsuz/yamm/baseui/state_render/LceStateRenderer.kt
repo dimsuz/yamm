@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.dimsuz.yamm.baseui.HasLceState
 
-class LceStateRenderHelper<in S : HasLceState<*, *>>(
+class LceStateRenderer<in S : HasLceState<*, *>>(
   private val contentViewId: Int,
   private val progressBarViewId: Int,
   private val additionalContentViewIds: IntArray?) : StateRenderer<S> {
