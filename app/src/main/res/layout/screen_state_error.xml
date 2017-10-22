@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.Yamm.Title.Subhead"
+        android:textColor="?android:textColorTertiary"
+        tools:text="Error happened and it also happens to contain a detailed description"
+        />
+
+    <!-- TODO make this work for connectivity errors -->
+    <!--<Button-->
+        <!--android:id="@+id/error_action"-->
+        <!--style="?attr/borderlessButtonStyle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="@string/action_try_again"-->
+        <!--/>-->
+
+</LinearLayout>
