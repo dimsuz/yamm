@@ -2,7 +2,9 @@ package com.dimsuz.yamm
 
 import android.app.Application
 import com.dimsuz.yamm.network.NetworkModule
+import com.dimsuz.yamm.session.SessionManager
 import com.dimsuz.yamm.util.AppConfig
+import com.dimsuz.yamm.util.instance
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
@@ -26,6 +28,12 @@ class YammApplication : Application() {
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
     }
+    configureAuthSession(appScope)
+  }
+
+  private fun configureAuthSession(appScope: Scope) {
+    val sessionManager = appScope.instance<SessionManager>()
+    sessionManager.initializeSession()
   }
 
   fun onServerUrlChanged() {
