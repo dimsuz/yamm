@@ -4,7 +4,8 @@ import android.content.Context
 import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.baseui.BaseMviController
-import com.dimsuz.yamm.baseui.BindView
+import com.dimsuz.yamm.baseui.state_render.LceStateRenderHelper
+import com.dimsuz.yamm.baseui.state_render.StateRenderer
 import com.dimsuz.yamm.baseui.util.appScope
 import com.dimsuz.yamm.util.instance
 import toothpick.Scope
@@ -17,8 +18,11 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.ViewStat
     override val viewLayoutResource: Int = R.layout.login_method_select
   }
 
+  override fun createStateRenderHelpers(): List<StateRenderer<LoginMethodSelect.ViewState>> {
+    return listOf(LceStateRenderHelper(R.id.scroll_view, R.id.progress_bar, intArrayOf(R.id.toolbar)))
+  }
+
   private lateinit var screenScope: Scope
-  private val progressBar: View by BindView(R.id.progress_bar)
 
   override fun onContextAvailable(context: Context) {
     super.onContextAvailable(context)
