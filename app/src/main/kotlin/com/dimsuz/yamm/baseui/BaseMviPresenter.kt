@@ -17,7 +17,9 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(private val schedulers:
         val ns = viewStateReducer(s.viewState, ev)
         val rs = routingStateReducer(s.viewState, ns, ev)
         if (logStateChanges) {
-          Timber.d("reduce after event $ev\nnew state is:\n$ns")
+          Timber.d("==========================================")
+          Timber.d("= Reduce after event:\n=\n= $ev\n=\n= New state is:\n=\n= $ns")
+          Timber.d("==========================================")
         }
         ViewIntentResult(ns, rs)
       })
