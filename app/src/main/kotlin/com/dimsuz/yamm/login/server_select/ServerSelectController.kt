@@ -43,8 +43,11 @@ class ServerSelectController : BaseController() {
   }
 
   private fun saveServerUrl(serverUrl: CharSequence) {
-    appScope.instance<AppConfig>().setServerUrl(serverUrl.trim().toString())
-    appScope.instance<YammApplication>().onServerUrlChanged()
+    val appConfig = appScope.instance<AppConfig>()
+    appConfig.setServerUrl(serverUrl.trim().toString())
+    if (serverUrl != appConfig.getServerUrl()) {
+      appScope.instance<YammApplication>().onServerUrlChanged()
+    }
   }
 
   private fun validateServerUrl(serverUrl: CharSequence): Boolean {
