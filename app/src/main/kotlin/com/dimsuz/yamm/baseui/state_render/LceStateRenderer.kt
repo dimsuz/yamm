@@ -1,5 +1,7 @@
 package com.dimsuz.yamm.baseui.state_render
 
+import android.support.annotation.IdRes
+import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,8 +9,11 @@ import com.dimsuz.yamm.baseui.HasLceState
 import com.dimsuz.yamm.baseui.util.isVisible
 
 open class LceStateRenderer<out E, in S : HasLceState<E, *>>(
+  @IdRes
   private val contentViewId: Int,
+  @IdRes
   private val progressBarViewId: Int,
+  @LayoutRes
   private val errorLayoutResource: Int,
   private val errorDetailsRenderer: (View, E) -> Unit,
   private val additionalContentViewIds: IntArray? = null,
@@ -17,6 +22,7 @@ open class LceStateRenderer<out E, in S : HasLceState<E, *>>(
    * If 0 is passed it will default to the parent ViewGroup of
    * the view specified by contentViewId
    */
+  @IdRes
   private val errorContainerViewId: Int = 0) : StateRenderer<S> {
 
   private var progressBar: View? = null
