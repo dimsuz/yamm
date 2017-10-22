@@ -56,7 +56,7 @@ private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, conf
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(callAdapterFactory)
     .client(httpClient)
-    .baseUrl("${config.serverUrl}/$API_VERSION/")
+    .baseUrl("${config.serverUrl}/api/$API_VERSION/")
     .build()
   return MattermostService(retrofit.create(MattermostServiceApi::class.java))
 }
