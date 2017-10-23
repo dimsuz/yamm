@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.network
 
 import com.dimsuz.yamm.domain.models.ServerConfig
+import com.dimsuz.yamm.domain.models.Team
 import com.dimsuz.yamm.network.mappers.toDomainModel
 import io.reactivex.Single
 import io.reactivex.SingleTransformer
@@ -16,6 +17,12 @@ class MattermostService internal constructor(private val serviceApi: MattermostS
   fun getServerConfig(): Single<ServerConfig> {
     return serviceApi
       .getServerConfig().map { it.toDomainModel() }
+      .compose(sessionExpirationGuard.get())
+  }
+
+  fun getUserTeams(userId: String): Single<List<Team>> {
+    return serviceApi
+      .getUserTeams(userId).map { it.map { it.toDomainModel() } }
       .compose(sessionExpirationGuard.get())
   }
 }
