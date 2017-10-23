@@ -1,6 +1,6 @@
 package com.dimsuz.yamm.network
 
-import com.dimsuz.yamm.domain.ServerConfig
+import com.dimsuz.yamm.domain.models.ServerConfig
 import com.dimsuz.yamm.network.mappers.toDomainModel
 import io.reactivex.Single
 import io.reactivex.SingleTransformer

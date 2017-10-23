@@ -2,7 +2,7 @@ package com.dimsuz.yamm.login.method_select
 
 import com.dimsuz.yamm.baseui.BaseMviPresenter
 import com.dimsuz.yamm.baseui.RoutingAction
-import com.dimsuz.yamm.domain.ServerConfig
+import com.dimsuz.yamm.domain.models.ServerConfig
 import com.dimsuz.yamm.network.MattermostService
 import com.dimsuz.yamm.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor

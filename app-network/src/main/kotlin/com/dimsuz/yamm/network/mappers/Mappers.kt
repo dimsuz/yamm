@@ -1,6 +1,6 @@
 package com.dimsuz.yamm.network.mappers
 
-import com.dimsuz.yamm.domain.ServerConfig
+import com.dimsuz.yamm.domain.models.ServerConfig
 import com.dimsuz.yamm.network.models.ServerConfigJson
 
 internal fun ServerConfigJson.toDomainModel(): ServerConfig {
