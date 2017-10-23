@@ -1,13 +1,11 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_version
     buildToolsVersion rootProject.ext.build_tools_version
 
     defaultConfig {
-        applicationId "com.dimsuz.yamm"
         minSdkVersion rootProject.ext.min_sdk_version
         targetSdkVersion rootProject.ext.target_sdk_version
         versionCode 1
@@ -31,19 +29,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.junit
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile project(path: ':app-data-sources')
-
-    compile rootProject.ext.supportLibAppCompat
-    compile rootProject.ext.supportLibDesign
-    compile rootProject.ext.conductor
-    compile rootProject.ext.mosby
-    compile rootProject.ext.mosbyMvi
-    compile rootProject.ext.conductorMvi
-    compile rootProject.ext.rxAndroid
-
-    compile rootProject.ext.constraintLayout
-
-    compile rootProject.ext.toothpickRuntime
-    kapt rootProject.ext.toothpickProcessor
+    compile project(path: ':app-network')
 }
+
