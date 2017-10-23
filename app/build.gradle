@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "com.dimsuz.yamm"
-        minSdkVersion 19
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
