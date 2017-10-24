@@ -43,6 +43,7 @@ dependencies {
     compile rootProject.ext.rxAndroid
 
     compile rootProject.ext.constraintLayout
+    compile rootProject.ext.cicerone
 
     compile rootProject.ext.toothpickRuntime
     kapt rootProject.ext.toothpickProcessor

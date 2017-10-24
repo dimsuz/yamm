@@ -21,6 +21,7 @@ ext {
   supportLibCoreUtils = "com.android.support:support-core-utils:$supportLibVersion"
   supportLibRecyclerView = "com.android.support:recyclerview-v7:$supportLibVersion"
   supportLibDesign = "com.android.support:design:$supportLibVersion"
+  cicerone = 'ru.terrakok.cicerone:cicerone:2.1.0'
 
   constraintLayout = 'com.android.support.constraint:constraint-layout:1.0.2'
 

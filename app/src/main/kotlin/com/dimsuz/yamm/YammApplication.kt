@@ -5,6 +5,7 @@ import com.dimsuz.yamm.network.NetworkModule
 import com.dimsuz.yamm.session.SessionManager
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
+import ru.terrakok.cicerone.Cicerone
 import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
@@ -20,7 +21,7 @@ class YammApplication : Application() {
   private fun configureAppScope() {
     val appScope = Toothpick.openScope(this)
     // needs to go before createNetworkConfig() which already uses some bindings
-    appScope.installModules(ApplicationModule(this))
+    appScope.installModules(ApplicationModule(this, Cicerone.create()))
     val networkConfig = createNetworkConfig(appScope)
     if (networkConfig != null) {
       Timber.d("Configuring network module: $networkConfig")

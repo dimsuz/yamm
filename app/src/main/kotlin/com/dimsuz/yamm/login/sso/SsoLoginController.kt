@@ -10,6 +10,7 @@ import com.dimsuz.yamm.common.EXTRA_SERVER_URL
 import com.dimsuz.yamm.common.web_view.WebViewController
 import com.dimsuz.yamm.session.SessionManager
 import com.dimsuz.yamm.util.instance
+import ru.terrakok.cicerone.Router
 
 private const val GITLAB_SSO_LOGIN_LINK = "%s/oauth/gitlab/mobile_login"
 private const val GITLAB_SSO_LOGIN_COMPLETE_LINK = "%s/signup/gitlab/complete"
@@ -54,6 +55,8 @@ class SsoLoginController(args: Bundle) : WebViewController(args) {
   private fun onSessionCredentialsObtained(token: String, userId: String) {
     val sessionManager = appScope.instance<SessionManager>()
     sessionManager.onNewSessionCreated(token, userId)
+    val router = appScope.instance<Router>()
+    router.newRootScreen("main")
   }
 
   private fun onSessionCredentialsError() {
