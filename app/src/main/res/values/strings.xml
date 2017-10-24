@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Yamm</string>
+
     <string name="action_login">Login</string>
+    <string name="action_ok">OK</string>
 
     <string name="login_server_select_hint">Server address</string>
     <string name="login_server_select_helper_text">Enter your Mattermost server address</string>
@@ -18,4 +20,7 @@
     <string name="login_method_select_email_hint">Email</string>
     <string name="login_method_select_password_hint">Password</string>
     <string name="login_method_select_gitlab_label">Gitlab</string>
+
+    <string name="sso_login_failed_title">Login failed</string>
+    <string name="sso_login_failed_message">Failed to login with Gitlab, try again or choose another login method</string>
 </resources>

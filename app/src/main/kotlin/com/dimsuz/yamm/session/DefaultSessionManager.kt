@@ -30,6 +30,7 @@ class DefaultSessionManager @Inject constructor(private val settings: SettingsSt
   }
 
   override fun onNewSessionCreated(token: String, userId: String) {
+    Timber.d("creating a new session: token=$token, userId=$userId")
     settings.saveValue(SETTINGS_KEY_AUTH_TOKEN, token)
     settings.saveValue(SETTINGS_KEY_AUTH_USER_ID, userId)
 
