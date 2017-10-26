@@ -7,6 +7,7 @@ import com.dimsuz.yamm.settings.PreferencesSettingsStorage
 import com.dimsuz.yamm.settings.SettingsStorage
 import com.dimsuz.yamm.util.*
 import ru.terrakok.cicerone.Cicerone
+import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import toothpick.config.Module
 
@@ -21,6 +22,8 @@ internal class ApplicationModule(application: YammApplication, cicerone: Ciceron
     bind(AppConfig::class.java).to(PrefsBasedAppConfig::class.java)
     bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java)
     bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
+
     bind(Router::class.java).toInstance(cicerone.router)
+    bind(NavigatorHolder::class.java).toProviderInstance({ cicerone.navigatorHolder })
   }
 }
