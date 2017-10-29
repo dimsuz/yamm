@@ -1,10 +1,6 @@
 package com.dimsuz.yamm
 
 import android.content.Context
-import com.dimsuz.yamm.session.DefaultSessionManager
-import com.dimsuz.yamm.session.SessionManager
-import com.dimsuz.yamm.settings.PreferencesSettingsStorage
-import com.dimsuz.yamm.settings.SettingsStorage
 import com.dimsuz.yamm.util.*
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
@@ -20,8 +16,6 @@ internal class ApplicationModule(application: YammApplication, cicerone: Ciceron
     // not making it singleton, will be recreated each time it's needed.
     // Currently I think it will be rarely needed, but if this will become wrong, rethink
     bind(AppConfig::class.java).to(PrefsBasedAppConfig::class.java)
-    bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java)
-    bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
 
     bind(Router::class.java).toInstance(cicerone.router)
     bind(NavigatorHolder::class.java).toProviderInstance({ cicerone.navigatorHolder })

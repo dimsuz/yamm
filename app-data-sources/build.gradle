@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_version
@@ -25,12 +26,29 @@ android {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation project(path: ':app-domain')
+
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.junit
+    testImplementation rootProject.ext.junit
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile project(path: ':app-network')
+
+    implementation rootProject.ext.kotlinStdLib
+
+    implementation rootProject.ext.toothpickRuntime
+    kapt rootProject.ext.toothpickProcessor
+
+    implementation rootProject.ext.okhttp
+    implementation rootProject.ext.okhttpLoggingInterceptor
+    implementation 'com.squareup.moshi:moshi:1.5.0'
+
+    implementation rootProject.ext.rxJava
+    implementation rootProject.ext.timber
+
+    def retrofitVersion = '2.3.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
 }
 

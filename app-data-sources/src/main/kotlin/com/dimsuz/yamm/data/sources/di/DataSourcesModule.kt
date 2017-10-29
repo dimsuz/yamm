@@ -1,5 +1,12 @@
-package com.dimsuz.yamm.network
+package com.dimsuz.yamm.data.sources.di
 
+import com.dimsuz.yamm.data.repositories.ServerConfigRepository
+import com.dimsuz.yamm.data.sources.network.services.MattermostService
+import com.dimsuz.yamm.data.sources.network.services.MattermostServiceApi
+import com.dimsuz.yamm.data.sources.network.session.DefaultSessionManager
+import com.dimsuz.yamm.data.sources.network.session.SessionManager
+import com.dimsuz.yamm.data.sources.settings.PreferencesSettingsStorage
+import com.dimsuz.yamm.data.sources.settings.SettingsStorage
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -13,7 +20,7 @@ import java.util.concurrent.TimeUnit
 private const val DEFAULT_CONNECT_TIMEOUT = 90000L
 private const val API_VERSION = "v4"
 
-class NetworkModule(config: Config) : Module() {
+class DataSourcesModule(config: Config) : Module() {
   data class Config(
     val serverUrl: String,
     val debugMode: Boolean,
@@ -24,12 +31,14 @@ class NetworkModule(config: Config) : Module() {
     val httpClient = createHttpClient(config)
     val moshi = createMoshi()
 
-    bind(OkHttpClient::class.java).toInstance(httpClient)
+    bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java)
+    bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
     bind(MattermostService::class.java).toInstance(createMattermostService(httpClient, moshi, config))
+    bind(ServerConfigRepository::class.java)
   }
 }
 
-private fun createHttpClient(config: NetworkModule.Config): OkHttpClient {
+private fun createHttpClient(config: DataSourcesModule.Config): OkHttpClient {
   return OkHttpClient.Builder()
     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
     .readTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
@@ -38,7 +47,7 @@ private fun createHttpClient(config: NetworkModule.Config): OkHttpClient {
     .build()
 }
 
-private fun createLoggingInterceptor(config: NetworkModule.Config): HttpLoggingInterceptor {
+private fun createLoggingInterceptor(config: DataSourcesModule.Config): HttpLoggingInterceptor {
   val logLevel = if (config.debugMode) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.BASIC
   val interceptor = if (config.logger != null) HttpLoggingInterceptor(config.logger) else HttpLoggingInterceptor()
   interceptor.level = logLevel
@@ -50,7 +59,7 @@ private fun createMoshi(): Moshi {
     .build()
 }
 
-private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, config: NetworkModule.Config): MattermostService {
+private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, config: DataSourcesModule.Config): MattermostService {
   val callAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
   val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))

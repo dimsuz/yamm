@@ -1,8 +1,8 @@
-package com.dimsuz.yamm.session
+package com.dimsuz.yamm.data.sources.network.session
 
-import com.dimsuz.yamm.network.MattermostService
-import com.dimsuz.yamm.network.SessionExpirationGuardProvider
-import com.dimsuz.yamm.settings.SettingsStorage
+import com.dimsuz.yamm.data.sources.network.services.MattermostService
+import com.dimsuz.yamm.data.sources.network.services.SessionExpirationGuardProvider
+import com.dimsuz.yamm.data.sources.settings.SettingsStorage
 import io.reactivex.SingleTransformer
 import timber.log.Timber
 import javax.inject.Inject
@@ -10,8 +10,8 @@ import javax.inject.Inject
 private const val SETTINGS_KEY_AUTH_TOKEN = "session_token"
 private const val SETTINGS_KEY_AUTH_USER_ID = "session_user_id"
 
-class DefaultSessionManager @Inject constructor(private val settings: SettingsStorage,
-                                                private val mattermostService: MattermostService) : SessionManager {
+internal class DefaultSessionManager @Inject constructor(private val settings: SettingsStorage,
+                                                         private val mattermostService: MattermostService) : SessionManager {
 
   init {
     // TODO remove

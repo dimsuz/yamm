@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.session
+package com.dimsuz.yamm.data.sources.network.session
 
 interface SessionManager {
   fun initializeSession()

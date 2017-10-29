@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.network.models
+package com.dimsuz.yamm.data.sources.network.models
 
 internal data class TeamJson(
   val id: String?,

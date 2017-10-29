@@ -1,10 +1,10 @@
-package com.dimsuz.yamm.network.mappers
+package com.dimsuz.yamm.data.sources.network.mappers
 
+import com.dimsuz.yamm.data.sources.network.models.ServerConfigJson
+import com.dimsuz.yamm.data.sources.network.models.TeamJson
 import com.dimsuz.yamm.domain.errors.ModelMapException
 import com.dimsuz.yamm.domain.models.ServerConfig
 import com.dimsuz.yamm.domain.models.Team
-import com.dimsuz.yamm.network.models.ServerConfigJson
-import com.dimsuz.yamm.network.models.TeamJson
 
 internal fun ServerConfigJson.toDomainModel(): ServerConfig {
   return ServerConfig(

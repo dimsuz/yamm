@@ -1,8 +1,8 @@
 package com.dimsuz.yamm
 
 import android.app.Application
-import com.dimsuz.yamm.network.NetworkModule
-import com.dimsuz.yamm.session.SessionManager
+import com.dimsuz.yamm.data.sources.di.DataSourcesModule
+import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import ru.terrakok.cicerone.Cicerone
@@ -25,7 +25,7 @@ class YammApplication : Application() {
     val networkConfig = createNetworkConfig(appScope)
     if (networkConfig != null) {
       Timber.d("Configuring network module: $networkConfig")
-      appScope.installModules(NetworkModule(networkConfig))
+      appScope.installModules(DataSourcesModule(networkConfig))
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
     }
@@ -38,16 +38,16 @@ class YammApplication : Application() {
   }
 
   fun onServerUrlChanged() {
-    // server url change implies that NetworkModule must be reconfigured.
+    // server url change implies that DataSourcesModule must be reconfigured.
     // Currently found no good way to simply re-add it, so must re-init whole app scope
-    // which would recreate the NetworkModule with correct params along the way
+    // which would recreate the DataSourcesModule with correct params along the way
     Toothpick.closeScope(this)
     configureAppScope()
   }
 
-  private fun createNetworkConfig(appScope: Scope): NetworkModule.Config? {
+  private fun createNetworkConfig(appScope: Scope): DataSourcesModule.Config? {
     val serverUrl = appScope.getInstance(AppConfig::class.java)?.getServerUrl() ?: return null
-    return NetworkModule.Config(serverUrl,
+    return DataSourcesModule.Config(serverUrl,
       debugMode = BuildConfig.DEBUG,
       logger = { Timber.tag("YammNetwork"); Timber.d(it) })
   }

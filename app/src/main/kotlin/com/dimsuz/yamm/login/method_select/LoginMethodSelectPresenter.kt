@@ -2,8 +2,8 @@ package com.dimsuz.yamm.login.method_select
 
 import com.dimsuz.yamm.baseui.BaseMviPresenter
 import com.dimsuz.yamm.baseui.RoutingAction
+import com.dimsuz.yamm.data.repositories.ServerConfigRepository
 import com.dimsuz.yamm.domain.models.ServerConfig
-import com.dimsuz.yamm.network.MattermostService
 import com.dimsuz.yamm.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
@@ -14,7 +14,7 @@ private object ServerConfigLoading : ScreenEvent()
 private data class ServerConfigLoaded(val serverConfig: ServerConfig) : ScreenEvent()
 private data class ServerConfigLoadFailed(val error: Throwable) : ScreenEvent()
 
-class LoginMethodSelectPresenter @Inject constructor(private val mattermostService: MattermostService,
+class LoginMethodSelectPresenter @Inject constructor(private val serverConfigRepository: ServerConfigRepository,
                                                      private val errorDetailsExtractor: ErrorDetailsExtractor,
                                                      schedulers: AppSchedulers)
   : BaseMviPresenter<LoginMethodSelect.View, LoginMethodSelect.ViewState, ScreenEvent>(schedulers) {
@@ -25,10 +25,9 @@ class LoginMethodSelectPresenter @Inject constructor(private val mattermostServi
   }
 
   private fun fetchServerConfigFlow(): Observable<ScreenEvent> {
-    return mattermostService.getServerConfig()
+    return serverConfigRepository.getServerConfig()
       .map<ScreenEvent> { ServerConfigLoaded(it) }
       .onErrorReturn { ServerConfigLoadFailed(it) }
-      .toObservable()
       .startWith(ServerConfigLoading)
   }
 

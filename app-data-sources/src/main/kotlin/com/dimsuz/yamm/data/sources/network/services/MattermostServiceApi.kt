@@ -1,7 +1,7 @@
-package com.dimsuz.yamm.network
+package com.dimsuz.yamm.data.sources.network.services
 
-import com.dimsuz.yamm.network.models.ServerConfigJson
-import com.dimsuz.yamm.network.models.TeamJson
+import com.dimsuz.yamm.data.sources.network.models.ServerConfigJson
+import com.dimsuz.yamm.data.sources.network.models.TeamJson
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
