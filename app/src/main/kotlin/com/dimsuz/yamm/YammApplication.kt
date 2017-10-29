@@ -34,9 +34,9 @@ class YammApplication : Application() {
   private fun configureDataSources(scope: Scope) {
     val serverUrl = scope.instance<AppConfig>().getServerUrl()
     if (serverUrl != null) {
-      Timber.d("Configuring network module: $serverUrl")
+      Timber.d("Configuring data sources module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(DataSourcesModule(serverUrl))
+      newScope.installModules(DataSourcesModule(this, serverUrl))
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)
