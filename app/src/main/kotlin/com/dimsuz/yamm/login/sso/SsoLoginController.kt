@@ -10,7 +10,7 @@ import com.dimsuz.yamm.common.EXTRA_SERVER_URL
 import com.dimsuz.yamm.common.web_view.WebViewController
 import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.util.instance
-import ru.terrakok.cicerone.Router
+import timber.log.Timber
 
 private const val GITLAB_SSO_LOGIN_LINK = "%s/oauth/gitlab/mobile_login"
 private const val GITLAB_SSO_LOGIN_COMPLETE_LINK = "%s/signup/gitlab/complete"
@@ -32,8 +32,17 @@ class SsoLoginController(args: Bundle) : WebViewController(args) {
   private val completeLink: String = GITLAB_SSO_LOGIN_COMPLETE_LINK.format(serverUrl)
 
   override fun onInterceptUrlRedirect(url: String?): Boolean {
+    Timber.d("redirecting to $url")
     if (url?.contains(completeLink) == true) {
-      val cookies = CookieManager.getInstance().getCookie(url)
+      // hide a final page from user - it contains json anyway
+      return true
+    }
+    return super.onInterceptUrlRedirect(url)
+  }
+
+  override fun onPageFinished(url: String?) {
+    if (url?.contains(completeLink) == true) {
+      val cookies = CookieManager.getInstance().getCookie(serverUrl)
       val cookiesMap = cookies.split(';')
         .filter { it.contains('=') }
         .map { val (key,value) = it.split('='); key.trim() to value.trim() }
@@ -42,21 +51,20 @@ class SsoLoginController(args: Bundle) : WebViewController(args) {
       val userId = cookiesMap[COOKIE_KEY_AUTH_USER_ID]
       val token = cookiesMap[COOKIE_KEY_AUTH_TOKEN]
 
-      if (userId == null || token == null) {
-        onSessionCredentialsError()
-      } else {
+      if (userId != null && token != null) {
         onSessionCredentialsObtained(token, userId)
+      } else {
+        onSessionCredentialsError()
       }
-      return true
     }
-    return super.onInterceptUrlRedirect(url)
   }
 
   private fun onSessionCredentialsObtained(token: String, userId: String) {
     val sessionManager = appScope.instance<SessionManager>()
     sessionManager.onNewSessionCreated(token, userId)
-    val router = appScope.instance<Router>()
-    router.newRootScreen("main")
+    // TODO
+//    val router = appScope.instance<Router>()
+//    router.newRootScreen("main")
   }
 
   private fun onSessionCredentialsError() {
