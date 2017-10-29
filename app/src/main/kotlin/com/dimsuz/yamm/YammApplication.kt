@@ -2,7 +2,6 @@ package com.dimsuz.yamm
 
 import android.app.Application
 import com.dimsuz.yamm.data.sources.di.DataSourcesModule
-import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import ru.terrakok.cicerone.Cicerone
@@ -20,33 +19,32 @@ class YammApplication : Application() {
 
   private fun configureAppScope() {
     val appScope = Toothpick.openScope(this)
-    // needs to go before createNetworkConfig() which already uses some bindings
     appScope.installModules(ApplicationModule(this, Cicerone.create()))
-    val networkConfig = createNetworkConfig(appScope)
-    if (networkConfig != null) {
-      Timber.d("Configuring network module: $networkConfig")
-      appScope.installModules(DataSourcesModule(networkConfig))
-    } else {
-      Timber.d("Network config is not available, skipping configuration for now")
-    }
-    configureAuthSession(appScope)
-  }
-
-  private fun configureAuthSession(appScope: Scope) {
-    val sessionManager = appScope.instance<SessionManager>()
-    sessionManager.initializeSession()
+    configureDataSources(appScope)
   }
 
   fun onServerUrlChanged() {
     // server url change implies that DataSourcesModule must be reconfigured.
-    // Currently found no good way to simply re-add it, so must re-init whole app scope
-    // which would recreate the DataSourcesModule with correct params along the way
-    Toothpick.closeScope(this)
-    configureAppScope()
+    // using technique described in this post:
+    // https://stackoverflow.com/questions/46760226/is-there-a-way-to-re-add-a-module-to-a-scope-in-a-toothpick-di-library
+    Toothpick.closeScope(FULL_APP_SCOPE)
+    configureDataSources(Toothpick.openScope(this))
+  }
+
+  private fun configureDataSources(scope: Scope) {
+    val networkConfig = createNetworkConfig(scope)
+    if (networkConfig != null) {
+      Timber.d("Configuring network module: $networkConfig")
+      val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
+      newScope.installModules(DataSourcesModule(networkConfig))
+    } else {
+      Timber.d("Network config is not available, skipping configuration for now")
+      Toothpick.closeScope(FULL_APP_SCOPE)
+    }
   }
 
   private fun createNetworkConfig(appScope: Scope): DataSourcesModule.Config? {
-    val serverUrl = appScope.getInstance(AppConfig::class.java)?.getServerUrl() ?: return null
+    val serverUrl = appScope.instance<AppConfig>().getServerUrl() ?: return null
     return DataSourcesModule.Config(serverUrl,
       debugMode = BuildConfig.DEBUG,
       logger = { Timber.tag("YammNetwork"); Timber.d(it) })
@@ -56,3 +54,11 @@ class YammApplication : Application() {
     Timber.plant(Timber.DebugTree())
   }
 }
+
+@javax.inject.Scope
+@Target(AnnotationTarget.TYPE)
+@Retention(AnnotationRetention.RUNTIME)
+internal annotation class WithDataSources
+
+@Suppress("PropertyName")
+internal inline val FULL_APP_SCOPE get() = WithDataSources::class.java

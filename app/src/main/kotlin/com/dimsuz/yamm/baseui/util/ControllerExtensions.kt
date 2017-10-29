@@ -8,9 +8,9 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.dimsuz.yamm.util.appScope
 
-inline val Controller.resourcesUnsafe get() = this.resources!!
-inline val Controller.activityUnsafe get() = this.activity!!
-inline val Controller.appScope get() = activityUnsafe.appScope
+internal inline val Controller.resourcesUnsafe get() = this.resources!!
+internal inline val Controller.activityUnsafe get() = this.activity!!
+internal inline val Controller.appScope get() = activityUnsafe.appScope
 
 private const val SLIDE_BOTTOM_PUSH_ANIM_DURATION = 300L
 private const val SLIDE_BOTTOM_POP_ANIM_DURATION = 200L
