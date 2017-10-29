@@ -32,22 +32,15 @@ class YammApplication : Application() {
   }
 
   private fun configureDataSources(scope: Scope) {
-    val networkConfig = createNetworkConfig(scope)
-    if (networkConfig != null) {
-      Timber.d("Configuring network module: $networkConfig")
+    val serverUrl = scope.instance<AppConfig>().getServerUrl()
+    if (serverUrl != null) {
+      Timber.d("Configuring network module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(DataSourcesModule(networkConfig))
+      newScope.installModules(DataSourcesModule(serverUrl))
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)
     }
-  }
-
-  private fun createNetworkConfig(appScope: Scope): DataSourcesModule.Config? {
-    val serverUrl = appScope.instance<AppConfig>().getServerUrl() ?: return null
-    return DataSourcesModule.Config(serverUrl,
-      debugMode = BuildConfig.DEBUG,
-      logger = { Timber.tag("YammNetwork"); Timber.d(it) })
   }
 
   private fun configureLogging() {
