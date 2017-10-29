@@ -1,8 +1,8 @@
 package com.dimsuz.yamm.data.sources.di
 
 import com.dimsuz.yamm.data.repositories.ServerConfigRepository
+import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostService
-import com.dimsuz.yamm.data.sources.network.services.MattermostServiceApi
 import com.dimsuz.yamm.data.sources.network.session.DefaultSessionManager
 import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.data.sources.settings.PreferencesSettingsStorage
@@ -28,12 +28,17 @@ class DataSourcesModule(config: Config) : Module() {
   )
 
   init {
-    val httpClient = createHttpClient(config)
-    val moshi = createMoshi()
 
     bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java)
     bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
-    bind(MattermostService::class.java).toInstance(createMattermostService(httpClient, moshi, config))
+
+    val moshi = createMoshi()
+    bind(MattermostService::class.java).toInstance(createMattermostService(createHttpClient(config), moshi, config))
+    // expecting to use this rarely, so should be GCed after use...
+    bind(MattermostPublicApi::class.java).toProviderInstance({
+      createMattermostApi(createHttpClient(config), moshi, config)
+    })
+
     bind(ServerConfigRepository::class.java)
   }
 }
@@ -59,7 +64,7 @@ private fun createMoshi(): Moshi {
     .build()
 }
 
-private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, config: DataSourcesModule.Config): MattermostService {
+private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient, moshi: Moshi, config: DataSourcesModule.Config): T {
   val callAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
   val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -67,5 +72,9 @@ private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, conf
     .client(httpClient)
     .baseUrl("${config.serverUrl}/api/$API_VERSION/")
     .build()
-  return MattermostService(retrofit.create(MattermostServiceApi::class.java))
+  return retrofit.create(T::class.java)
+}
+
+private fun createMattermostService(httpClient: OkHttpClient, moshi: Moshi, config: DataSourcesModule.Config): MattermostService {
+  return MattermostService(createMattermostApi(httpClient, moshi, config))
 }
