@@ -21,11 +21,13 @@ class ControllerNavigator(private val conductorRouter: Router,
       is Forward -> {
         val controller = controllerFactory.createController(command.screenKey, command.transitionData)
         val transaction = controllerFactory.createPushTransaction(command.screenKey, command.transitionData, controller)
+          .tag(command.screenKey)
         conductorRouter.pushController(transaction)
       }
       is Replace -> {
         val controller = controllerFactory.createController(command.screenKey, command.transitionData)
         val transaction = controllerFactory.createReplaceTransaction(command.screenKey, command.transitionData, controller)
+          .tag(command.screenKey)
         conductorRouter.replaceTopController(transaction)
       }
     }
