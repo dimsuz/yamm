@@ -11,8 +11,12 @@ class ControllerNavigator(private val conductorRouter: Router,
     when (command) {
       is Back -> conductorRouter.popCurrentController()
       is BackTo -> {
-        conductorRouter.popToTag(command.screenKey)
-          .also { popped -> check(popped, { "routing back to ${command.screenKey} failed, no such tag" }) }
+        if (command.screenKey != null) {
+          conductorRouter.popToTag(command.screenKey)
+            .also { popped -> check(popped, { "routing back to ${command.screenKey} failed, no such tag" }) }
+        } else {
+          conductorRouter.popToRoot()
+        }
       }
       is Forward -> {
         val controller = controllerFactory.createController(command.screenKey, command.transitionData)
