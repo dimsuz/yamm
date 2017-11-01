@@ -1,6 +1,7 @@
 package com.dimsuz.yamm
 
 import android.app.Application
+import com.dimsuz.yamm.data.sources.di.DataSourcesCommonModule
 import com.dimsuz.yamm.data.sources.di.DataSourcesModule
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
@@ -19,8 +20,10 @@ class YammApplication : Application() {
 
   private fun configureAppScope() {
     val appScope = Toothpick.openScope(this)
-    appScope.installModules(ApplicationModule(this, Cicerone.create()))
-    configureDataSources(appScope)
+    appScope.installModules(
+      ApplicationModule(this, Cicerone.create()),
+      DataSourcesCommonModule())
+    configureUrlDependentDataSources(appScope)
   }
 
   fun onServerUrlChanged() {
@@ -28,15 +31,15 @@ class YammApplication : Application() {
     // using technique described in this post:
     // https://stackoverflow.com/questions/46760226/is-there-a-way-to-re-add-a-module-to-a-scope-in-a-toothpick-di-library
     Toothpick.closeScope(FULL_APP_SCOPE)
-    configureDataSources(Toothpick.openScope(this))
+    configureUrlDependentDataSources(Toothpick.openScope(this))
   }
 
-  private fun configureDataSources(scope: Scope) {
+  private fun configureUrlDependentDataSources(scope: Scope) {
     val serverUrl = scope.instance<AppConfig>().getServerUrl()
     if (serverUrl != null) {
       Timber.d("Configuring data sources module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(DataSourcesModule(this, serverUrl))
+      newScope.installModules(DataSourcesModule(serverUrl))
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)

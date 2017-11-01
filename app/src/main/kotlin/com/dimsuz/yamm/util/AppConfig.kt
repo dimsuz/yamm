@@ -3,6 +3,7 @@ package com.dimsuz.yamm.util
 import android.content.Context
 import android.preference.PreferenceManager
 import com.dimsuz.yamm.BuildConfig
+import com.dimsuz.yamm.domain.di.ApplicationContext
 import javax.inject.Inject
 
 private const val PREF_KEY_SERVER_URL = BuildConfig.APPLICATION_ID + ".server_url"
@@ -12,7 +13,7 @@ interface AppConfig {
   fun getServerUrl(): String?
 }
 
-class PrefsBasedAppConfig @Inject constructor(private val context: Context) : AppConfig {
+class PrefsBasedAppConfig @Inject constructor(@ApplicationContext private val context: Context) : AppConfig {
 
   override fun setServerUrl(serverUrl: String) {
     val prefs = PreferenceManager.getDefaultSharedPreferences(context)

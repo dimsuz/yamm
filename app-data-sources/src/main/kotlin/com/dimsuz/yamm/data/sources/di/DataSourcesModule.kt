@@ -1,6 +1,5 @@
 package com.dimsuz.yamm.data.sources.di
 
-import android.content.Context
 import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.repositories.ServerConfigRepository
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
@@ -19,32 +18,55 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
+import toothpick.Scope
 import toothpick.config.Module
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Provider
 
 private const val DEFAULT_CONNECT_TIMEOUT = 90000L
 private const val API_VERSION = "v4"
 
-class DataSourcesModule(context: Context, serverUrl: String) : Module() {
+class DataSourcesCommonModule : Module() {
+  init {
+    bind(Moshi::class.java).toInstance(createMoshi())
+    bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
+    bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java).singletonInScope()
+  }
+}
+
+class DataSourcesModule(serverUrl: String) : Module() {
 
   init {
-
-    val moshi = createMoshi()
-    val settingsStorage = PreferencesSettingsStorage(context)
-    val sessionManager = DefaultSessionManager(settingsStorage)
-
-    bind(SettingsStorage::class.java).toInstance(settingsStorage)
-    bind(SessionManager::class.java).toInstance(sessionManager)
-
-    bind(MattermostService::class.java).toInstance(createMattermostService(moshi, serverUrl, sessionManager))
+    bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
+    bind(MattermostService::class.java).toProvider(MattermostServiceProvider::class.java).singletonInScope()
     // expecting to use this rarely, so should be GCed after use...
-    bind(MattermostPublicApi::class.java).toProviderInstance({
-      createMattermostApi(createHttpClient(), moshi, serverUrl)
-    })
-
+    bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
     bind(ServerConfigRepository::class.java)
   }
 }
+
+internal class MattermostServiceProvider
+@Inject constructor(private val moshi: Moshi,
+                    private val scope: Scope,
+                    private val sessionManager: SessionManager): Provider<MattermostService> {
+
+  override fun get(): MattermostService {
+    Timber.e("creating server api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
+    return createMattermostService(moshi, scope.getInstance(String::class.java, "serverUrl"), sessionManager)
+  }
+}
+
+internal class MattermostPublicApiProvider
+@Inject constructor(private val moshi: Moshi,
+                    private val scope: Scope): Provider<MattermostPublicApi> {
+
+  override fun get(): MattermostPublicApi {
+    Timber.e("creating public api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
+    return createMattermostApi(createHttpClient(), moshi, scope.getInstance(String::class.java, "serverUrl"))
+  }
+}
+
 
 private fun createHttpClient(interceptors: List<Interceptor> = emptyList()): OkHttpClient {
   val builder = OkHttpClient.Builder()

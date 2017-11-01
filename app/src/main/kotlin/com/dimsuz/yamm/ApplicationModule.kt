@@ -1,6 +1,7 @@
 package com.dimsuz.yamm
 
 import android.content.Context
+import com.dimsuz.yamm.domain.di.ApplicationContext
 import com.dimsuz.yamm.util.*
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
@@ -9,7 +10,7 @@ import toothpick.config.Module
 
 internal class ApplicationModule(application: YammApplication, cicerone: Cicerone<Router>) : Module() {
   init {
-    bind(Context::class.java).toInstance(application)
+    bind(Context::class.java).withName(ApplicationContext::class.java).toInstance(application)
     bind(YammApplication::class.java).toInstance(application)
     bind(AppSchedulers::class.java).toInstance(DefaultAppSchedulers)
     bind(ErrorDetailsExtractor::class.java).toInstance(DefaultErrorDetailsExtractor())
