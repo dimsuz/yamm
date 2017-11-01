@@ -10,7 +10,6 @@ import com.dimsuz.yamm.common.EXTRA_SERVER_URL
 import com.dimsuz.yamm.common.web_view.WebViewController
 import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.util.instance
-import timber.log.Timber
 
 private const val GITLAB_SSO_LOGIN_LINK = "%s/oauth/gitlab/mobile_login"
 private const val GITLAB_SSO_LOGIN_COMPLETE_LINK = "%s/signup/gitlab/complete"
@@ -30,15 +29,6 @@ class SsoLoginController(args: Bundle) : WebViewController(args) {
 
   private val serverUrl get() = args.getString(EXTRA_SERVER_URL)
   private val completeLink: String = GITLAB_SSO_LOGIN_COMPLETE_LINK.format(serverUrl)
-
-  override fun onInterceptUrlRedirect(url: String?): Boolean {
-    Timber.d("redirecting to $url")
-    if (url?.contains(completeLink) == true) {
-      // hide a final page from user - it contains json anyway
-      return true
-    }
-    return super.onInterceptUrlRedirect(url)
-  }
 
   override fun onPageFinished(url: String?) {
     if (url?.contains(completeLink) == true) {
