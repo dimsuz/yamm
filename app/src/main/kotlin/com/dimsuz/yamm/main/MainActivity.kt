@@ -19,8 +19,8 @@ import toothpick.Toothpick
 import javax.inject.Inject
 
 class MainActivity : BaseControllerActivity(), ControllerFactory {
-  @Inject private lateinit var navigatorHolder: NavigatorHolder
-  private lateinit var navigator: Navigator
+  @Inject lateinit var navigatorHolder: NavigatorHolder
+  lateinit var navigator: Navigator
 
   override fun createController(): Controller? {
     val scope = appScope
