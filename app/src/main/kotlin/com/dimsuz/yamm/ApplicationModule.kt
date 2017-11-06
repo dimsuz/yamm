@@ -2,7 +2,16 @@ package com.dimsuz.yamm
 
 import android.content.Context
 import com.dimsuz.yamm.domain.di.ApplicationContext
-import com.dimsuz.yamm.util.*
+import com.dimsuz.yamm.presentation.navdrawer.context.base.DefaultNavDrawerContextManager
+import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
+import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
+import com.dimsuz.yamm.presentation.navdrawer.context.main.MainNavDrawerContextFactory
+import com.dimsuz.yamm.util.AppConfig
+import com.dimsuz.yamm.util.AppSchedulers
+import com.dimsuz.yamm.util.DefaultAppSchedulers
+import com.dimsuz.yamm.util.DefaultErrorDetailsExtractor
+import com.dimsuz.yamm.util.ErrorDetailsExtractor
+import com.dimsuz.yamm.util.PrefsBasedAppConfig
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -20,5 +29,8 @@ internal class ApplicationModule(application: YammApplication, cicerone: Ciceron
 
     bind(Router::class.java).toInstance(cicerone.router)
     bind(NavigatorHolder::class.java).toProviderInstance({ cicerone.navigatorHolder })
+
+    bind(NavDrawerContextFactory::class.java).to(MainNavDrawerContextFactory::class.java).singletonInScope()
+    bind(NavDrawerContextManager::class.java).to(DefaultNavDrawerContextManager::class.java).singletonInScope()
   }
 }

@@ -15,11 +15,10 @@ import com.dimsuz.yamm.presentation.login.method_select.LoginMethodSelectControl
 import com.dimsuz.yamm.presentation.login.server_select.ServerSelectController
 import com.dimsuz.yamm.presentation.login.sso.SsoLoginController
 import com.dimsuz.yamm.presentation.messages.MessagesController
+import com.dimsuz.yamm.presentation.navdrawer.NavDrawerView
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.appScope
 import com.dimsuz.yamm.util.instance
-import com.mikepenz.materialdrawer.Drawer
-import com.mikepenz.materialdrawer.DrawerBuilder
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import toothpick.Toothpick
@@ -28,7 +27,7 @@ import javax.inject.Inject
 class MainActivity : BaseControllerActivity(), ControllerFactory {
   @Inject lateinit var navigatorHolder: NavigatorHolder
   private lateinit var navigator: Navigator
-  private lateinit var navigationDrawer: Drawer
+  private lateinit var navDrawerView: NavDrawerView
 
   override fun createController(): Controller? {
     val scope = appScope
@@ -62,10 +61,7 @@ class MainActivity : BaseControllerActivity(), ControllerFactory {
   }
 
   private fun setupNavigationDrawer() {
-    navigationDrawer = DrawerBuilder()
-      .withActivity(this)
-      .withActionBarDrawerToggle(true)
-      .build()
+    navDrawerView = NavDrawerView.create(this, contextManager = appScope.instance())
   }
 
   override fun onResume() {
@@ -76,5 +72,10 @@ class MainActivity : BaseControllerActivity(), ControllerFactory {
   override fun onPause() {
     super.onPause()
     navigatorHolder.removeNavigator()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    navDrawerView.cleanup()
   }
 }
