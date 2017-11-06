@@ -5,7 +5,7 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-internal interface MattermostServiceApi {
+internal interface MattermostAuthorizedApi {
 
   @GET("users/{user_id}/teams")
   fun getUserTeams(@Path("user_id") userId: String): Single<List<TeamJson>>

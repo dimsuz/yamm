@@ -2,8 +2,8 @@ package com.dimsuz.yamm.data.sources.di
 
 import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.repositories.ServerConfigRepository
+import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
-import com.dimsuz.yamm.data.sources.network.services.MattermostService
 import com.dimsuz.yamm.data.sources.network.session.DefaultSessionManager
 import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.data.sources.network.session.SessionTokenAddInterceptor
@@ -39,21 +39,21 @@ class DataSourcesModule(serverUrl: String) : Module() {
 
   init {
     bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
-    bind(MattermostService::class.java).toProvider(MattermostServiceProvider::class.java).singletonInScope()
+    bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).singletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
     bind(ServerConfigRepository::class.java)
   }
 }
 
-internal class MattermostServiceProvider
+internal class MattermostAuthorizedApiProvider
 @Inject constructor(private val moshi: Moshi,
                     private val scope: Scope,
-                    private val sessionManager: SessionManager): Provider<MattermostService> {
+                    private val sessionManager: SessionManager): Provider<MattermostAuthorizedApi> {
 
-  override fun get(): MattermostService {
+  override fun get(): MattermostAuthorizedApi {
     Timber.e("creating server api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
-    return createMattermostService(moshi, scope.getInstance(String::class.java, "serverUrl"), sessionManager)
+    return createMattermostAuthorizedApi(moshi, scope.getInstance(String::class.java, "serverUrl"), sessionManager)
   }
 }
 
@@ -103,7 +103,7 @@ private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient, mos
   return retrofit.create(T::class.java)
 }
 
-private fun createMattermostService(moshi: Moshi, serverUrl: String, sessionManager: SessionManager): MattermostService {
+private fun createMattermostAuthorizedApi(moshi: Moshi, serverUrl: String, sessionManager: SessionManager): MattermostAuthorizedApi {
   val httpClient = createHttpClient(listOf(SessionTokenAddInterceptor(sessionManager)))
-  return MattermostService(createMattermostApi(httpClient, moshi, serverUrl))
+  return createMattermostApi(httpClient, moshi, serverUrl)
 }
