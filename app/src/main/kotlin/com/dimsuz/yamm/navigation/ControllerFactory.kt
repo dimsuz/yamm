@@ -2,7 +2,7 @@ package com.dimsuz.yamm.navigation
 
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
-import com.dimsuz.yamm.baseui.util.obtainHorizontalTransaction
+import com.dimsuz.yamm.presentation.baseui.util.obtainHorizontalTransaction
 
 interface ControllerFactory {
   fun createController(screenKey: String, payload: Any?): Controller
