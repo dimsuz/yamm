@@ -18,6 +18,8 @@ import com.dimsuz.yamm.presentation.messages.MessagesController
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.appScope
 import com.dimsuz.yamm.util.instance
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.DrawerBuilder
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import toothpick.Toothpick
@@ -26,6 +28,7 @@ import javax.inject.Inject
 class MainActivity : BaseControllerActivity(), ControllerFactory {
   @Inject lateinit var navigatorHolder: NavigatorHolder
   private lateinit var navigator: Navigator
+  private lateinit var navigationDrawer: Drawer
 
   override fun createController(): Controller? {
     val scope = appScope
@@ -55,6 +58,14 @@ class MainActivity : BaseControllerActivity(), ControllerFactory {
     super.onCreate(savedInstanceState)
     Toothpick.inject(this, appScope)
     navigator = ControllerNavigator(conductorRouter, this)
+    setupNavigationDrawer()
+  }
+
+  private fun setupNavigationDrawer() {
+    navigationDrawer = DrawerBuilder()
+      .withActivity(this)
+      .withActionBarDrawerToggle(true)
+      .build()
   }
 
   override fun onResume() {
