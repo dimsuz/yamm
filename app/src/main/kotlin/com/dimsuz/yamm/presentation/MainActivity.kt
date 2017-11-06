@@ -2,12 +2,19 @@ package com.dimsuz.yamm.presentation
 
 import android.os.Bundle
 import com.bluelinelabs.conductor.Controller
-import com.dimsuz.yamm.presentation.baseui.BaseControllerActivity
 import com.dimsuz.yamm.data.sources.network.session.SessionManager
+import com.dimsuz.yamm.navigation.ControllerFactory
+import com.dimsuz.yamm.navigation.ControllerNavigator
+import com.dimsuz.yamm.navigation.SCREEN_LOGIN_METHOD_SELECT
+import com.dimsuz.yamm.navigation.SCREEN_MESSAGE_LIST
+import com.dimsuz.yamm.navigation.SCREEN_SERVER_SELECT
+import com.dimsuz.yamm.navigation.SCREEN_SSO_LOGIN
+import com.dimsuz.yamm.navigation.payloadAsParam
+import com.dimsuz.yamm.presentation.baseui.BaseControllerActivity
 import com.dimsuz.yamm.presentation.login.method_select.LoginMethodSelectController
 import com.dimsuz.yamm.presentation.login.server_select.ServerSelectController
 import com.dimsuz.yamm.presentation.login.sso.SsoLoginController
-import com.dimsuz.yamm.navigation.*
+import com.dimsuz.yamm.presentation.messages.MessagesController
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.appScope
 import com.dimsuz.yamm.util.instance
@@ -18,7 +25,7 @@ import javax.inject.Inject
 
 class MainActivity : BaseControllerActivity(), ControllerFactory {
   @Inject lateinit var navigatorHolder: NavigatorHolder
-  lateinit var navigator: Navigator
+  private lateinit var navigator: Navigator
 
   override fun createController(): Controller? {
     val scope = appScope
@@ -30,8 +37,7 @@ class MainActivity : BaseControllerActivity(), ControllerFactory {
       else
         ServerSelectController()
     } else {
-      // TODO Messaging controller
-      LoginMethodSelectController()
+      MessagesController()
     }
   }
 
@@ -40,7 +46,7 @@ class MainActivity : BaseControllerActivity(), ControllerFactory {
       SCREEN_SERVER_SELECT -> ServerSelectController()
       SCREEN_LOGIN_METHOD_SELECT -> LoginMethodSelectController()
       SCREEN_SSO_LOGIN -> SsoLoginController.create(payloadAsParam(payload, "serverUrl"))
-      SCREEN_MESSAGE_LIST -> TODO()
+      SCREEN_MESSAGE_LIST -> MessagesController()
       else -> throw RuntimeException("don't know how to create screen $screenKey")
     }
   }

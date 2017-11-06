@@ -4,14 +4,14 @@ import android.support.design.widget.TextInputLayout
 import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.YammApplication
+import com.dimsuz.yamm.navigation.SCREEN_LOGIN_METHOD_SELECT
 import com.dimsuz.yamm.presentation.baseui.BaseController
 import com.dimsuz.yamm.presentation.baseui.BindView
 import com.dimsuz.yamm.presentation.baseui.util.appScope
-import com.dimsuz.yamm.presentation.baseui.util.pushControllerHorizontal
 import com.dimsuz.yamm.presentation.baseui.util.resourcesUnsafe
-import com.dimsuz.yamm.presentation.login.method_select.LoginMethodSelectController
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
+import ru.terrakok.cicerone.Router
 
 class ServerSelectController : BaseController() {
   private val serverInputLayout: TextInputLayout by BindView(R.id.server_select_input_layout)
@@ -55,8 +55,8 @@ class ServerSelectController : BaseController() {
   }
 
   private fun routeToNextScreen() {
-    val controller = LoginMethodSelectController()
-    router.pushControllerHorizontal(controller)
+    val router = appScope.instance<Router>()
+    router.navigateTo(SCREEN_LOGIN_METHOD_SELECT)
   }
 
   private fun showValidationError() {
