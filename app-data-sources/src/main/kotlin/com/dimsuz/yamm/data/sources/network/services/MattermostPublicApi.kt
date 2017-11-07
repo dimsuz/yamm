@@ -4,7 +4,7 @@ import com.dimsuz.yamm.data.sources.network.models.ServerConfigJson
 import io.reactivex.Single
 import retrofit2.http.GET
 
-internal interface MattermostPublicApi {
+interface MattermostPublicApi {
   @GET("config/client?format=old")
   fun getServerConfig(): Single<ServerConfigJson>
 }

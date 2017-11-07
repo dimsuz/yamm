@@ -32,8 +32,10 @@ dependencies {
     })
     testCompile rootProject.ext.junit
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation project(path: ':app-core')
     implementation project(path: ':app-domain')
     implementation project(path: ':app-data-sources')
+    implementation project(path: ':app-repositories')
 
     compile rootProject.ext.supportLibAppCompat
     compile rootProject.ext.supportLibDesign

@@ -1,7 +1,6 @@
 package com.dimsuz.yamm.data.sources.di
 
 import com.dimsuz.yamm.data.BuildConfig
-import com.dimsuz.yamm.data.repositories.ServerConfigRepository
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
 import com.dimsuz.yamm.data.sources.network.session.DefaultSessionManager
@@ -42,7 +41,6 @@ class DataSourcesModule(serverUrl: String) : Module() {
     bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).singletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
-    bind(ServerConfigRepository::class.java)
   }
 }
 

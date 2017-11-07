@@ -1,8 +1,8 @@
-package com.dimsuz.yamm.data.repositories
+package com.dimsuz.yamm.repositories
 
-import com.dimsuz.yamm.data.sources.network.mappers.toDomainModel
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
 import com.dimsuz.yamm.domain.models.ServerConfig
+import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Observable
 import javax.inject.Inject
 

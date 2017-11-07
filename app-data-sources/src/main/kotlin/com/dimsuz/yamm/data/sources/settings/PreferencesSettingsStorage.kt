@@ -2,7 +2,7 @@ package com.dimsuz.yamm.data.sources.settings
 
 import android.content.Context
 import android.preference.PreferenceManager
-import com.dimsuz.yamm.domain.di.ApplicationContext
+import com.dimsuz.yamm.core.annotations.ApplicationContext
 import javax.inject.Inject
 
 internal class PreferencesSettingsStorage @Inject constructor(@ApplicationContext private val context: Context) : SettingsStorage {

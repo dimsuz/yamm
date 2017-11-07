@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.data.sources.network.mappers
+package com.dimsuz.yamm.repositories.mappers
 
 import com.dimsuz.yamm.data.sources.network.models.ChannelJson
 import com.dimsuz.yamm.data.sources.network.models.ServerConfigJson

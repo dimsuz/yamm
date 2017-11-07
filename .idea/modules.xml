@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-core/app-core.iml" filepath="$PROJECT_DIR$/app-core/app-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/app-data-sources/app-data-sources.iml" filepath="$PROJECT_DIR$/app-data-sources/app-data-sources.iml" />
       <module fileurl="file://$PROJECT_DIR$/app-domain/app-domain.iml" filepath="$PROJECT_DIR$/app-domain/app-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-repositories/app-repositories.iml" filepath="$PROJECT_DIR$/app-repositories/app-repositories.iml" />
       <module fileurl="file://$PROJECT_DIR$/yamm.iml" filepath="$PROJECT_DIR$/yamm.iml" />
     </modules>
   </component>

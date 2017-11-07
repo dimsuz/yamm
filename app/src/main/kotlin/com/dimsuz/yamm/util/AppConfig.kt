@@ -3,7 +3,7 @@ package com.dimsuz.yamm.util
 import android.content.Context
 import android.preference.PreferenceManager
 import com.dimsuz.yamm.BuildConfig
-import com.dimsuz.yamm.domain.di.ApplicationContext
+import com.dimsuz.yamm.core.annotations.ApplicationContext
 import javax.inject.Inject
 
 private const val PREF_KEY_SERVER_URL = BuildConfig.APPLICATION_ID + ".server_url"

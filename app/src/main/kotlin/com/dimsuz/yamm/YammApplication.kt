@@ -3,6 +3,7 @@ package com.dimsuz.yamm
 import android.app.Application
 import com.dimsuz.yamm.data.sources.di.DataSourcesCommonModule
 import com.dimsuz.yamm.data.sources.di.DataSourcesModule
+import com.dimsuz.yamm.repositories.di.RepositoriesModule
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import ru.terrakok.cicerone.Cicerone
@@ -39,7 +40,9 @@ class YammApplication : Application() {
     if (serverUrl != null) {
       Timber.d("Configuring data sources module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(DataSourcesModule(serverUrl))
+      newScope.installModules(
+        DataSourcesModule(serverUrl),
+        RepositoriesModule())
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)

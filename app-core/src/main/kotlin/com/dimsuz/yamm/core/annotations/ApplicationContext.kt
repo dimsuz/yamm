@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.domain.di
+package com.dimsuz.yamm.core.annotations
 
 import javax.inject.Qualifier
 

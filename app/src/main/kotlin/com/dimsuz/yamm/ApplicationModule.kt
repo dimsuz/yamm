@@ -1,7 +1,7 @@
 package com.dimsuz.yamm
 
 import android.content.Context
-import com.dimsuz.yamm.domain.di.ApplicationContext
+import com.dimsuz.yamm.core.annotations.ApplicationContext
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DefaultNavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager

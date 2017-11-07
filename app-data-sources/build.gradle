@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':app-domain')
+    implementation project(':app-core')
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
