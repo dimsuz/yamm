@@ -13,6 +13,7 @@ compileKotlin {
 dependencies {
     compile rootProject.ext.kotlinStdLib
     implementation rootProject.ext.toothpickRuntime
+    implementation rootProject.ext.rxJava
 }
 
 sourceSets {
