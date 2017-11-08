@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.data.sources.settings
+package com.dimsuz.yamm.repositories.settings
 
 interface SettingsStorage {
   fun saveValue(key: String, value: String)

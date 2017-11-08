@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.data.sources.settings
+package com.dimsuz.yamm.repositories.settings
 
 import android.content.Context
 import android.preference.PreferenceManager

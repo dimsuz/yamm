@@ -1,8 +1,7 @@
 package com.dimsuz.yamm
 
 import android.app.Application
-import com.dimsuz.yamm.data.sources.di.DataSourcesCommonModule
-import com.dimsuz.yamm.data.sources.di.DataSourcesModule
+import com.dimsuz.yamm.repositories.di.RepositoriesCommonModule
 import com.dimsuz.yamm.repositories.di.RepositoriesModule
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
@@ -23,7 +22,7 @@ class YammApplication : Application() {
     val appScope = Toothpick.openScope(this)
     appScope.installModules(
       ApplicationModule(this, Cicerone.create()),
-      DataSourcesCommonModule())
+      RepositoriesCommonModule())
     configureUrlDependentDataSources(appScope)
   }
 
@@ -40,9 +39,7 @@ class YammApplication : Application() {
     if (serverUrl != null) {
       Timber.d("Configuring data sources module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(
-        DataSourcesModule(serverUrl),
-        RepositoriesModule())
+      newScope.installModules(RepositoriesModule(serverUrl))
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)

@@ -3,11 +3,7 @@ package com.dimsuz.yamm.data.sources.di
 import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
-import com.dimsuz.yamm.data.sources.network.session.DefaultSessionManager
-import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.data.sources.network.session.SessionTokenAddInterceptor
-import com.dimsuz.yamm.data.sources.settings.PreferencesSettingsStorage
-import com.dimsuz.yamm.data.sources.settings.SettingsStorage
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
@@ -26,18 +22,30 @@ import javax.inject.Provider
 private const val DEFAULT_CONNECT_TIMEOUT = 90000L
 private const val API_VERSION = "v4"
 
-class DataSourcesCommonModule : Module() {
-  init {
+/**
+ * Binds dependencies which can be used without having access to a configured serverUrl.
+ *
+ * Done in a form of a callable function rather than a full-blown Module sub-class to avoid
+ * the need to leak dependency to `app-data-sources` to other modules: only `app-repositories` module
+ * needs to depend on `app-data-sources`
+ */
+fun bindDataSourcesCommonDependencies(module: Module) {
+  with(module) {
     bind(Moshi::class.java).toInstance(createMoshi())
-    bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
-    bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java).singletonInScope()
   }
 }
 
-class DataSourcesModule(serverUrl: String) : Module() {
-
-  init {
+/**
+ * Binds dependencies which can be used only when having a configured serverUrl.
+ *
+ * Done in a form of a callable function rather than a full-blown Module sub-class to avoid
+ * the need to leak dependency to `app-data-sources` to other modules: only `app-repositories` module
+ * needs to depend on `app-data-sources`
+ */
+fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
+  with(module) {
     bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
+    bind(Interceptor::class.java).withName("authSessionInterceptor").to(SessionTokenAddInterceptor::class.java).singletonInScope()
     bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).singletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
@@ -47,11 +55,11 @@ class DataSourcesModule(serverUrl: String) : Module() {
 internal class MattermostAuthorizedApiProvider
 @Inject constructor(private val moshi: Moshi,
                     private val scope: Scope,
-                    private val sessionManager: SessionManager): Provider<MattermostAuthorizedApi> {
+                    private val authSessionInterceptor: Interceptor): Provider<MattermostAuthorizedApi> {
 
   override fun get(): MattermostAuthorizedApi {
     Timber.e("creating server api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
-    return createMattermostAuthorizedApi(moshi, scope.getInstance(String::class.java, "serverUrl"), sessionManager)
+    return createMattermostAuthorizedApi(moshi, scope.getInstance(String::class.java, "serverUrl"), authSessionInterceptor)
   }
 }
 
@@ -90,7 +98,8 @@ private fun createMoshi(): Moshi {
     .build()
 }
 
-private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient, moshi: Moshi, serverUrl: String): T {
+private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient,
+                                                   moshi: Moshi, serverUrl: String): T {
   val callAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
   val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -101,7 +110,8 @@ private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient, mos
   return retrofit.create(T::class.java)
 }
 
-private fun createMattermostAuthorizedApi(moshi: Moshi, serverUrl: String, sessionManager: SessionManager): MattermostAuthorizedApi {
-  val httpClient = createHttpClient(listOf(SessionTokenAddInterceptor(sessionManager)))
+private fun createMattermostAuthorizedApi(moshi: Moshi, serverUrl: String,
+                                          authSessionInterceptor: Interceptor): MattermostAuthorizedApi {
+  val httpClient = createHttpClient(listOf(authSessionInterceptor))
   return createMattermostApi(httpClient, moshi, serverUrl)
 }

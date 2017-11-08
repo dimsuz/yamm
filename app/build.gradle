@@ -32,10 +32,14 @@ dependencies {
     })
     testCompile rootProject.ext.junit
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // NOTE: whenever changing a list of dependent modules, think twice if this is really needed,
+    // especially when *adding* a new module, especially if module you are adding are already present
+    // in 'implementation' dependencies of another module: maybe it was intended for
+    // it to not "leak" further.
     implementation project(path: ':app-core')
     implementation project(path: ':app-domain')
-    implementation project(path: ':app-data-sources')
-    implementation project(path: ':app-repositories')
+    implementation project(path: ':app-repositories') // notice: no dependency on app-data-sources!
 
     compile rootProject.ext.supportLibAppCompat
     compile rootProject.ext.supportLibDesign

@@ -1,6 +1,6 @@
-package com.dimsuz.yamm.data.sources.network.session
+package com.dimsuz.yamm.repositories.session
 
-import com.dimsuz.yamm.data.sources.settings.SettingsStorage
+import com.dimsuz.yamm.repositories.settings.SettingsStorage
 import timber.log.Timber
 import javax.inject.Inject
 

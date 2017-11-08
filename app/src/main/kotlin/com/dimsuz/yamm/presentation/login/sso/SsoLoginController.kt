@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.webkit.CookieManager
 import com.dimsuz.yamm.R
-import com.dimsuz.yamm.presentation.common.EXTRA_SERVER_URL
-import com.dimsuz.yamm.presentation.common.web_view.WebViewController
-import com.dimsuz.yamm.data.sources.network.session.SessionManager
 import com.dimsuz.yamm.navigation.SCREEN_MESSAGE_LIST
 import com.dimsuz.yamm.presentation.baseui.util.activityUnsafe
 import com.dimsuz.yamm.presentation.baseui.util.appScope
+import com.dimsuz.yamm.presentation.common.EXTRA_SERVER_URL
+import com.dimsuz.yamm.presentation.common.web_view.WebViewController
+import com.dimsuz.yamm.repositories.session.SessionManager
 import com.dimsuz.yamm.util.instance
 import ru.terrakok.cicerone.Router
 
