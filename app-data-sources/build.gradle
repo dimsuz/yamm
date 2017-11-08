@@ -41,7 +41,7 @@ dependencies {
 
     implementation rootProject.ext.okhttp
     implementation rootProject.ext.okhttpLoggingInterceptor
-    implementation 'com.squareup.moshi:moshi:1.5.0'
+    implementation rootProject.ext.moshi
 
     implementation rootProject.ext.rxJava
     implementation rootProject.ext.timber

@@ -7,6 +7,7 @@ ext {
   rxRelay = 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
   conductor = 'com.bluelinelabs:conductor:2.1.4'
   conductorSupport = 'com.bluelinelabs:conductor-support:2.1.4'
+  moshi = 'com.squareup.moshi:moshi:1.5.0'
   mosby = 'com.hannesdorfmann.mosby3:mvp:3.0.4'
   mosbyMvi = 'com.hannesdorfmann.mosby3:mvi:3.0.4'
   mosbyViewState = 'com.hannesdorfmann.mosby3:viewstate:3.0.4'
