@@ -10,7 +10,7 @@ import com.dimsuz.yamm.util.instance
 
 class MessagesController : BaseController() {
   override fun initializeView(rootView: View) {
-    appScope.instance<NavDrawerContextManager>().setContext(DrawerContextType.Messages)
+    appScope.instance<NavDrawerContextManager>().setContext(DrawerContextType.Channels)
   }
 
   override fun getViewLayout(): Int {

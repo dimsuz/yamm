@@ -10,14 +10,14 @@ import javax.inject.Inject
 class MainNavDrawerContextFactory @Inject constructor(): NavDrawerContextFactory {
   override fun create(type: DrawerContextType): NavDrawerContext {
     return when (type) {
-      DrawerContextType.Messages -> createMessagesContext()
+      DrawerContextType.Channels -> createChannelsContext()
       DrawerContextType.Teams -> TODO("not implemented")
     }
   }
 
-  private fun createMessagesContext(): NavDrawerContext {
+  private fun createChannelsContext(): NavDrawerContext {
     return NavDrawerContext(
-      DrawerContextType.Messages,
+      DrawerContextType.Channels,
       Observable.just(
         listOf(
           NavDrawerItem(1, "hello"),
