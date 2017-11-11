@@ -9,6 +9,7 @@ import com.dimsuz.yamm.domain.repositories.TeamRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import javax.inject.Inject
 
 sealed class UserChannelsEvent {
   object     Loading : UserChannelsEvent()
@@ -17,10 +18,11 @@ sealed class UserChannelsEvent {
   object     Idle : UserChannelsEvent()
 }
 
-class UserChannelsInteractor(private val sessionManager: SessionManager,
-                             private val teamRepository: TeamRepository,
-                             private val channelRepository: ChannelRepository,
-                             private val logger: Logger) {
+class UserChannelsInteractor @Inject constructor(
+  private val sessionManager: SessionManager,
+  private val teamRepository: TeamRepository,
+  private val channelRepository: ChannelRepository,
+  private val logger: Logger) {
 
   private val stateEvents = BehaviorSubject.create<UserChannelsEvent>().toSerialized()
 
