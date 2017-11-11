@@ -3,7 +3,8 @@ package com.dimsuz.yamm.repositories.di
 import com.dimsuz.yamm.data.sources.di.bindDataSourcesCommonDependencies
 import com.dimsuz.yamm.data.sources.di.bindDataSourcesDependencies
 import com.dimsuz.yamm.data.sources.network.models.AuthSession
-import com.dimsuz.yamm.repositories.ServerConfigRepository
+import com.dimsuz.yamm.domain.repositories.ServerConfigRepository
+import com.dimsuz.yamm.repositories.ServerConfigRepositoryImpl
 import com.dimsuz.yamm.repositories.session.DefaultSessionManager
 import com.dimsuz.yamm.repositories.session.SessionManager
 import com.dimsuz.yamm.repositories.settings.PreferencesSettingsStorage
@@ -15,7 +16,7 @@ import javax.inject.Provider
 class RepositoriesModule(serverUrl: String) : Module() {
   init {
     bindDataSourcesDependencies(this, serverUrl)
-    bind(ServerConfigRepository::class.java)
+    bind(ServerConfigRepository::class.java).to(ServerConfigRepositoryImpl::class.java)
   }
 }
 

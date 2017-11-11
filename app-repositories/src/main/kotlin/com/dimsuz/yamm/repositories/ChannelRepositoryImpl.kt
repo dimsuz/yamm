@@ -2,16 +2,18 @@ package com.dimsuz.yamm.repositories
 
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Channel
+import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class ChannelRepository @Inject internal constructor(private val serviceApi: MattermostAuthorizedApi) {
+internal class ChannelRepositoryImpl @Inject internal constructor(private val serviceApi: MattermostAuthorizedApi) : ChannelRepository {
 
-  fun userChannels(userId: String, teamId: String): Observable<List<Channel>> {
+  override fun userChannels(userId: String, teamId: String): Observable<List<Channel>> {
     return serviceApi.getUserChannels(userId, teamId)
       .map { channels -> channels.map { it.toDomainModel() } }
       .toObservable()
   }
 
 }
+

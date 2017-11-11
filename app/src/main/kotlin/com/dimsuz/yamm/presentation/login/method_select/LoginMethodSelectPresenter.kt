@@ -1,9 +1,9 @@
 package com.dimsuz.yamm.presentation.login.method_select
 
+import com.dimsuz.yamm.domain.models.ServerConfig
+import com.dimsuz.yamm.domain.repositories.ServerConfigRepository
 import com.dimsuz.yamm.presentation.baseui.BaseMviPresenter
 import com.dimsuz.yamm.presentation.baseui.RoutingAction
-import com.dimsuz.yamm.domain.models.ServerConfig
-import com.dimsuz.yamm.repositories.ServerConfigRepository
 import com.dimsuz.yamm.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
