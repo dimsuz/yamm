@@ -30,7 +30,7 @@ internal fun ChannelJson.toDomainModel(): Channel {
   return Channel(
     id = this.id ?: throw ModelMapException("channel without id: $this"),
     name = this.name ?: "unknown channel",
-    display_name = this.display_name ?: this.name ?: "unknown channel",
+    displayName = this.display_name ?: this.name ?: "unknown channel",
     header = this.header,
     purpose = this.purpose
   )
