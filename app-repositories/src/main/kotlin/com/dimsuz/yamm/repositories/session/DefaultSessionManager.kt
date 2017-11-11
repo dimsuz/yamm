@@ -1,5 +1,6 @@
 package com.dimsuz.yamm.repositories.session
 
+import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.repositories.settings.SettingsStorage
 import timber.log.Timber
 import javax.inject.Inject

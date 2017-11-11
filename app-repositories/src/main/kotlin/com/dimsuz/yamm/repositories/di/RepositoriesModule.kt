@@ -6,7 +6,7 @@ import com.dimsuz.yamm.data.sources.network.models.AuthSession
 import com.dimsuz.yamm.domain.repositories.ServerConfigRepository
 import com.dimsuz.yamm.repositories.ServerConfigRepositoryImpl
 import com.dimsuz.yamm.repositories.session.DefaultSessionManager
-import com.dimsuz.yamm.repositories.session.SessionManager
+import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.repositories.settings.PreferencesSettingsStorage
 import com.dimsuz.yamm.repositories.settings.SettingsStorage
 import toothpick.config.Module

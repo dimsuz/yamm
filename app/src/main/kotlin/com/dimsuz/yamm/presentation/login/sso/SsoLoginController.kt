@@ -9,7 +9,7 @@ import com.dimsuz.yamm.presentation.baseui.util.activityUnsafe
 import com.dimsuz.yamm.presentation.baseui.util.appScope
 import com.dimsuz.yamm.presentation.common.EXTRA_SERVER_URL
 import com.dimsuz.yamm.presentation.common.web_view.WebViewController
-import com.dimsuz.yamm.repositories.session.SessionManager
+import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.util.instance
 import ru.terrakok.cicerone.Router
 

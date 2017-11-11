@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.repositories.session
+package com.dimsuz.yamm.domain.repositories
 
 interface SessionManager {
   val currentUserId: String?

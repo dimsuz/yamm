@@ -15,7 +15,7 @@ import com.dimsuz.yamm.presentation.login.server_select.ServerSelectController
 import com.dimsuz.yamm.presentation.login.sso.SsoLoginController
 import com.dimsuz.yamm.presentation.messages.MessagesController
 import com.dimsuz.yamm.presentation.navdrawer.NavDrawerView
-import com.dimsuz.yamm.repositories.session.SessionManager
+import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.appScope
 import com.dimsuz.yamm.util.instance
