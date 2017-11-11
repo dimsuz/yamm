@@ -6,7 +6,7 @@ import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DefaultNavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
-import com.dimsuz.yamm.presentation.navdrawer.context.main.MainNavDrawerContextFactory
+import com.dimsuz.yamm.presentation.navdrawer.context.main.MainNonAuthorizedNavDrawerContextFactory
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.AppSchedulers
 import com.dimsuz.yamm.util.DefaultAppSchedulers
@@ -33,7 +33,8 @@ internal class ApplicationModule(application: YammApplication, cicerone: Ciceron
     bind(Router::class.java).toInstance(cicerone.router)
     bind(NavigatorHolder::class.java).toProviderInstance({ cicerone.navigatorHolder })
 
-    bind(NavDrawerContextFactory::class.java).to(MainNavDrawerContextFactory::class.java).singletonInScope()
-    bind(NavDrawerContextManager::class.java).to(DefaultNavDrawerContextManager::class.java).singletonInScope()
+    bind(NavDrawerContextFactory::class.java).toInstance(MainNonAuthorizedNavDrawerContextFactory())
+    bind(NavDrawerContextManager::class.java).to(DefaultNavDrawerContextManager::class.java)
+      .singletonInScope()
   }
 }

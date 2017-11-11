@@ -39,7 +39,10 @@ class YammApplication : Application() {
     if (serverUrl != null) {
       Timber.d("Configuring data sources module: $serverUrl")
       val newScope = Toothpick.openScopes(this, FULL_APP_SCOPE)
-      newScope.installModules(RepositoriesModule(serverUrl))
+      newScope.installModules(
+        RepositoriesModule(serverUrl),
+        AuthorizedApplicationModule()
+      )
     } else {
       Timber.d("Network config is not available, skipping configuration for now")
       Toothpick.closeScope(FULL_APP_SCOPE)

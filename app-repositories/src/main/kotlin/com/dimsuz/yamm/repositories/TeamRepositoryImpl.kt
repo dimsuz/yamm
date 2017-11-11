@@ -4,7 +4,6 @@ import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Team
 import com.dimsuz.yamm.domain.repositories.TeamRepository
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
-import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 

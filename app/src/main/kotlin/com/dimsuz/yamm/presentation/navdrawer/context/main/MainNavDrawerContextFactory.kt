@@ -1,13 +1,16 @@
 package com.dimsuz.yamm.presentation.navdrawer.context.main
 
+import com.dimsuz.yamm.domain.interactors.UserChannelsInteractor
+import com.dimsuz.yamm.domain.models.Channel
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DrawerContextType
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerContext
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerItem
-import io.reactivex.Observable
 import javax.inject.Inject
 
-class MainNavDrawerContextFactory @Inject constructor(): NavDrawerContextFactory {
+class MainNavDrawerContextFactory @Inject constructor(
+  private val userChannelsInteractor: UserChannelsInteractor): NavDrawerContextFactory {
+
   override fun create(type: DrawerContextType): NavDrawerContext {
     return when (type) {
       DrawerContextType.Channels -> createChannelsContext()
@@ -18,15 +21,15 @@ class MainNavDrawerContextFactory @Inject constructor(): NavDrawerContextFactory
   private fun createChannelsContext(): NavDrawerContext {
     return NavDrawerContext(
       DrawerContextType.Channels,
-      Observable.just(
-        listOf(
-          NavDrawerItem(1, "hello"),
-          NavDrawerItem(2, "hello1"),
-          NavDrawerItem(3, "hello2"),
-          NavDrawerItem(4, "hello3"),
-          NavDrawerItem(5, "hello4")
-        )
-      )
+      userChannelsInteractor.userChannels()
+        .map { chs -> chs.mapIndexed { i, ch -> ch.toDrawerItem(i) } }
     )
   }
+}
+
+private fun Channel.toDrawerItem(i: Int): NavDrawerItem {
+  return NavDrawerItem(
+    id = i.toLong(),
+    title = this.displayName
+  )
 }
