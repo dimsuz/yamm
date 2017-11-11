@@ -2,6 +2,7 @@ package com.dimsuz.yamm
 
 import android.content.Context
 import com.dimsuz.yamm.core.annotations.ApplicationContext
+import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DefaultNavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
@@ -12,6 +13,7 @@ import com.dimsuz.yamm.util.DefaultAppSchedulers
 import com.dimsuz.yamm.util.DefaultErrorDetailsExtractor
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import com.dimsuz.yamm.util.PrefsBasedAppConfig
+import com.dimsuz.yamm.util.TimberLogger
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -26,6 +28,7 @@ internal class ApplicationModule(application: YammApplication, cicerone: Ciceron
     // not making it singleton, will be recreated each time it's needed.
     // Currently I think it will be rarely needed, but if this will become wrong, rethink
     bind(AppConfig::class.java).to(PrefsBasedAppConfig::class.java)
+    bind(Logger::class.java).toInstance(TimberLogger())
 
     bind(Router::class.java).toInstance(cicerone.router)
     bind(NavigatorHolder::class.java).toProviderInstance({ cicerone.navigatorHolder })
