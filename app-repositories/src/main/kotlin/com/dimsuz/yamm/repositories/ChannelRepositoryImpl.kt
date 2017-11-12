@@ -4,8 +4,8 @@ import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Channel
 import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
+import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
@@ -13,10 +13,11 @@ internal class ChannelRepositoryImpl @Inject internal constructor(private val se
   // a cache userId -> teamId -> [ channels ]
   private val dataCache = BehaviorSubject.createDefault<Map<String, Map<String, List<Channel>>>>(emptyMap()).toSerialized()
 
-  override fun userChannels(userId: String, teamId: String): Single<List<Channel>> {
+  override fun refreshUserChannels(userId: String, teamId: String): Completable {
     return serviceApi.getUserChannels(userId, teamId)
       .map { channels -> channels.map { it.toDomainModel() } }
       .doOnSuccess { channels -> updateChannelsInCache(userId, teamId, channels) }
+      .toCompletable()
   }
 
   @Suppress("ReplaceGetOrSet")

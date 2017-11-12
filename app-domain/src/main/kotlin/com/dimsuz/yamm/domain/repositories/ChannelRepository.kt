@@ -1,10 +1,10 @@
 package com.dimsuz.yamm.domain.repositories
 
 import com.dimsuz.yamm.domain.models.Channel
+import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 
 interface ChannelRepository {
-  fun userChannels(userId: String, teamId: String): Single<List<Channel>>
+  fun refreshUserChannels(userId: String, teamId: String): Completable
   fun userChannelsLive(userId: String, teamId: String): Observable<List<Channel>>
 }

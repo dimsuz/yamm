@@ -55,8 +55,8 @@ class UserChannelsInteractor @Inject constructor(
       .doOnSuccess { defaultTeam ->
         stateEvents.onNext(UserChannelsEvent.DefaultTeamLoaded(userId, defaultTeam))
       }
-      .flatMap { defaultTeam ->
-        channelRepository.userChannels(userId, defaultTeam.id)
+      .flatMapCompletable { defaultTeam ->
+        channelRepository.refreshUserChannels(userId, defaultTeam.id)
       }
       .subscribe(
         { stateEvents.onNext(UserChannelsEvent.Idle) },
