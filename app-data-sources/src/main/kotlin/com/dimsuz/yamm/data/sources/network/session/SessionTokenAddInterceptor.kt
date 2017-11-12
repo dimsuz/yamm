@@ -17,7 +17,9 @@ internal class SessionTokenAddInterceptor @Inject constructor(private val sessio
       val token = sessionProvider.get()?.token
       if (token != null) {
         request = request.newBuilder()
-          .addHeader(TOKEN_HEADER, token)
+          .addHeader(TOKEN_HEADER, "Bearer $token")
+//          .removeHeader("Accept-Encoding")
+//          .addHeader("Accept-Encoding", "Identity")
           .build()
       } else {
         Timber.e("not adding auth token, none found!")
