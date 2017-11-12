@@ -29,9 +29,20 @@ internal fun TeamJson.toDomainModel(): Team {
 internal fun ChannelJson.toDomainModel(): Channel {
   return Channel(
     id = this.id ?: throw ModelMapException("channel without id: $this"),
+    type = this.type.toChannelType(),
     name = this.name ?: "unknown channel",
     displayName = this.display_name ?: this.name ?: "unknown channel",
     header = this.header,
     purpose = this.purpose
   )
+}
+
+private fun String.toChannelType(): Channel.Type {
+  return when (this) {
+    "O" -> Channel.Type.Open
+    "P" -> Channel.Type.Private
+    "D" -> Channel.Type.Direct
+    "G" -> Channel.Type.Group
+    else -> Channel.Type.Unknown
+  }
 }
