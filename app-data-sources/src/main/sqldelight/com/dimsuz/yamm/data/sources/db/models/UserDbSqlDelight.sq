@@ -1,0 +1,8 @@
+CREATE TABLE user(
+    id TEXT NOT NULL PRIMARY KEY,
+    username TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    nickname TEXT,
+    email TEXT
+);
