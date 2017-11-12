@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 internal class ChannelRepositoryImpl @Inject internal constructor(private val serviceApi: MattermostAuthorizedApi) : ChannelRepository {
   // a cache userId -> teamId -> [ channels ]
-  private val dataCache = BehaviorSubject.create<Map<String, Map<String, List<Channel>>>>().toSerialized()
+  private val dataCache = BehaviorSubject.createDefault<Map<String, Map<String, List<Channel>>>>(emptyMap()).toSerialized()
 
   override fun userChannels(userId: String, teamId: String): Single<List<Channel>> {
     return serviceApi.getUserChannels(userId, teamId)
@@ -25,7 +25,7 @@ internal class ChannelRepositoryImpl @Inject internal constructor(private val se
   }
 
   private fun updateChannelsInCache(userId: String, teamId: String, channels: List<Channel>) {
-    val previousValue = dataCache.firstElement().defaultIfEmpty(emptyMap()).blockingGet()
+    val previousValue = dataCache.firstOrError().blockingGet()
     val updatedCache = previousValue.toMutableMap()
     val teamChannels = updatedCache[userId].orEmpty().toMutableMap()
     teamChannels[teamId] = channels
