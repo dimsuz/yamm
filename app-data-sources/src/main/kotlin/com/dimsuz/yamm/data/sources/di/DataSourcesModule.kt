@@ -46,7 +46,7 @@ fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
   with(module) {
     bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
     bind(Interceptor::class.java).withName("authSessionInterceptor").to(SessionTokenAddInterceptor::class.java).singletonInScope()
-    bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).singletonInScope()
+    bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).providesSingletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
   }

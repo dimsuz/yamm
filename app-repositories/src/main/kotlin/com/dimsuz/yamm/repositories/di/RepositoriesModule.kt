@@ -32,7 +32,7 @@ class RepositoriesCommonModule : Module() {
     bindDataSourcesCommonDependencies(this)
     bind(SessionManager::class.java).to(DefaultSessionManager::class.java).singletonInScope()
     bind(SettingsStorage::class.java).to(PreferencesSettingsStorage::class.java).singletonInScope()
-    bind(AuthSession::class.java).toProvider(AuthSessionProvider::class.java).singletonInScope()
+    bind(AuthSession::class.java).toProvider(AuthSessionProvider::class.java).providesSingletonInScope()
   }
 }
 
