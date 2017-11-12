@@ -1,0 +1,11 @@
+CREATE TABLE channel(
+    id TEXT NOT NULL PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    team_id TEXT NOT NULL,
+    type TEXT NOT NULL,
+    display_name TEXT,
+    name TEXT,
+    header TEXT,
+    purpose TEXT,
+    team_mate_id TEXT
+);
