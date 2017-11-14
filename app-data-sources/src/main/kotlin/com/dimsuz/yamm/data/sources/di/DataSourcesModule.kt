@@ -1,10 +1,19 @@
 package com.dimsuz.yamm.data.sources.di
 
+import android.content.Context
+import com.dimsuz.yamm.core.annotations.ApplicationContext
+import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.data.BuildConfig
+import com.dimsuz.yamm.data.sources.db.DatabaseHelper
+import com.dimsuz.yamm.data.sources.db.persistence.ChannelPersistence
+import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
+import com.dimsuz.yamm.data.sources.db.persistence.UserPersistenceImpl
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
 import com.dimsuz.yamm.data.sources.network.session.SessionTokenAddInterceptor
 import com.squareup.moshi.Moshi
+import com.squareup.sqlbrite2.BriteDatabase
+import com.squareup.sqlbrite2.SqlBrite
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -49,9 +58,26 @@ fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
     bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).providesSingletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
+
+    bind(BriteDatabase::class.java).toProvider(BriteDatabaseProvider::class.java).providesSingletonInScope()
+    bind(UserPersistence::class.java).to(UserPersistenceImpl::class.java)
+    bind(ChannelPersistence::class.java).to(ChannelPersistence::class.java)
   }
 }
 
+internal class BriteDatabaseProvider
+constructor(@ApplicationContext private val context: Context,
+            private val logger: Logger) : Provider<BriteDatabase> {
+
+  override fun get(): BriteDatabase {
+    return SqlBrite.Builder()
+      .logger { logger.debug(it) }
+      .build()
+      .wrapDatabaseHelper(DatabaseHelper(context), Schedulers.io())
+  }
+}
+
+// TODO remove Inject if above Provider will work without it
 internal class MattermostAuthorizedApiProvider
 @Inject constructor(private val moshi: Moshi,
                     private val scope: Scope,
