@@ -9,3 +9,12 @@ CREATE TABLE channel(
     purpose TEXT,
     team_mate_id TEXT
 );
+
+insert_channel:
+INSERT OR REPLACE INTO channel
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+user_channels:
+SELECT *
+FROM channel
+WHERE user_id = ? AND team_id = ?;
