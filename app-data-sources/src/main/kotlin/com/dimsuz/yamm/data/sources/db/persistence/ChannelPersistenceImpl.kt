@@ -9,8 +9,10 @@ import com.dimsuz.yamm.data.sources.db.util.executeInsert
 import com.dimsuz.yamm.data.sources.db.util.inTransaction
 import com.squareup.sqlbrite2.BriteDatabase
 import io.reactivex.Observable
+import javax.inject.Inject
 
-internal class ChannelPersistenceImpl(private val briteDatabase: BriteDatabase): ChannelPersistence {
+internal class ChannelPersistenceImpl @Inject constructor(
+  private val briteDatabase: BriteDatabase): ChannelPersistence {
 
   override fun replaceUserChannels(channels: List<ChannelDbModel>) {
     briteDatabase.inTransaction {

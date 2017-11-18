@@ -6,6 +6,7 @@ import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.sources.db.DatabaseHelper
 import com.dimsuz.yamm.data.sources.db.persistence.ChannelPersistence
+import com.dimsuz.yamm.data.sources.db.persistence.ChannelPersistenceImpl
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistenceImpl
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
@@ -61,12 +62,12 @@ fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
 
     bind(BriteDatabase::class.java).toProvider(BriteDatabaseProvider::class.java).providesSingletonInScope()
     bind(UserPersistence::class.java).to(UserPersistenceImpl::class.java)
-    bind(ChannelPersistence::class.java).to(ChannelPersistence::class.java)
+    bind(ChannelPersistence::class.java).to(ChannelPersistenceImpl::class.java)
   }
 }
 
 internal class BriteDatabaseProvider
-constructor(@ApplicationContext private val context: Context,
+@Inject constructor(@ApplicationContext private val context: Context,
             private val logger: Logger) : Provider<BriteDatabase> {
 
   override fun get(): BriteDatabase {

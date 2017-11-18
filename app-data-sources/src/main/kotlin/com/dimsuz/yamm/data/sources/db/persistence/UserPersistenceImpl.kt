@@ -4,8 +4,10 @@ import com.dimsuz.yamm.data.sources.db.models.UserDbModel
 import com.dimsuz.yamm.data.sources.db.models.UserDbSqlDelightModel
 import com.dimsuz.yamm.data.sources.db.util.executeDelightStatement
 import com.squareup.sqlbrite2.BriteDatabase
+import javax.inject.Inject
 
-internal class UserPersistenceImpl(private val briteDatabase: BriteDatabase) : UserPersistence {
+internal class UserPersistenceImpl @Inject constructor(
+  private val briteDatabase: BriteDatabase) : UserPersistence {
 
   override fun getUsersById(ids: List<String>): List<UserDbModel> {
     return briteDatabase.readableDatabase
