@@ -12,8 +12,8 @@ private const val DATABASE_VERSION = 1
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
   override fun onCreate(db: SQLiteDatabase) {
-    db.rawQuery(ChannelDbSqlDelightModel.CREATE_TABLE, null)
-    db.rawQuery(UserDbSqlDelightModel.CREATE_TABLE, null)
+    db.execSQL(ChannelDbSqlDelightModel.CREATE_TABLE)
+    db.execSQL(UserDbSqlDelightModel.CREATE_TABLE)
   }
 
   override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
