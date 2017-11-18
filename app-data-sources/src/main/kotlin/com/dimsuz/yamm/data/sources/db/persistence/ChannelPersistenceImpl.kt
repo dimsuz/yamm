@@ -2,6 +2,8 @@ package com.dimsuz.yamm.data.sources.db.persistence
 
 import com.dimsuz.yamm.data.sources.db.models.ChannelDbModel
 import com.dimsuz.yamm.data.sources.db.models.ChannelDbSqlDelightModel
+import com.dimsuz.yamm.data.sources.db.models.ChannelResolvedDbModel
+import com.dimsuz.yamm.data.sources.db.models.UserDbModel
 import com.dimsuz.yamm.data.sources.db.util.executeDelightStatement
 import com.dimsuz.yamm.data.sources.db.util.executeInsert
 import com.dimsuz.yamm.data.sources.db.util.inTransaction
@@ -30,11 +32,16 @@ internal class ChannelPersistenceImpl(private val briteDatabase: BriteDatabase):
         ChannelDbModel.FACTORY.user_channelsMapper())
   }
 
-  override fun getUserChannelsLive(userId: String, teamId: String): Observable<List<ChannelDbModel>> {
-    val query = ChannelDbModel.FACTORY.user_channels(userId, teamId)
-    val mapper = ChannelDbModel.FACTORY.user_channelsMapper()
+  override fun getUserChannelsLive(userId: String,
+                                   teamId: String): Observable<List<ChannelResolvedDbModel>> {
+
+    val query = ChannelDbModel.FACTORY.user_channels_resolved_teammates(userId, teamId)
+    val mapper = ChannelDbModel.FACTORY.user_channels_resolved_teammatesMapper(
+      ::ChannelResolvedDbModel, UserDbModel.FACTORY)
+
     return briteDatabase
-      .createQuery(ChannelDbSqlDelightModel.TABLE_NAME, query.statement, *query.args)
+      .createQuery(query.tables, query.statement, *query.args)
       .mapToList(mapper::map)
   }
+
 }

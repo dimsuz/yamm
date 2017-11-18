@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.repositories.mappers
 
 import com.dimsuz.yamm.data.sources.db.models.ChannelDbModel
+import com.dimsuz.yamm.data.sources.db.models.ChannelResolvedDbModel
 import com.dimsuz.yamm.data.sources.network.models.ChannelJson
 import com.dimsuz.yamm.domain.errors.ModelMapException
 import com.dimsuz.yamm.domain.models.Channel
@@ -19,17 +20,24 @@ internal fun ChannelJson.toDatabaseModel(userId: String, teamId: String): Channe
   )
 }
 
-internal fun ChannelDbModel.toDomainModel(): Channel {
+internal fun ChannelResolvedDbModel.toDomainModel(): Channel {
   return Channel(
-    id = this.id,
-    type = this.type.toChannelType(),
-    name = this.name,
-    displayName = this.displayName,
-    header = this.header,
-    purpose = this.purpose
+    id = this.channel.id,
+    type = this.channel.type.toChannelType(),
+    name = this.channel.name,
+    displayName = this.resolvedDisplayName(),
+    header = this.channel.header,
+    purpose = this.channel.purpose
   )
 }
 
+private fun ChannelResolvedDbModel.resolvedDisplayName(): String? {
+  return if (this.channel.type.toChannelType() != Channel.Type.Direct) {
+    this.channel.displayName
+  } else {
+    this.user()?.firstName?.plus(" ")?.plus(this.user()?.lastName)
+  }
+}
 
 private fun extractTeamMateUserId(type: String, name: String?, userId: String): String? {
   if (type.toChannelType() != Channel.Type.Direct || name == null || name.isBlank()) return null
