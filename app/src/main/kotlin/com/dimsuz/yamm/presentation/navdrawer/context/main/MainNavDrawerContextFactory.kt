@@ -30,6 +30,6 @@ class MainNavDrawerContextFactory @Inject constructor(
 private fun Channel.toDrawerItem(i: Int): NavDrawerItem {
   return NavDrawerItem(
     id = i.toLong(),
-    title = this.displayName
+    title = this.displayName ?: "?"
   )
 }
