@@ -75,6 +75,7 @@ internal class BriteDatabaseProvider
       .logger { logger.debug(it) }
       .build()
       .wrapDatabaseHelper(DatabaseHelper(context), Schedulers.io())
+      .apply { setLoggingEnabled(BuildConfig.DEBUG) }
   }
 }
 
