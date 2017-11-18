@@ -18,6 +18,6 @@ interface MattermostAuthorizedApi {
   fun getUserChannels(@Path("user_id") userId: String,
                       @Path("team_id") teamId: String): Single<List<ChannelJson>>
 
-  @POST
+  @POST("users/ids")
   fun getUsersByIds(@Body ids: List<String>): Single<List<UserJson>>
 }
