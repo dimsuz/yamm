@@ -7,12 +7,14 @@ import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.ServerConfigRepository
 import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.domain.repositories.TeamRepository
+import com.dimsuz.yamm.domain.repositories.UserRepository
 import com.dimsuz.yamm.repositories.ChannelRepositoryImpl
 import com.dimsuz.yamm.repositories.ServerConfigRepositoryImpl
 import com.dimsuz.yamm.repositories.TeamRepositoryImpl
 import com.dimsuz.yamm.repositories.session.DefaultSessionManager
 import com.dimsuz.yamm.repositories.settings.PreferencesSettingsStorage
 import com.dimsuz.yamm.repositories.settings.SettingsStorage
+import com.dimsuz.yamm.repositories.settings.UserRepositoryImpl
 import toothpick.config.Module
 import javax.inject.Inject
 import javax.inject.Provider
@@ -24,6 +26,7 @@ class RepositoriesModule(serverUrl: String) : Module() {
 
     bind(ChannelRepository::class.java).to(ChannelRepositoryImpl::class.java)
     bind(TeamRepository::class.java).to(TeamRepositoryImpl::class.java)
+    bind(UserRepository::class.java).to(UserRepositoryImpl::class.java)
   }
 }
 

@@ -7,7 +7,8 @@ import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Single
 import javax.inject.Inject
 
-internal class TeamRepositoryImpl @Inject internal constructor(private val serviceApi: MattermostAuthorizedApi) : TeamRepository {
+internal class TeamRepositoryImpl @Inject internal constructor(
+  private val serviceApi: MattermostAuthorizedApi) : TeamRepository {
 
   override fun userTeams(userId: String): Single<List<Team>> {
     return serviceApi.getUserTeams(userId)
