@@ -13,5 +13,5 @@ FROM user
 WHERE id IN ?;
 
 insert_or_replace:
-INSERT INTO user
+INSERT OR REPLACE INTO user
 VALUES (?, ?, ?, ?, ?, ?);
