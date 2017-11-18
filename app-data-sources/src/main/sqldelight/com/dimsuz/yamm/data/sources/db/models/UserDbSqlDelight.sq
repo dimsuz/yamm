@@ -6,3 +6,12 @@ CREATE TABLE user(
     nickname TEXT,
     email TEXT
 );
+
+select_by_id:
+SELECT *
+FROM user
+WHERE id IN ?;
+
+insert_or_replace:
+INSERT INTO user
+VALUES (?, ?, ?, ?, ?, ?);
