@@ -53,6 +53,8 @@ private fun extractTeamMateUserId(type: String, name: String?, userId: String): 
 }
 
 private fun String.toChannelType(): Channel.Type {
+  // IMPORTANT: if type codes will ever change/update, make sure to change/update
+  // sql query which uses these codes for sorting channels
   return when (this) {
     "O" -> Channel.Type.Open
     "P" -> Channel.Type.Private

@@ -17,11 +17,21 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 user_channels:
 SELECT *
 FROM channel
-WHERE user_id = ? AND team_id = ?;
+WHERE user_id = ? AND team_id = ?
+ORDER BY CASE
+WHEN type = 'O' THEN 0
+WHEN type = 'P' THEN 1
+WHEN type = 'D' THEN 2
+ELSE 55 END ASC, display_name ASC;
 
 user_channels_resolved_teammates:
 SELECT *
 FROM channel
 LEFT OUTER JOIN user
 ON channel.team_mate_id = user.id
-WHERE user_id = ? AND team_id = ?;
+WHERE user_id = ? AND team_id = ?
+ORDER BY CASE
+WHEN type = 'O' THEN 0
+WHEN type = 'P' THEN 1
+WHEN type = 'D' THEN 2
+ELSE 55 END ASC, display_name ASC, user.first_name ASC;
