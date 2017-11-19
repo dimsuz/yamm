@@ -13,14 +13,14 @@ class MainNavDrawerContextFactory @Inject constructor(
 
   override fun create(type: DrawerContextType): NavDrawerContext {
     return when (type) {
-      DrawerContextType.Channels -> createChannelsContext()
+      DrawerContextType.Messages -> createMessagesContext()
       DrawerContextType.Teams -> TODO("not implemented")
     }
   }
 
-  private fun createChannelsContext(): NavDrawerContext {
+  private fun createMessagesContext(): NavDrawerContext {
     return NavDrawerContext(
-      DrawerContextType.Channels,
+      DrawerContextType.Messages,
       userChannelsInteractor.userChannels()
         .map { chs -> chs.mapIndexed { i, ch -> ch.toDrawerItem(i) } }
     )
