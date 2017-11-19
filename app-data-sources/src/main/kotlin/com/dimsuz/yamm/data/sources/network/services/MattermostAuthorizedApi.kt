@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.data.sources.network.services
 
 import com.dimsuz.yamm.data.sources.network.models.ChannelJson
+import com.dimsuz.yamm.data.sources.network.models.PostListJson
 import com.dimsuz.yamm.data.sources.network.models.TeamJson
 import com.dimsuz.yamm.data.sources.network.models.UserJson
 import io.reactivex.Single
@@ -8,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MattermostAuthorizedApi {
 
@@ -20,4 +22,12 @@ interface MattermostAuthorizedApi {
 
   @POST("users/ids")
   fun getUsersByIds(@Body ids: List<String>): Single<List<UserJson>>
+
+  @GET("channels/{channel_id}/posts")
+  fun getChannelPosts(@Path("channel_id") channelId: String,
+                      @Query("page") page: Int?,
+                      @Query("per_page") perPage: Int?,
+                      @Query("since") sinceTimestamp: Int?,
+                      @Query("before") beforePostId: String?,
+                      @Query("after") afterPostId: String?): PostListJson
 }
