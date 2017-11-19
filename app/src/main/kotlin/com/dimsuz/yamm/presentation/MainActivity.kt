@@ -2,6 +2,7 @@ package com.dimsuz.yamm.presentation
 
 import android.os.Bundle
 import com.bluelinelabs.conductor.Controller
+import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.navigation.ControllerFactory
 import com.dimsuz.yamm.navigation.ControllerNavigator
 import com.dimsuz.yamm.navigation.SCREEN_LOGIN_METHOD_SELECT
@@ -15,7 +16,6 @@ import com.dimsuz.yamm.presentation.login.server_select.ServerSelectController
 import com.dimsuz.yamm.presentation.login.sso.SsoLoginController
 import com.dimsuz.yamm.presentation.messages.MessagesController
 import com.dimsuz.yamm.presentation.navdrawer.NavDrawerView
-import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.appScope
 import com.dimsuz.yamm.util.instance
@@ -27,7 +27,8 @@ import javax.inject.Inject
 class MainActivity : BaseControllerActivity(), ControllerFactory {
   @Inject lateinit var navigatorHolder: NavigatorHolder
   private lateinit var navigator: Navigator
-  private lateinit var navDrawerView: NavDrawerView
+  internal lateinit var navDrawerView: NavDrawerView
+    private set
 
   override fun createController(): Controller? {
     val scope = appScope
