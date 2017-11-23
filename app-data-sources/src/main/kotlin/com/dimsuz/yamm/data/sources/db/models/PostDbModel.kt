@@ -7,7 +7,10 @@ data class PostDbModel(
   val userId: String,
   val channelId: String,
   val message: String?,
-  val type: String
+  val type: String,
+  val createAt: Long,
+  val updateAt: Long,
+  val deleteAt: Long
 ) : PostDbSqlDelightModel {
 
   companion object {
@@ -19,5 +22,8 @@ data class PostDbModel(
   override fun channel_id() = channelId
   override fun message() = message
   override fun type() = type
+  override fun create_at() = createAt
+  override fun update_at() = updateAt
+  override fun delete_at() = deleteAt
 
 }
