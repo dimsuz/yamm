@@ -1,5 +1,6 @@
 package com.dimsuz.yamm.data.sources.db.persistence
 
+import com.dimsuz.yamm.core.util.forEachApply
 import com.dimsuz.yamm.data.sources.db.models.ChannelDbModel
 import com.dimsuz.yamm.data.sources.db.models.ChannelDbSqlDelightModel
 import com.dimsuz.yamm.data.sources.db.models.ChannelResolvedDbModel
@@ -17,12 +18,10 @@ internal class ChannelPersistenceImpl @Inject constructor(
   override fun replaceUserChannels(channels: List<ChannelDbModel>) {
     briteDatabase.inTransaction {
       val insertChannel = ChannelDbSqlDelightModel.Insert_channel(writableDatabase)
-      for (ch in channels) {
-        with(ch) {
-          insertChannel.bind(id, userId, teamId, type, displayName,
-            name, header, purpose, teamMateId)
-          briteDatabase.executeInsert(insertChannel)
-        }
+      channels.forEachApply {
+        insertChannel.bind(id, userId, teamId, type, displayName,
+          name, header, purpose, teamMateId)
+        briteDatabase.executeInsert(insertChannel)
       }
     }
   }
