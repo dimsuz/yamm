@@ -8,3 +8,15 @@ CREATE TABLE post(
     update_at INTEGER NOT NULL DEFAULT 0,
     delete_at INTEGER NOT NULL DEFAULT 0);
 
+insert_or_replace:
+INSERT OR REPLACE
+INTO post
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+select_with_offset:
+SELECT *
+FROM post
+WHERE channel_id = ?
+ORDER BY update_at, create_at ASC
+LIMIT ?
+OFFSET ?;
