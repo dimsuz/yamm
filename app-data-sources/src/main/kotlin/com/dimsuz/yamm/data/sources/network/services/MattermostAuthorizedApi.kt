@@ -29,5 +29,5 @@ interface MattermostAuthorizedApi {
                       @Query("per_page") perPage: Int?,
                       @Query("since") sinceTimestamp: Int?,
                       @Query("before") beforePostId: String?,
-                      @Query("after") afterPostId: String?): PostListJson
+                      @Query("after") afterPostId: String?): Single<PostListJson>
 }
