@@ -15,4 +15,8 @@ class TimberLogger : Logger {
   override fun error(throwable: Throwable, message: String) {
     Timber.e(throwable, message)
   }
+
+  override fun checkMainThread() {
+    com.dimsuz.yamm.util.checkMainThread()
+  }
 }
