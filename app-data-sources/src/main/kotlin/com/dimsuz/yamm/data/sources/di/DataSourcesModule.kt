@@ -7,6 +7,8 @@ import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.sources.db.DatabaseHelper
 import com.dimsuz.yamm.data.sources.db.persistence.ChannelPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.ChannelPersistenceImpl
+import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
+import com.dimsuz.yamm.data.sources.db.persistence.PostPersistenceImpl
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistenceImpl
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
@@ -63,6 +65,7 @@ fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
     bind(BriteDatabase::class.java).toProvider(BriteDatabaseProvider::class.java).providesSingletonInScope()
     bind(UserPersistence::class.java).to(UserPersistenceImpl::class.java)
     bind(ChannelPersistence::class.java).to(ChannelPersistenceImpl::class.java)
+    bind(PostPersistence::class.java).to(PostPersistenceImpl::class.java)
   }
 }
 
