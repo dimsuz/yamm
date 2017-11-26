@@ -42,7 +42,7 @@ class LoginMethodSelectController : BaseMviController<LoginMethodSelect.ViewStat
 
   override fun onDestroy() {
     super.onDestroy()
-    Toothpick.closeScope(this)
+    Toothpick.closeScope(screenScope.name)
   }
 
   override fun createPresenter(): LoginMethodSelectPresenter {
