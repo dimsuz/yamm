@@ -1,29 +1,40 @@
 package com.dimsuz.yamm.presentation.messages
 
+import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractor
+import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.presentation.baseui.BaseMviPresenter
 import com.dimsuz.yamm.presentation.baseui.RoutingAction
-import com.dimsuz.yamm.presentation.login.method_select.ScreenEvent
 import com.dimsuz.yamm.util.AppSchedulers
 import io.reactivex.Observable
 import javax.inject.Inject
 
+sealed class ScreenEvent
+private data class PostListChanged(val posts: List<Post>) : ScreenEvent()
+
 class MessagesPresenter @Inject constructor(
-  schedulers: AppSchedulers
+  schedulers: AppSchedulers,
+  private val channelPostsInteractor: ChannelPostsInteractor
 ) : BaseMviPresenter<Messages.View, Messages.ViewState, ScreenEvent>(schedulers) {
 
   override fun createIntents(): List<Observable<out ScreenEvent>> {
-    TODO("not implemented")
+    val postsListChanges = channelPostsInteractor.channelPosts()
+      .map(::PostListChanged)
+    return listOf(postsListChanges)
   }
 
   override fun viewStateReducer(previousState: Messages.ViewState, event: ScreenEvent): Messages.ViewState {
-    TODO("not implemented")
+    return previousState
   }
 
   override fun routingStateReducer(previousState: Messages.ViewState, newState: Messages.ViewState, event: ScreenEvent): RoutingAction? {
-    TODO("not implemented")
+    return null
   }
 
   override fun createInitialState(): Messages.ViewState {
-    TODO("not implemented")
+    return Messages.ViewState(
+      posts = emptyList(),
+      contentLoadingError = null,
+      showProgressBar = false
+    )
   }
 }
