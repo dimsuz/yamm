@@ -20,7 +20,7 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
   }
 
   protected abstract val config: Config
-  private            val cachedConfig: Config by lazy(LazyThreadSafetyMode.NONE, { config })
+  protected          val cachedConfig: Config by lazy(LazyThreadSafetyMode.NONE, { config })
   protected          var previousViewState: VS? = null
 
   final override     val refManager = ResettableReferencesManager()
