@@ -3,6 +3,8 @@ package com.dimsuz.yamm.domain.interactors
 import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.repositories.PostRepository
+import com.gojuno.koptional.rxjava2.filterSome
+import com.gojuno.koptional.toOptional
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -43,7 +45,8 @@ class ChannelPostsInteractor @Inject constructor(
 
   fun channelPosts(): Observable<List<Post>> {
     logger.checkMainThread()
-    return Observable.fromCallable { queryState }
+    return Observable.fromCallable { queryState.toOptional() }
+      .filterSome()
       .flatMap { queryState ->
         with (queryState) {
           postRepository.postsLive(channelId, firstPage, lastPage, pageSize)

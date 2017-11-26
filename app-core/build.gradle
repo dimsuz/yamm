@@ -22,4 +22,6 @@ sourceSets {
 dependencies {
     implementation 'javax.inject:javax.inject:1'
     implementation rootProject.ext.kotlinStdLib
+    api 'com.gojuno.koptional:koptional:1.1.0'
+    api 'com.gojuno.koptional:koptional-rxjava2-extensions:1.1.0'
 }
