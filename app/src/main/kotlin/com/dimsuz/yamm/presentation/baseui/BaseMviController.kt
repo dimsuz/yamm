@@ -19,8 +19,11 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
     val clearPreviousStateOnDestroy: Boolean get() = true
   }
 
-  protected abstract val config: Config
-  protected          val cachedConfig: Config by lazy(LazyThreadSafetyMode.NONE, { config })
+  /**
+   * Contains a cached copy of configuration created by [createConfig] during controller
+   * construction
+   */
+  protected          val config: Config by lazy(LazyThreadSafetyMode.NONE, { createConfig() })
   protected          var previousViewState: VS? = null
 
   final override     val refManager = ResettableReferencesManager()
@@ -28,11 +31,13 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
 
   private            var stateRenderHelpers: List<StateRenderer<VS>> = emptyList()
 
+  protected abstract fun createConfig(): Config
+
   constructor()
   constructor(args: Bundle) : super(args)
 
   final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-    val rootView = inflater.inflate(cachedConfig.viewLayoutResource, container, false)
+    val rootView = inflater.inflate(config.viewLayoutResource, container, false)
     bindPropsRootView = rootView
     // initialization can happen only after bindPropsRootView is assigned, this is required for BindView delegate to work
     initializeView(rootView)
@@ -48,7 +53,7 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
   override fun onDestroyView(view: View) {
     refManager.reset()
     super.onDestroyView(view)
-    if (cachedConfig.clearPreviousStateOnDestroy) {
+    if (config.clearPreviousStateOnDestroy) {
       previousViewState = null
     }
     stateRenderHelpers.forEach { it.onViewDestroyed() }

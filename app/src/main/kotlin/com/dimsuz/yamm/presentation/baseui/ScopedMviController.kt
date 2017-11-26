@@ -13,9 +13,8 @@ abstract class ScopedMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> 
   interface Config : BaseMviController.Config {
     val screenModule: Module
   }
-
-  final override val config: BaseMviController.Config get() = scopedConfig
-  protected abstract val scopedConfig: Config
+  final override fun createConfig() = createScopedConfig()
+  abstract fun createScopedConfig(): Config
 
   protected lateinit var screenScope: Scope
     private set
@@ -28,7 +27,7 @@ abstract class ScopedMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> 
     // initializing scope in onContextAvailable since only at this point can reference
     // appScope without crashing
     screenScope = Toothpick.openScopes(appScope.name, this)
-    screenScope.installModules((cachedConfig as Config).screenModule)
+    screenScope.installModules((config as Config).screenModule)
   }
 
   override fun onDestroy() {

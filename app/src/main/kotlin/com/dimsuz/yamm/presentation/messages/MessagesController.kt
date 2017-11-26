@@ -14,15 +14,15 @@ import com.dimsuz.yamm.util.instance
 import toothpick.config.Module
 
 class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>() {
-  override val scopedConfig: Config
-    get() = object : Config {
-      override val viewLayoutResource = R.layout.messages
-      override val screenModule = object : Module() {
-        init {
-          bind(MessagesPresenter::class.java).to(MessagesPresenter::class.java)
-        }
+
+  override fun createScopedConfig() = object : Config {
+    override val viewLayoutResource = R.layout.messages
+    override val screenModule = object : Module() {
+      init {
+        bind(MessagesPresenter::class.java).to(MessagesPresenter::class.java)
       }
     }
+  }
 
   private val toolbar: Toolbar by BindView(R.id.toolbar)
 

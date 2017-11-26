@@ -19,15 +19,14 @@ class LoginMethodSelectController
 
   private val buttonGitlabLogin: View by BindView(R.id.login_with_gitlab)
 
-  override val scopedConfig: Config
-    get() = object : Config {
-      override val viewLayoutResource = R.layout.login_method_select
-      override val screenModule = object : Module() {
-        init {
-          bind(LoginMethodSelectPresenter::class.java).to(LoginMethodSelectPresenter::class.java)
-        }
+  override fun createScopedConfig() = object : Config {
+    override val viewLayoutResource = R.layout.login_method_select
+    override val screenModule = object : Module() {
+      init {
+        bind(LoginMethodSelectPresenter::class.java).to(LoginMethodSelectPresenter::class.java)
       }
     }
+  }
 
   override fun createStateRenderHelpers(): List<StateRenderer<LoginMethodSelect.ViewState>> {
     return listOf(YammLceStateRenderer(contentViewId = R.id.scroll_view,
