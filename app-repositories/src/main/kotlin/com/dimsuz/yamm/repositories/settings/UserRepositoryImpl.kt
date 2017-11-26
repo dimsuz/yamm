@@ -7,7 +7,7 @@ import com.dimsuz.yamm.repositories.mappers.toDatabaseModel
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+internal class UserRepositoryImpl @Inject constructor(
   private val serviceApi: MattermostAuthorizedApi,
   private val userPersistence: UserPersistence) : UserRepository {
 
