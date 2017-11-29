@@ -8,6 +8,8 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 class NavDrawerView private constructor(private val activity: Activity,
                                         private val contextManager: NavDrawerContextManager) {
@@ -23,10 +25,16 @@ class NavDrawerView private constructor(private val activity: Activity,
     .withActionBarDrawerToggle(true)
     .build()
 
+  private val itemClicks: PublishSubject<NavDrawerItem> = PublishSubject.create()
+
   private val presenter = createPresenter()
 
   init {
     presenter.attachView(this)
+    navigationDrawer.setOnDrawerItemClickListener { _, _, drawerItem ->
+      itemClicks.onNext(drawerItem.toNavDrawerItem())
+      true
+    }
   }
 
   private fun createPresenter(): NavDrawerPresenter {
@@ -41,6 +49,10 @@ class NavDrawerView private constructor(private val activity: Activity,
     presenter.detachView()
   }
 
+  fun itemClicks(): Observable<NavDrawerItem> {
+    return itemClicks
+  }
+
   fun render(items: List<NavDrawerItem>) {
     navigationDrawer.removeAllItems()
     navigationDrawer.addItems(*items.map({ it.toIDrawerItem() }).toTypedArray())
@@ -51,5 +63,7 @@ private fun NavDrawerItem.toIDrawerItem(): IDrawerItem<*, *> {
   return PrimaryDrawerItem()
     .withIdentifier(this.id)
     .withName(this.title)
+    .withTag(this)
 }
 
+private fun IDrawerItem<*, *>.toNavDrawerItem() = this.tag!! as NavDrawerItem

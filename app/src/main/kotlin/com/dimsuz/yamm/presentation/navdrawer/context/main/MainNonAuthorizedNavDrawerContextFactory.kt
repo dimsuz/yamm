@@ -7,6 +7,6 @@ import io.reactivex.Observable
 
 class MainNonAuthorizedNavDrawerContextFactory : NavDrawerContextFactory {
   override fun create(type: DrawerContextType): NavDrawerContext {
-    return NavDrawerContext(type, Observable.empty())
+    return NavDrawerContext(type, Observable.empty(), { })
   }
 }
