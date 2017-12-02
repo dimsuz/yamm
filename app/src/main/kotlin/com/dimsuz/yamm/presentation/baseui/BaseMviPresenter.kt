@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.presentation.baseui
 
 import com.dimsuz.yamm.BuildConfig
+import com.dimsuz.yamm.core.util.ellipsizeEnd
 import com.dimsuz.yamm.util.AppSchedulers
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
@@ -17,9 +18,17 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(private val schedulers:
         val ns = viewStateReducer(s.viewState, ev)
         val rs = routingStateReducer(s.viewState, ns, ev)
         if (logStateChanges) {
-          Timber.d("==========================================")
-          Timber.d("= Reduce after event:\n=\n= $ev\n=\n= New state is:\n=\n= $ns")
-          Timber.d("==========================================")
+          Timber.d("""
+            |==========================================
+            |= Reduce after event:
+            |=
+            |= ${ev.toString().ellipsizeEnd(80)}
+            |=
+            |= New state is:
+            |=
+            |= ${ns.toString().ellipsizeEnd(80)}
+            |==========================================
+            """.trimIndent())
         }
         ViewIntentResult(ns, rs)
       })
