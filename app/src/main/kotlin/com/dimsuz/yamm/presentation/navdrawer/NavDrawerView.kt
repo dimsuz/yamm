@@ -33,7 +33,7 @@ class NavDrawerView private constructor(private val activity: Activity,
     presenter.attachView(this)
     navigationDrawer.setOnDrawerItemClickListener { _, _, drawerItem ->
       itemClicks.onNext(drawerItem.toNavDrawerItem())
-      true
+      false
     }
   }
 
