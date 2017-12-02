@@ -17,6 +17,6 @@ select_with_offset:
 SELECT *
 FROM post
 WHERE channel_id = ?
-ORDER BY update_at, create_at ASC
+ORDER BY update_at DESC, create_at DESC
 LIMIT ?
 OFFSET ?;
