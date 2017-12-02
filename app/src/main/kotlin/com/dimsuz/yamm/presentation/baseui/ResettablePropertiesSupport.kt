@@ -79,7 +79,7 @@ where R : ResettableSupport, R : Controller
   }
 }
 
-private class Resettable<in R, T : Any> : ReadWriteProperty<R, T>, ResettableProperty
+class Resettable<in R, T : Any> : ReadWriteProperty<R, T>, ResettableProperty
 where R : ResettableSupport, R : Controller
 {
   private var isRegistered = false
