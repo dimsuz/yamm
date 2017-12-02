@@ -3,11 +3,8 @@ package com.dimsuz.yamm.domain.interactors
 import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.repositories.PostRepository
-import com.gojuno.koptional.rxjava2.filterSome
-import com.gojuno.koptional.toOptional
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 sealed class ChannelPostEvent {
@@ -20,9 +17,7 @@ class ChannelPostsInteractor @Inject constructor(
   private val postRepository: PostRepository,
   private val logger: Logger) {
 
-  private val resubscribeTrigger = PublishSubject.create<Unit>()
-  @Volatile
-  private var queryState: QueryState? = null
+  private val queryChanges = BehaviorSubject.create<QueryState>().toSerialized()
   private val stateEvents = BehaviorSubject.create<ChannelPostEvent>().toSerialized()
 
   fun stateEvents(): Observable<ChannelPostEvent> {
@@ -37,7 +32,7 @@ class ChannelPostsInteractor @Inject constructor(
 
   fun loadAnotherPage() {
     logger.checkMainThread()
-    val oldQuery = queryState
+    val oldQuery = queryChanges.take(1).blockingFirst(null)
       ?: throw IllegalStateException("called loadAnotherPage when first is not loaded")
     val newQuery = oldQuery.copy(lastPage = oldQuery.lastPage + 1)
     updateQueryState(newQuery)
@@ -45,20 +40,18 @@ class ChannelPostsInteractor @Inject constructor(
 
   fun channelPosts(): Observable<List<Post>> {
     logger.checkMainThread()
-    return Observable.fromCallable { queryState.toOptional() }
-      .filterSome()
-      .flatMap { queryState ->
-        with (queryState) {
+    return queryChanges
+      .switchMap { queryState ->
+        with(queryState) {
+          logger.debug("query changed $queryState")
           postRepository.postsLive(channelId, firstPage, lastPage, pageSize)
         }
       }
-      .takeUntil<Unit> { resubscribeTrigger }
-      .repeat()
+      .doOnError { logger.error(it, "failed to read db") }
   }
 
   private fun updateQueryState(newState: QueryState) {
-    queryState = newState
-    resubscribeTrigger.onNext(Unit)
+    queryChanges.onNext(newState)
 
     // TODO caching is needed here so that posts would be cached only if
     // channel cache is invalidated somehow (either timebased or websocket told us)
