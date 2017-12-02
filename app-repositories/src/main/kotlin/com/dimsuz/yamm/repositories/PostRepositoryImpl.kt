@@ -24,9 +24,10 @@ class PostRepositoryImpl @Inject constructor(
       sinceTimestamp = null,
       beforePostId = null,
       afterPostId = null)
+      .map { it.posts.values }
       .flatMapCompletable { postList ->
         Completable.fromAction {
-          val postsDatabase = postList.posts.map { it.toDatabaseModel() }
+          val postsDatabase = postList.map { it.toDatabaseModel() }
           persistence.replacePosts(postsDatabase)
         }
       }
