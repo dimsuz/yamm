@@ -2,15 +2,16 @@ package com.dimsuz.yamm.repositories
 
 import com.dimsuz.yamm.data.sources.network.services.MattermostEventsApi
 import com.dimsuz.yamm.domain.models.ServerEvent
+import com.dimsuz.yamm.domain.repositories.ServerEventRepository
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class ServerEventRepositoryImpl @Inject constructor(
-  private val mattermostEventsApi: MattermostEventsApi) {
+  private val mattermostEventsApi: MattermostEventsApi) : ServerEventRepository {
 
-  fun serverEventsLive(connectStateChanges: Observable<Boolean>): Observable<ServerEvent> {
+  override fun serverEventsLive(connectStateChanges: Observable<Boolean>): Observable<ServerEvent> {
     return connectStateChanges.distinctUntilChanged()
       .switchMap { isConnectRequest ->
         if (isConnectRequest) {
