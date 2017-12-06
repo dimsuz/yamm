@@ -6,12 +6,14 @@ import com.dimsuz.yamm.data.sources.network.models.AuthSession
 import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.PostRepository
 import com.dimsuz.yamm.domain.repositories.ServerConfigRepository
+import com.dimsuz.yamm.domain.repositories.ServerEventRepository
 import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.domain.repositories.TeamRepository
 import com.dimsuz.yamm.domain.repositories.UserRepository
 import com.dimsuz.yamm.repositories.ChannelRepositoryImpl
 import com.dimsuz.yamm.repositories.PostRepositoryImpl
 import com.dimsuz.yamm.repositories.ServerConfigRepositoryImpl
+import com.dimsuz.yamm.repositories.ServerEventRepositoryImpl
 import com.dimsuz.yamm.repositories.TeamRepositoryImpl
 import com.dimsuz.yamm.repositories.session.DefaultSessionManager
 import com.dimsuz.yamm.repositories.settings.PreferencesSettingsStorage
@@ -30,6 +32,7 @@ class RepositoriesModule(serverUrl: String) : Module() {
     bind(TeamRepository::class.java).to(TeamRepositoryImpl::class.java)
     bind(UserRepository::class.java).to(UserRepositoryImpl::class.java)
     bind(PostRepository::class.java).to(PostRepositoryImpl::class.java)
+    bind(ServerEventRepository::class.java).to(ServerEventRepositoryImpl::class.java)
   }
 }
 
