@@ -66,6 +66,7 @@ class MessagesPresenter @Inject constructor(
       is ChannelPostEvent.Idle -> PostListLoadFinished()
       is ChannelPostEvent.Loading -> PostListLoading()
       is ChannelPostEvent.LoadFailed -> PostListLoadError(event.error)
+      is ChannelPostEvent.LiveConnectionFailed -> TODO("not implemented")
     }
   }
 }
