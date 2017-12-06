@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -24,6 +25,11 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
     }
+}
+
+androidExtensions {
+    experimental = true
+    defaultCacheImplementation = "SPARSE_ARRAY"
 }
 
 dependencies {

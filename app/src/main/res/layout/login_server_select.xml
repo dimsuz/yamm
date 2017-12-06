@@ -24,7 +24,7 @@
         />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/server_select_input_layout"
+        android:id="@+id/serverInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -47,7 +47,7 @@
 
     <TextView
         style="@style/Widget.Yamm.Button.Colored.Bottom"
-        android:id="@+id/button_continue"
+        android:id="@+id/continueButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

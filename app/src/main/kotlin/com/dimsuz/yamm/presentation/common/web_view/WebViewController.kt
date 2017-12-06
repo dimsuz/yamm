@@ -11,8 +11,8 @@ import android.webkit.WebViewClient
 import com.dimsuz.yamm.BuildConfig
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.presentation.baseui.BaseController
-import com.dimsuz.yamm.presentation.baseui.BindView
 import com.dimsuz.yamm.presentation.baseui.util.isVisible
+import kotlinx.android.synthetic.main.web_view_controller.*
 
 private const val EXTRA_WEB_VIEW_URL = BuildConfig.APPLICATION_ID + ".web_view_url"
 
@@ -29,8 +29,6 @@ open class WebViewController(args: Bundle) : BaseController(args) {
     }
   }
 
-  private val webView: WebView by BindView(R.id.web_view)
-  private val progressBar: View by BindView(R.id.progress_bar)
   private val link get() = args.getString(EXTRA_WEB_VIEW_URL)
 
   override fun getViewLayout(): Int {

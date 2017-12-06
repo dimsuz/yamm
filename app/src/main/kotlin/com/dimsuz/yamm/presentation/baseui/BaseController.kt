@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.*
 
-abstract class BaseController : Controller, ResettableSupport {
-  final override val refManager = ResettableReferencesManager()
-  final override var bindPropsRootView: View? = null
+abstract class BaseController : Controller, LayoutContainer {
+  private var bindPropsRootView: View? = null
 
   constructor()
   constructor(args: Bundle) : super(args)
@@ -17,7 +18,7 @@ abstract class BaseController : Controller, ResettableSupport {
   final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     val rootView = inflater.inflate(getViewLayout(), container, false)
     bindPropsRootView = rootView
-    // initialization can happen only after bindPropsRootView is assigned, this is required for BindView delegate to work
+    // initialization can happen only after bindPropsRootView is assigned, this is required for view cache to work
     initializeView(rootView)
     return rootView
   }
@@ -26,8 +27,11 @@ abstract class BaseController : Controller, ResettableSupport {
   abstract fun getViewLayout(): Int
   abstract fun initializeView(rootView: View)
 
+  override val containerView: View? get() = bindPropsRootView
+
   override fun onDestroyView(view: View) {
-    refManager.reset()
+    clearFindViewByIdCache()
+    bindPropsRootView = null
     super.onDestroyView(view)
   }
 }
