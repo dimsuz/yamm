@@ -12,6 +12,7 @@ import com.dimsuz.yamm.data.sources.db.persistence.PostPersistenceImpl
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistenceImpl
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
+import com.dimsuz.yamm.data.sources.network.services.MattermostEventsApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
 import com.dimsuz.yamm.data.sources.network.session.SessionTokenAddInterceptor
 import com.squareup.moshi.Moshi
@@ -58,7 +59,9 @@ fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
   with(module) {
     bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
     bind(Interceptor::class.java).to(SessionTokenAddInterceptor::class.java).singletonInScope()
+    bind(OkHttpClient::class.java).toProvider(HttpClientProvider::class.java).providesSingletonInScope()
     bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).providesSingletonInScope()
+    bind(MattermostEventsApi::class.java).toProvider(MattermostEventsApiProvider::class.java).providesSingletonInScope()
     // expecting to use this rarely, so should be GCed after use...
     bind(MattermostPublicApi::class.java).toProvider(MattermostPublicApiProvider::class.java)
 
@@ -82,15 +85,30 @@ internal class BriteDatabaseProvider
   }
 }
 
-// TODO remove Inject if above Provider will work without it
-internal class MattermostAuthorizedApiProvider
-@Inject constructor(private val moshi: Moshi,
-                    private val scope: Scope,
-                    private val authSessionInterceptor: Interceptor): Provider<MattermostAuthorizedApi> {
+internal class HttpClientProvider
+@Inject constructor(private val authSessionInterceptor: Interceptor): Provider<OkHttpClient> {
+  override fun get(): OkHttpClient {
+    return createHttpClient(listOf(authSessionInterceptor))
+  }
+}
 
+internal class MattermostAuthorizedApiProvider
+@Inject constructor(private val httpClient: OkHttpClient,
+                    private val moshi: Moshi,
+                    private val scope: Scope): Provider<MattermostAuthorizedApi> {
   override fun get(): MattermostAuthorizedApi {
     Timber.e("creating server api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
-    return createMattermostAuthorizedApi(moshi, scope.getInstance(String::class.java, "serverUrl"), authSessionInterceptor)
+    return createMattermostApi(httpClient, moshi, scope.getInstance(String::class.java, "serverUrl"))
+  }
+
+}
+
+internal class MattermostEventsApiProvider
+@Inject constructor(private val httpClient: OkHttpClient,
+                    private val moshi: Moshi,
+                    private val scope: Scope): Provider<MattermostEventsApi> {
+  override fun get(): MattermostEventsApi {
+    return MattermostEventsApi(httpClient, moshi, scope.getInstance(String::class.java, "serverUrl"))
   }
 }
 
@@ -141,8 +159,3 @@ private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient,
   return retrofit.create(T::class.java)
 }
 
-private fun createMattermostAuthorizedApi(moshi: Moshi, serverUrl: String,
-                                          authSessionInterceptor: Interceptor): MattermostAuthorizedApi {
-  val httpClient = createHttpClient(listOf(authSessionInterceptor))
-  return createMattermostApi(httpClient, moshi, serverUrl)
-}
