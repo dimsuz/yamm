@@ -32,7 +32,9 @@ class RepositoriesModule(serverUrl: String) : Module() {
     bind(TeamRepository::class.java).to(TeamRepositoryImpl::class.java)
     bind(UserRepository::class.java).to(UserRepositoryImpl::class.java)
     bind(PostRepository::class.java).to(PostRepositoryImpl::class.java)
-    bind(ServerEventRepository::class.java).to(ServerEventRepositoryImpl::class.java)
+
+    // there should be only one live server event connection in the application => making it singleton
+    bind(ServerEventRepository::class.java).to(ServerEventRepositoryImpl::class.java).singletonInScope()
   }
 }
 

@@ -50,6 +50,10 @@ class ChannelPostsInteractor @Inject constructor(
       )
   }
 
+  fun resetForegroundStateChanges() {
+    foregroundChangesSubscription.dispose()
+  }
+
   fun loadAnotherPage() {
     logger.checkMainThread()
     val oldQuery = queryChanges.take(1).blockingFirst(null)
