@@ -67,9 +67,9 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
   }
 
   override fun onDestroy() {
-    super.onDestroy()
     val postsInteractor = screenScope.instance<ChannelPostsInteractor>()
     postsInteractor.resetForegroundStateChanges()
+    super.onDestroy()
   }
 
   override fun renderViewState(viewState: Messages.ViewState) {
