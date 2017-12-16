@@ -15,6 +15,7 @@ private data class PostListChanged(val posts: List<Post>) : ScreenEvent()
 private data class PostListLoadError(val error: Throwable) : ScreenEvent()
 private      class PostListLoading : ScreenEvent()
 private      class PostListLoadFinished : ScreenEvent()
+private data class LiveConnectionError(val error: Throwable) : ScreenEvent()
 
 class MessagesPresenter @Inject constructor(
   schedulers: AppSchedulers,
@@ -45,6 +46,9 @@ class MessagesPresenter @Inject constructor(
       is PostListLoadError -> {
         previousState.copy(contentLoadingError = errorDetailsExtractor.extractErrorText(event.error))
       }
+      is LiveConnectionError -> {
+        previousState.copy(liveConnectionError = errorDetailsExtractor.extractErrorText(event.error))
+      }
     }
   }
 
@@ -57,6 +61,7 @@ class MessagesPresenter @Inject constructor(
     return Messages.ViewState(
       posts = emptyList(),
       contentLoadingError = null,
+      liveConnectionError = null,
       showProgressBar = false
     )
   }
@@ -66,7 +71,7 @@ class MessagesPresenter @Inject constructor(
       is ChannelPostEvent.Idle -> PostListLoadFinished()
       is ChannelPostEvent.Loading -> PostListLoading()
       is ChannelPostEvent.LoadFailed -> PostListLoadError(event.error)
-      is ChannelPostEvent.LiveConnectionFailed -> TODO("not implemented")
+      is ChannelPostEvent.LiveConnectionFailed -> LiveConnectionError(event.error)
     }
   }
 }
