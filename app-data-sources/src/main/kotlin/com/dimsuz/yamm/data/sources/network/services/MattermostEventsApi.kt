@@ -33,7 +33,7 @@ class MattermostEventsApi(
 
     return Observable.create<WebSocketEvent> { emitter: ObservableEmitter<WebSocketEvent> ->
       val request = Request.Builder()
-        .url(serverUrl)
+        .url("$serverUrl/api/v4/websocket")
         .build()
       socket = client.newWebSocket(request, createSocketListener(emitter))
     }
