@@ -58,12 +58,12 @@ class MattermostEventsApi(
 
   private fun createSocketListener(emitter: ObservableEmitter<WebSocketEvent>): WebSocketListener {
     return object : WebSocketListener() {
-      override fun onOpen(webSocket: WebSocket, response: Response) {
+      override fun onOpen(webSocket: WebSocket, response: Response?) {
         Timber.d("web socket opened")
         emitter.onNext(WebSocketEvent.Open)
       }
 
-      override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response) {
+      override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         Timber.d(t, "web socket failure")
         emitter.onError(t)
       }
