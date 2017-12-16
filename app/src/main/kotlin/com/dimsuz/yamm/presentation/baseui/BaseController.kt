@@ -26,10 +26,11 @@ abstract class BaseController : Controller, LayoutContainer {
   @LayoutRes
   abstract fun getViewLayout(): Int
   abstract fun initializeView(rootView: View)
+  open protected fun destroyView(view: View) {}
 
   override val containerView: View? get() = bindPropsRootView
 
-  override fun onDestroyView(view: View) {
+  final override fun onDestroyView(view: View) {
     clearFindViewByIdCache()
     bindPropsRootView = null
     super.onDestroyView(view)

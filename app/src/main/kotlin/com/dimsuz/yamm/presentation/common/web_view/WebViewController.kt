@@ -66,8 +66,8 @@ open class WebViewController(args: Bundle) : BaseController(args) {
 
   }
 
-  override fun onDestroyView(view: View) {
-    super.onDestroyView(view)
+  override fun destroyView(view: View) {
+    super.destroyView(view)
     (webView.parent as ViewGroup).removeView(webView)
     webView.removeAllViews()
     webView.destroy()
