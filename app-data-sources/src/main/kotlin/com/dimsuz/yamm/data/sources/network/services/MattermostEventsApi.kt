@@ -1,5 +1,6 @@
 package com.dimsuz.yamm.data.sources.network.services
 
+import com.dimsuz.yamm.data.sources.network.models.WebSocketMmEvent
 import com.squareup.moshi.Moshi
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -14,7 +15,7 @@ import timber.log.Timber
 sealed class WebSocketEvent {
   object Open : WebSocketEvent()
   data class Closing(val code: Int, val reason: String) : WebSocketEvent()
-  data class TextMessage(val text: String) : WebSocketEvent()
+  data class TextMessage(val event: WebSocketMmEvent?) : WebSocketEvent()
   data class BinaryMessage(val bytes: ByteString) : WebSocketEvent()
 }
 
@@ -58,6 +59,8 @@ class MattermostEventsApi(
 
   private fun createSocketListener(emitter: ObservableEmitter<WebSocketEvent>): WebSocketListener {
     return object : WebSocketListener() {
+      private val eventAdapter = moshi.adapter<WebSocketMmEvent>(WebSocketMmEvent::class.java)
+
       override fun onOpen(webSocket: WebSocket, response: Response?) {
         Timber.d("web socket opened")
         emitter.onNext(WebSocketEvent.Open)
@@ -76,7 +79,9 @@ class MattermostEventsApi(
       override fun onMessage(webSocket: WebSocket, text: String) {
         Timber.d("web socket text message received: $text")
         if (!emitter.isDisposed) {
-          emitter.onNext(WebSocketEvent.TextMessage(text))
+          // TODO check background (worker) thread is used here
+          val decodedEvent = eventAdapter.fromJson(text)
+          emitter.onNext(WebSocketEvent.TextMessage(decodedEvent))
         } else {
           Timber.d("downstream has disposed subscription, disconnecting from socket")
           webSocket.cancel()

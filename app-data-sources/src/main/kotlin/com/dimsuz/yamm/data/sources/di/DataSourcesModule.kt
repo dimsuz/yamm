@@ -11,6 +11,8 @@ import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.PostPersistenceImpl
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistenceImpl
+import com.dimsuz.yamm.data.sources.network.adapters.PostFromStringAdapter
+import com.dimsuz.yamm.data.sources.network.adapters.WebSocketMmEventDataAdapter
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostEventsApi
 import com.dimsuz.yamm.data.sources.network.services.MattermostPublicApi
@@ -143,8 +145,15 @@ private fun createLoggingInterceptor(): HttpLoggingInterceptor {
 }
 
 private fun createMoshi(): Moshi {
-  return Moshi.Builder()
+  val webSocketMmEventDataAdapter = WebSocketMmEventDataAdapter()
+  val postFromStringAdapter = PostFromStringAdapter()
+  val moshi = Moshi.Builder()
+    .add(webSocketMmEventDataAdapter)
+    .add(postFromStringAdapter)
     .build()
+  webSocketMmEventDataAdapter.moshi = moshi
+  postFromStringAdapter.moshi = moshi
+  return moshi
 }
 
 private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient,

@@ -18,6 +18,16 @@ fun PostJson.toDatabaseModel(): PostDbModel {
   )
 }
 
+fun PostJson.toDomainModel(): Post {
+  return Post(
+    id = this.id ?: throwExpectedNotNull("post", "id"),
+    userId = this.user_id ?: throwExpectedNotNull("post", "user_id"),
+    channelId = this.channel_id ?: throwExpectedNotNull("post", "channel_id"),
+    message = this.message.orEmpty(),
+    type = this.type?.toPostType() ?: throwExpectedNotNull("post", "type")
+  )
+}
+
 fun PostDbModel.toDomainModel(): Post {
   return Post(
     id = this.id,
