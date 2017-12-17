@@ -69,6 +69,10 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
   override fun onDestroy() {
     val postsInteractor = screenScope.instance<ChannelPostsInteractor>()
     postsInteractor.resetForegroundStateChanges()
+    // onActivityStopped might not be always called
+    // (for example when pressing back it isn't - due to Conductor issues)
+    // for those cases report it from here too
+    foregroundStateChanges.onNext(false)
     super.onDestroy()
   }
 
