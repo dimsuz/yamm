@@ -1,7 +1,7 @@
 package com.dimsuz.yamm.presentation.navdrawer.context.base
 
+import com.dimsuz.yamm.core.util.checkMainThread
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerContext
-import com.dimsuz.yamm.util.checkMainThread
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject

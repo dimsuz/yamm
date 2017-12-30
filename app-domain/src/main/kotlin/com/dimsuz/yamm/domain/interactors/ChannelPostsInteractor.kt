@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.domain.interactors
 
 import com.dimsuz.yamm.core.log.Logger
+import com.dimsuz.yamm.core.util.checkMainThread
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.models.ServerEvent
 import com.dimsuz.yamm.domain.repositories.PostRepository
@@ -31,7 +32,7 @@ class ChannelPostsInteractor @Inject constructor(
   }
 
   fun setChannel(channelId: String) {
-    logger.checkMainThread()
+    checkMainThread()
     logger.debug("switching current channel to $channelId")
     updateQueryState(QueryState(channelId = channelId))
   }
@@ -55,7 +56,7 @@ class ChannelPostsInteractor @Inject constructor(
   }
 
   fun loadAnotherPage() {
-    logger.checkMainThread()
+    checkMainThread()
     val oldQuery = queryChanges.take(1).blockingFirst(null)
       ?: throw IllegalStateException("called loadAnotherPage when first is not loaded")
     val newQuery = oldQuery.copy(lastPage = oldQuery.lastPage + 1)
@@ -63,7 +64,7 @@ class ChannelPostsInteractor @Inject constructor(
   }
 
   fun channelPosts(): Observable<List<Post>> {
-    logger.checkMainThread()
+    checkMainThread()
     return queryChanges
       .switchMap { queryState ->
         with(queryState) {

@@ -1,5 +1,6 @@
 package com.dimsuz.yamm.data.sources.network.services
 
+import com.dimsuz.yamm.core.util.checkWorkerThread
 import com.dimsuz.yamm.data.sources.network.models.WebSocketMmEvent
 import com.squareup.moshi.Moshi
 import io.reactivex.Observable
@@ -79,7 +80,7 @@ class MattermostEventsApi(
       override fun onMessage(webSocket: WebSocket, text: String) {
         Timber.d("web socket text message received: $text")
         if (!emitter.isDisposed) {
-          // TODO check background (worker) thread is used here
+          checkWorkerThread()
           val decodedEvent = eventAdapter.fromJson(text)
           emitter.onNext(WebSocketEvent.TextMessage(decodedEvent))
         } else {
