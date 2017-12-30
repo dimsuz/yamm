@@ -1,11 +1,16 @@
 package com.dimsuz.yamm.domain.models
 
+import org.threeten.bp.LocalDateTime
+
 data class Post(
   val id: String,
   val userId: String,
   val channelId: String,
   val message: String,
-  val type: Type
+  val type: Type,
+  val createAt: LocalDateTime,
+  val updateAt: LocalDateTime,
+  val deleteAt: LocalDateTime
 ) {
   enum class Type {
     Default,
