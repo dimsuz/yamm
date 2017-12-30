@@ -8,7 +8,7 @@ import com.squareup.sqlbrite2.BriteDatabase
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class PostPersistenceImpl @Inject constructor(
+internal class PostPersistenceImpl @Inject constructor(
   private val briteDatabase: BriteDatabase) : PostPersistence {
 
   override fun replacePosts(posts: List<PostDbModel>) {

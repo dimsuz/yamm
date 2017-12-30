@@ -11,7 +11,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class PostRepositoryImpl @Inject constructor(
+internal class PostRepositoryImpl @Inject constructor(
   private val serviceApi: MattermostAuthorizedApi,
   private val persistence: PostPersistence) : PostRepository {
 
