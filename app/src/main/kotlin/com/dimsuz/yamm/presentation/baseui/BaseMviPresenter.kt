@@ -26,7 +26,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(private val schedulers:
             |=
             |= New state is:
             |=
-            |= ${ns.toString().ellipsizeEnd(80)}
+            |= ${ns.toString().ellipsizeEnd(80*4)}
             |==========================================
             """.trimIndent())
         }
