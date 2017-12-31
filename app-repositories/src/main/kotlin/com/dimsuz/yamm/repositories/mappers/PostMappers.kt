@@ -1,9 +1,12 @@
 package com.dimsuz.yamm.repositories.mappers
 
 import com.dimsuz.yamm.data.sources.db.models.PostDbModel
+import com.dimsuz.yamm.data.sources.db.models.PostWithUserDbModel
 import com.dimsuz.yamm.data.sources.network.models.PostJson
+import com.dimsuz.yamm.domain.errors.ModelMapException
 import com.dimsuz.yamm.domain.errors.throwExpectedNotNull
 import com.dimsuz.yamm.domain.models.Post
+import com.dimsuz.yamm.domain.models.User
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 
@@ -20,10 +23,10 @@ fun PostJson.toDatabaseModel(): PostDbModel {
   )
 }
 
-fun PostJson.toDomainModel(): Post {
+fun PostJson.toDomainModel(user: User): Post {
   return Post(
     id = this.id ?: throwExpectedNotNull("post", "id"),
-    userId = this.user_id ?: throwExpectedNotNull("post", "user_id"),
+    user = user,
     channelId = this.channel_id ?: throwExpectedNotNull("post", "channel_id"),
     message = this.message.orEmpty(),
     type = this.type?.toPostType() ?: throwExpectedNotNull("post", "type"),
@@ -36,7 +39,7 @@ fun PostJson.toDomainModel(): Post {
 fun Post.toDatabaseModel(): PostDbModel {
   return PostDbModel(
     id = this.id,
-    userId = this.userId,
+    userId = this.user.id,
     channelId = this.channelId,
     message = this.message,
     type = this.type.toDbPostType(),
@@ -46,10 +49,10 @@ fun Post.toDatabaseModel(): PostDbModel {
   )
 }
 
-fun PostDbModel.toDomainModel(): Post {
+fun PostDbModel.toDomainModel(user: User): Post {
   return Post(
     id = this.id,
-    userId = this.userId,
+    user = user,
     channelId = this.channelId,
     message = this.message.orEmpty(),
     type = this.type.toPostType(),
@@ -57,6 +60,12 @@ fun PostDbModel.toDomainModel(): Post {
     updateAt = LocalDateTime.ofEpochSecond(this.updateAt, 0, ZoneOffset.UTC),
     deleteAt = LocalDateTime.ofEpochSecond(this.deleteAt, 0, ZoneOffset.UTC)
     )
+}
+
+fun PostWithUserDbModel.toDomainModel(): Post {
+  // users are supposed to be fetched along with the posts (if absent)
+  val user = this.user ?: throw ModelMapException("failed to find user for post in DB, userId=${this.post.userId}")
+  return this.post.toDomainModel(user.toDomainModel())
 }
 
 private fun String.toPostType(): Post.Type {

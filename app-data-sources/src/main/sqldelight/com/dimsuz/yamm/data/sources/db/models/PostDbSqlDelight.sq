@@ -16,6 +16,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 select_with_offset:
 SELECT *
 FROM post
+LEFT OUTER JOIN user
+ON post.user_id = user.id
 WHERE channel_id = ?
 ORDER BY update_at DESC, create_at DESC
 LIMIT ?

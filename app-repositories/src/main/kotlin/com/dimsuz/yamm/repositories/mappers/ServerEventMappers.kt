@@ -26,13 +26,14 @@ private fun buildServerEvent(event: WebSocketMmEvent?): ServerEvent {
 fun createEventFromData(data: WebSocketMmEvent.Data): ServerEvent? {
   return when (data) {
     is WebSocketMmEvent.Data.Posted -> {
-      val post = data.post?.toDomainModel() ?: throwExpectedNotNull("posted.data", "post")
-      ServerEvent.Posted(
-        channelId = data.post?.channel_id ?: throwExpectedNotNull("posted.data.post", "channel_id"),
-        channelName = data.channel_name ?: throwExpectedNotNull("posted.data", "channel_name"),
-        teamId = data.team_id ?: throwExpectedNotNull("posted.data", "team_id"),
-        post = post
-      )
+      TODO("figure out a way to save post along with the user and fetch it if absent")
+//      val post = data.post?.toDomainModel() ?: throwExpectedNotNull("posted.data", "post")
+//      ServerEvent.Posted(
+//        channelId = data.post?.channel_id ?: throwExpectedNotNull("posted.data.post", "channel_id"),
+//        channelName = data.channel_name ?: throwExpectedNotNull("posted.data", "channel_name"),
+//        teamId = data.team_id ?: throwExpectedNotNull("posted.data", "team_id"),
+//        post = post
+//      )
     }
     is WebSocketMmEvent.Data.ChannelViewed -> {
       ServerEvent.ChannelViewed(

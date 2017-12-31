@@ -3,6 +3,8 @@ package com.dimsuz.yamm.data.sources.db.persistence
 import com.dimsuz.yamm.core.util.forEachApply
 import com.dimsuz.yamm.data.sources.db.models.PostDbModel
 import com.dimsuz.yamm.data.sources.db.models.PostDbSqlDelightModel
+import com.dimsuz.yamm.data.sources.db.models.PostWithUserDbModel
+import com.dimsuz.yamm.data.sources.db.models.UserDbModel
 import com.dimsuz.yamm.data.sources.db.util.inTransaction
 import com.squareup.sqlbrite2.BriteDatabase
 import io.reactivex.Observable
@@ -21,9 +23,9 @@ internal class PostPersistenceImpl @Inject constructor(
     }
   }
 
-  override fun getPostsLive(channelId: String, offset: Int, count: Int): Observable<List<PostDbModel>> {
+  override fun getPostsLive(channelId: String, offset: Int, count: Int): Observable<List<PostWithUserDbModel>> {
     val query = PostDbModel.FACTORY.select_with_offset(channelId, count.toLong(), offset.toLong())
-    val mapper = PostDbModel.FACTORY.select_with_offsetMapper()
+    val mapper = PostDbModel.FACTORY.select_with_offsetMapper(::PostWithUserDbModel, UserDbModel.FACTORY)
     return briteDatabase.createQuery(query.tables, query.statement, *query.args)
       .mapToList(mapper::map)
   }

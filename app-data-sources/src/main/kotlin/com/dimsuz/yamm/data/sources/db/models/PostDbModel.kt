@@ -27,3 +27,12 @@ data class PostDbModel(
   override fun delete_at() = deleteAt
 
 }
+
+data class PostWithUserDbModel(
+  val post: PostDbModel,
+  val user: UserDbModel?
+) : PostDbSqlDelightModel.Select_with_offsetModel<PostDbModel, UserDbModel> {
+
+  override fun post() = post
+  override fun user() = user
+}

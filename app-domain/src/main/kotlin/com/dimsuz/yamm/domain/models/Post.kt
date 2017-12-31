@@ -4,7 +4,7 @@ import org.threeten.bp.LocalDateTime
 
 data class Post(
   val id: String,
-  val userId: String,
+  val user: User,
   val channelId: String,
   val message: String,
   val type: Type,

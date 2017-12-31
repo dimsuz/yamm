@@ -1,6 +1,6 @@
 package com.dimsuz.yamm.repositories
 
-import com.dimsuz.yamm.data.sources.db.models.PostDbModel
+import com.dimsuz.yamm.data.sources.db.models.PostWithUserDbModel
 import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Post
@@ -43,6 +43,6 @@ internal class PostRepositoryImpl @Inject constructor(
       channelId = channelId,
       offset = firstPage * pageSize,
       count = (lastPage - firstPage + 1) * pageSize)
-      .map { it.map(PostDbModel::toDomainModel) }
+      .map { it.map(PostWithUserDbModel::toDomainModel) }
   }
 }
