@@ -11,6 +11,22 @@ import javax.inject.Inject
 internal class UserPersistenceImpl @Inject constructor(
   private val briteDatabase: BriteDatabase) : UserPersistence {
 
+  override fun getUserById(id: String): UserDbModel? {
+    return briteDatabase.readableDatabase
+      .executeDelightStatement(
+        UserDbModel.FACTORY.select_one_by_id(id),
+        UserDbModel.FACTORY.select_one_by_idMapper())
+      .firstOrNull()
+  }
+
+  override fun findNonExistingIds(ids: List<String>): List<String> {
+    return briteDatabase.readableDatabase
+      .executeDelightStatement(
+        UserDbModel.FACTORY.select_ids(ids.toTypedArray()),
+        UserDbModel.FACTORY.select_idsMapper())
+      .let { existingIds -> ids.minus(existingIds) }
+  }
+
   override fun getUsersById(ids: List<String>): List<UserDbModel> {
     return briteDatabase.readableDatabase
       .executeDelightStatement(

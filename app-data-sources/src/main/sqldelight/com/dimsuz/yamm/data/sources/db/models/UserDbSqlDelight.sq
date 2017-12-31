@@ -12,6 +12,17 @@ SELECT *
 FROM user
 WHERE id IN ?;
 
+select_one_by_id:
+SELECT *
+FROM user
+WHERE id = ?
+LIMIT 1;
+
+select_ids:
+SELECT id
+FROM user
+WHERE id IN ?;
+
 insert_or_replace:
 INSERT OR REPLACE INTO user
 VALUES (?, ?, ?, ?, ?, ?);
