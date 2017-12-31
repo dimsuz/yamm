@@ -11,7 +11,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class ServerEventRepositoryImpl @Inject constructor(
+internal class ServerEventRepositoryImpl @Inject constructor(
   private val mattermostEventsApi: MattermostEventsApi,
   private val sessionManager: SessionManager) : ServerEventRepository {
 
