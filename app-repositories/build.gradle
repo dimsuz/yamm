@@ -43,6 +43,5 @@ dependencies {
     kapt rootProject.ext.toothpickProcessor
 
     implementation rootProject.ext.rxJava
-    implementation rootProject.ext.timber
 }
 

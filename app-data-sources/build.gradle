@@ -54,7 +54,6 @@ dependencies {
     implementation rootProject.ext.moshi
 
     implementation rootProject.ext.rxJava
-    implementation rootProject.ext.timber
 
     implementation rootProject.ext.sqlBrite
 

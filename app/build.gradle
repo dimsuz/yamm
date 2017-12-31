@@ -55,8 +55,6 @@ dependencies {
     compile rootProject.ext.conductorMvi
     compile rootProject.ext.rxAndroid
 
-    implementation rootProject.ext.timber
-
     compile rootProject.ext.constraintLayout
     compile rootProject.ext.cicerone
 
