@@ -4,7 +4,7 @@ import com.dimsuz.yamm.data.sources.db.models.UserDbModel
 
 interface UserPersistence {
   fun getUserById(id: String): UserDbModel?
-  fun getUsersById(ids: List<String>): List<UserDbModel>
-  fun findNonExistingIds(ids: List<String>): List<String>
+  fun getUsersById(ids: Set<String>): List<UserDbModel>
+  fun findNonExistingIds(ids: Set<String>): List<String>
   fun replaceUsers(users: List<UserDbModel>)
 }

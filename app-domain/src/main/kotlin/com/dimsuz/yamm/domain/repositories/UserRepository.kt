@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 interface UserRepository {
   fun getUser(id: String): Maybe<User>
-  fun getUsers(ids: List<String>): Single<List<User>>
+  fun getUsers(ids: Set<String>): Single<List<User>>
 
-  fun refreshUsers(ids: List<String>): Completable
+  fun refreshUsers(ids: Set<String>): Completable
 }

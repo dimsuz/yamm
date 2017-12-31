@@ -19,15 +19,17 @@ internal class UserPersistenceImpl @Inject constructor(
       .firstOrNull()
   }
 
-  override fun findNonExistingIds(ids: List<String>): List<String> {
+  override fun findNonExistingIds(ids: Set<String>): List<String> {
     return briteDatabase.readableDatabase
       .executeDelightStatement(
         UserDbModel.FACTORY.select_ids(ids.toTypedArray()),
         UserDbModel.FACTORY.select_idsMapper())
-      .let { existingIds -> ids.minus(existingIds) }
+      .let { existingIds ->
+        ids.minus(existingIds).toList()
+      }
   }
 
-  override fun getUsersById(ids: List<String>): List<UserDbModel> {
+  override fun getUsersById(ids: Set<String>): List<UserDbModel> {
     return briteDatabase.readableDatabase
       .executeDelightStatement(
         UserDbModel.FACTORY.select_by_id(ids.toTypedArray()),

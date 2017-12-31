@@ -35,7 +35,7 @@ internal class ChannelRepositoryImpl @Inject internal constructor(
    * (needed when constructing user names for direct channel name)
    */
   private fun refreshTeamMates(channels: List<ChannelDbModel>): Completable {
-    val teamMateIds = channels.mapNotNull { it.teamMateId }
+    val teamMateIds = channels.mapNotNullTo(hashSetOf()) { it.teamMateId }
     return if (teamMateIds.isEmpty()) {
       Completable.complete()
     } else {

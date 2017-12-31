@@ -28,13 +28,15 @@ internal class UserRepositoryImpl @Inject constructor(
       .map { it.toDomainModel() }
   }
 
-  override fun getUsers(ids: List<String>): Single<List<User>> {
+  override fun getUsers(ids: Set<String>): Single<List<User>> {
+    if (ids.isEmpty()) return Single.just(emptyList())
     return refreshUsers(ids)
       .andThen(Single.fromCallable { userPersistence.getUsersById(ids) })
       .map { usersDb -> usersDb.map { it.toDomainModel() } }
   }
 
-  override fun refreshUsers(ids: List<String>): Completable {
+  override fun refreshUsers(ids: Set<String>): Completable {
+    if (ids.isEmpty()) return Completable.complete()
     // TODO use a more fine-grained caching mechanism to update even existing users if data is old enough
     return Completable
       .defer {
