@@ -1,10 +1,12 @@
 package com.dimsuz.yamm.repositories
 
+import com.dimsuz.yamm.core.util.checkOrLog
 import com.dimsuz.yamm.data.sources.db.models.PostWithUserDbModel
 import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.repositories.PostRepository
+import com.dimsuz.yamm.domain.repositories.UserRepository
 import com.dimsuz.yamm.repositories.mappers.toDatabaseModel
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Completable
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 internal class PostRepositoryImpl @Inject constructor(
   private val serviceApi: MattermostAuthorizedApi,
-  private val persistence: PostPersistence) : PostRepository {
+  private val persistence: PostPersistence,
+  private val userRepository: UserRepository) : PostRepository {
 
   override fun fetchPosts(channelId: String, firstPage: Int, lastPage: Int, pageSize: Int): Completable {
     check(firstPage <= lastPage)
@@ -26,10 +29,19 @@ internal class PostRepositoryImpl @Inject constructor(
       afterPostId = null)
       .map { it.posts.values }
       .flatMapCompletable { postList ->
-        Completable.fromAction {
-          val postsDatabase = postList.map { it.toDatabaseModel() }
-          persistence.replacePosts(postsDatabase)
+        val validPosts = postList.filter { it.user_id != null }
+        val postUserIds = validPosts.mapNotNullTo(hashSetOf()) { it.user_id }
+        checkOrLog(validPosts.size == postList.size) {
+          "post fetch resulted in ${postList.size - validPosts.size} invalid posts, skipping them"
         }
+        // each post must be saved only along with corresponding user object,
+        // ensure that they are present
+        userRepository.refreshUsers(postUserIds)
+          .andThen(
+            Completable.fromAction {
+              val postsDatabase = postList.map { it.toDatabaseModel() }
+              persistence.replacePosts(postsDatabase)
+            })
       }
   }
 

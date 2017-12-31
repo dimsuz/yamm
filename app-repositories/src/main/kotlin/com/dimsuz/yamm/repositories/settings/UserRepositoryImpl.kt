@@ -46,6 +46,7 @@ internal class UserRepositoryImpl @Inject constructor(
             "DB contains ${ids.size - missingIds.size} of them, fetching the rest...")
           fetchAndSaveUsers(missingIds)
         } else {
+          Timber.d("all passed user ids are fresh enough, skipping refresh of ${ids.size} users")
           Completable.complete()
         }
       }
