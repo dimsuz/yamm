@@ -1,5 +1,6 @@
 package com.dimsuz.yamm.repositories.settings
 
+import com.dimsuz.yamm.core.annotations.BaseUrl
 import com.dimsuz.yamm.data.sources.db.persistence.UserPersistence
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.User
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
   private val serviceApi: MattermostAuthorizedApi,
+  @BaseUrl private val serverApiBaseUrl: String,
   private val userPersistence: UserPersistence) : UserRepository {
 
   override fun getUser(id: String): Maybe<User> {
@@ -54,7 +56,7 @@ internal class UserRepositoryImpl @Inject constructor(
 
   private fun fetchAndSaveUsers(ids: List<String>): Completable {
     return serviceApi.getUsersByIds(ids)
-      .map { usersNetwork -> usersNetwork.map { it.toDatabaseModel() } }
+      .map { usersNetwork -> usersNetwork.map { it.toDatabaseModel(userImageForId(it.id, serverApiBaseUrl)) } }
       .flatMapCompletable { usersDatabase ->
         Completable.fromAction {
           userPersistence.replaceUsers(usersDatabase)
@@ -62,3 +64,5 @@ internal class UserRepositoryImpl @Inject constructor(
       }
   }
 }
+
+private fun userImageForId(userId: String, baseUrl: String) = "$baseUrl/users/$userId/image"

@@ -40,7 +40,7 @@ internal class UserPersistenceImpl @Inject constructor(
     val insertOrReplace = UserDbSqlDelightModel.Insert_or_replace(briteDatabase.writableDatabase)
     briteDatabase.inTransaction {
       users.forEachApply {
-        insertOrReplace.bind(id, username, firstName, lastName, nickname, email)
+        insertOrReplace.bind(id, username, firstName, lastName, nickname, email, imageUrl)
         briteDatabase.executeInsert(insertOrReplace.table, insertOrReplace.program)
       }
     }

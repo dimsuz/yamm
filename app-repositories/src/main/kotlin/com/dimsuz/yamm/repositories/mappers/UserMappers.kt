@@ -4,8 +4,8 @@ import com.dimsuz.yamm.data.sources.db.models.UserDbModel
 import com.dimsuz.yamm.data.sources.network.models.UserJson
 import com.dimsuz.yamm.domain.models.User
 
-internal fun UserJson.toDatabaseModel(): UserDbModel {
-  return UserDbModel(id, username, first_name, last_name, nickname, email)
+internal fun UserJson.toDatabaseModel(imageUrl: String): UserDbModel {
+  return UserDbModel(id, username, first_name, last_name, nickname, email, imageUrl)
 }
 
 internal fun UserDbModel.toDomainModel(): User {
@@ -15,6 +15,7 @@ internal fun UserDbModel.toDomainModel(): User {
     firstName = this.firstName,
     lastName = this.lastName,
     nickname = this.nickname,
-    email = this.email
+    email = this.email,
+    imageUrl = this.imageUrl
   )
 }

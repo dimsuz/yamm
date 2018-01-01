@@ -8,7 +8,8 @@ data class UserDbModel(
   val firstName: String?,
   val lastName: String?,
   val nickname: String?,
-  val email: String?
+  val email: String?,
+  val imageUrl: String?
 ) : UserDbSqlDelightModel {
 
   companion object {
@@ -21,5 +22,6 @@ data class UserDbModel(
   override fun last_name() = lastName
   override fun nickname() = nickname
   override fun email() = email
+  override fun imageUrl() = imageUrl
 
 }
