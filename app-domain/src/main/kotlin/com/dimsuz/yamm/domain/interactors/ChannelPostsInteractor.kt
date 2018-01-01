@@ -92,9 +92,7 @@ class ChannelPostsInteractor @Inject constructor(
   private fun processServerEvent(event: ServerEvent) {
     when (event) {
       is ServerEvent.UserTyping -> logger.debug("user typing!")
-      is ServerEvent.Posted -> {
-        postRepository.insert(event.post)
-      }
+      is ServerEvent.Posted -> logger.debug("got post event!")
       is ServerEvent.Unknown -> logger.debug("unknown event")
     }
   }
