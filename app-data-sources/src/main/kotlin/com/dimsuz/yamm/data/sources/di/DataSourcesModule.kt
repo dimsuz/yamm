@@ -2,6 +2,8 @@ package com.dimsuz.yamm.data.sources.di
 
 import android.content.Context
 import com.dimsuz.yamm.core.annotations.ApplicationContext
+import com.dimsuz.yamm.core.annotations.BaseUrl
+import com.dimsuz.yamm.core.annotations.ServerUrl
 import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.data.BuildConfig
 import com.dimsuz.yamm.data.sources.db.DatabaseHelper
@@ -28,7 +30,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
-import toothpick.Scope
 import toothpick.config.Module
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -59,7 +60,8 @@ fun bindDataSourcesCommonDependencies(module: Module) {
  */
 fun bindDataSourcesDependencies(module: Module, serverUrl: String) {
   with(module) {
-    bind(String::class.java).withName("serverUrl").toInstance(serverUrl)
+    bind(String::class.java).withName(ServerUrl::class.java).toInstance(serverUrl)
+    bind(String::class.java).withName(BaseUrl::class.java).toInstance(createBaseUrl(serverUrl))
     bind(Interceptor::class.java).to(SessionTokenAddInterceptor::class.java).singletonInScope()
     bind(OkHttpClient::class.java).toProvider(HttpClientProvider::class.java).providesSingletonInScope()
     bind(MattermostAuthorizedApi::class.java).toProvider(MattermostAuthorizedApiProvider::class.java).providesSingletonInScope()
@@ -97,10 +99,11 @@ internal class HttpClientProvider
 internal class MattermostAuthorizedApiProvider
 @Inject constructor(private val httpClient: OkHttpClient,
                     private val moshi: Moshi,
-                    private val scope: Scope): Provider<MattermostAuthorizedApi> {
+                    @ServerUrl private val serverUrl: String): Provider<MattermostAuthorizedApi> {
+
   override fun get(): MattermostAuthorizedApi {
-    Timber.e("creating server api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
-    return createMattermostApi(httpClient, moshi, scope.getInstance(String::class.java, "serverUrl"))
+    Timber.e("creating server api with a server url: $serverUrl")
+    return createMattermostApi(httpClient, moshi, serverUrl)
   }
 
 }
@@ -108,19 +111,19 @@ internal class MattermostAuthorizedApiProvider
 internal class MattermostEventsApiProvider
 @Inject constructor(private val httpClient: OkHttpClient,
                     private val moshi: Moshi,
-                    private val scope: Scope): Provider<MattermostEventsApi> {
+                    @ServerUrl private val serverUrl: String): Provider<MattermostEventsApi> {
   override fun get(): MattermostEventsApi {
-    return MattermostEventsApi(httpClient, moshi, scope.getInstance(String::class.java, "serverUrl"))
+    return MattermostEventsApi(httpClient, moshi, serverUrl)
   }
 }
 
 internal class MattermostPublicApiProvider
 @Inject constructor(private val moshi: Moshi,
-                    private val scope: Scope): Provider<MattermostPublicApi> {
+                    @ServerUrl private val serverUrl: String): Provider<MattermostPublicApi> {
 
   override fun get(): MattermostPublicApi {
-    Timber.e("creating public api with a server url: ${scope.getInstance(String::class.java, "serverUrl")}")
-    return createMattermostApi(createHttpClient(), moshi, scope.getInstance(String::class.java, "serverUrl"))
+    Timber.e("creating public api with a server url: $serverUrl")
+    return createMattermostApi(createHttpClient(), moshi, serverUrl)
   }
 }
 
@@ -157,14 +160,16 @@ private fun createMoshi(): Moshi {
 }
 
 private inline fun <reified T> createMattermostApi(httpClient: OkHttpClient,
-                                                   moshi: Moshi, serverUrl: String): T {
+                                                   moshi: Moshi,
+                                                   serverUrl: String): T {
   val callAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
   val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(callAdapterFactory)
     .client(httpClient)
-    .baseUrl("$serverUrl/api/$API_VERSION/")
+    .baseUrl(createBaseUrl(serverUrl))
     .build()
   return retrofit.create(T::class.java)
 }
 
+private fun createBaseUrl(serverUrl: String) = "$serverUrl/api/$API_VERSION/"
