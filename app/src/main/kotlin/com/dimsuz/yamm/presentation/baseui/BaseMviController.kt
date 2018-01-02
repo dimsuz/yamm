@@ -7,8 +7,12 @@ import android.view.ViewGroup
 import com.dimsuz.yamm.presentation.baseui.state_render.StateRenderer
 import com.hannesdorfmann.mosby3.MviController
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.*
 
-abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : MviController<V, P>, MviView<VS>, ResettableSupport {
+abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>>
+  : MviController<V, P>, MviView<VS>,
+  LayoutContainer {
 
   /**
    * A base interface for configuring BaseMviController.
@@ -26,12 +30,11 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
   protected          val config: Config by lazy(LazyThreadSafetyMode.NONE, { createConfig() })
   protected          var previousViewState: VS? = null
 
-  final override     val refManager = ResettableReferencesManager()
-  final override     var bindPropsRootView: View? = null
-
-  private            var stateRenderHelpers: List<StateRenderer<VS>> = emptyList()
+  private var bindPropsRootView: View? = null
+  private var stateRenderHelpers: List<StateRenderer<VS>> = emptyList()
 
   protected abstract fun createConfig(): Config
+  override val containerView: View? get() = bindPropsRootView
 
   constructor()
   constructor(args: Bundle) : super(args)
@@ -51,7 +54,8 @@ abstract class BaseMviController<VS, V : MviView<VS>, P: MviPresenter<V, VS>> : 
   abstract fun initializeView(rootView: View)
 
   override fun onDestroyView(view: View) {
-    refManager.reset()
+    clearFindViewByIdCache()
+    bindPropsRootView = null
     super.onDestroyView(view)
     if (config.clearPreviousStateOnDestroy) {
       previousViewState = null

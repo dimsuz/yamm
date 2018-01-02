@@ -7,8 +7,8 @@ import com.dimsuz.yamm.R
 import com.dimsuz.yamm.presentation.baseui.HasLceState
 
 class YammLceStateRenderer<in S : HasLceState<String, *>> (
-  @IdRes contentViewId: Int = R.id.content_view,
-  @IdRes progressBarViewId: Int = R.id.progress_bar,
+  @IdRes contentViewId: Int = R.id.contentView,
+  @IdRes progressBarViewId: Int = R.id.progressBar,
   additionalContentViewIds: IntArray? = null,
   @IdRes errorContainerViewId: Int = 0)
 
@@ -17,7 +17,7 @@ class YammLceStateRenderer<in S : HasLceState<String, *>> (
 
 private fun createErrorDetailsRenderer(): (View, String) -> Unit {
   return { errorView, error ->
-    val errorTitleView = errorView.findViewById<TextView>(R.id.error_text)
+    val errorTitleView = errorView.findViewById<TextView>(R.id.errorText)
     errorTitleView.text = error
   }
 }
