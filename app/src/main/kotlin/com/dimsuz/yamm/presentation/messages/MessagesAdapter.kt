@@ -4,12 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.domain.models.Post
+import com.squareup.picasso.Picasso
 import org.threeten.bp.format.DateTimeFormatter
 
-class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
+class MessagesAdapter() : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
   private var data: List<Post> = emptyList()
   private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
@@ -29,6 +31,11 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
     holder.messageTextView.text = item.message
     holder.messageAuthorView.text = item.user.fullName
     holder.messageTimeView.text = item.createAt.format(timeFormatter)
+    Picasso.get()
+      .load(item.user.imageUrl)
+      .resizeDimen(R.dimen.post_avatar_size, R.dimen.post_avatar_size)
+      .centerCrop()
+      .into(holder.messageImage)
   }
 
   override fun getItemCount() = data.size
@@ -37,5 +44,6 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
     val messageTextView: TextView = itemView.findViewById(R.id.messageText)
     val messageAuthorView: TextView = itemView.findViewById(R.id.messageAuthor)
     val messageTimeView: TextView = itemView.findViewById(R.id.messageTime)
+    val messageImage: ImageView = itemView.findViewById(R.id.messageIcon)
   }
 }
