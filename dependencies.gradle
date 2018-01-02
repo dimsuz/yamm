@@ -40,6 +40,8 @@ ext {
   toothpickRuntime = 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.1'
   toothpickProcessor = 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.1'
 
+  picassoSnapshot = 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
+
   junit = 'junit:junit:4.12'
   assertJ = 'org.assertj:assertj-core:3.6.2'
 }
