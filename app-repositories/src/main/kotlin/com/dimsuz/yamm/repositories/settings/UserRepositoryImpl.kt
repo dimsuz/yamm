@@ -65,4 +65,4 @@ internal class UserRepositoryImpl @Inject constructor(
   }
 }
 
-private fun userImageForId(userId: String, baseUrl: String) = "$baseUrl/users/$userId/image"
+private fun userImageForId(userId: String, baseUrl: String) = "${baseUrl}users/$userId/image"
