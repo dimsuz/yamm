@@ -17,7 +17,6 @@ import com.dimsuz.yamm.presentation.navdrawer.context.base.DrawerContextType
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
 import com.dimsuz.yamm.util.instance
 import io.reactivex.subjects.BehaviorSubject
-import timber.log.Timber
 import toothpick.config.Module
 
 class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>() {
@@ -78,7 +77,6 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
 
   override fun renderViewState(viewState: Messages.ViewState) {
     if (previousViewState?.posts != viewState.posts) {
-      Timber.d(viewState.posts.firstOrNull().toString())
       messagesAdapter.setData(viewState.posts)
     }
   }
