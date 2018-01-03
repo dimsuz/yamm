@@ -72,7 +72,11 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
   }
 
   override fun sendPostIntent(): Observable<String> {
-    return sendMessageButton.clicks().map { sendMessageTextView.text.toString() }
+    return sendMessageButton.clicks()
+      .map { sendMessageTextView.text.toString() }
+      // if sendMessageTextView content will start being set from viewState on each text change,
+      // remove this line - it should be taken care of by view state. for now going a simple route
+      .doOnNext { sendMessageTextView.setText("") }
   }
 
   override fun renderViewState(viewState: Messages.ViewState) {
