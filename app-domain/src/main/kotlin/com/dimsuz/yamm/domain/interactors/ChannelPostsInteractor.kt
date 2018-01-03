@@ -50,6 +50,10 @@ class ChannelPostsInteractor @Inject constructor(
     handleEvent(InputEvent.ChannelIdChanged(channelId))
   }
 
+  fun addPost(message: String) {
+    handleEvent(InputEvent.SendPostRequested(message))
+  }
+
   fun loadAnotherPage() {
     checkMainThread()
     handleEvent(InputEvent.NextPageRequested())

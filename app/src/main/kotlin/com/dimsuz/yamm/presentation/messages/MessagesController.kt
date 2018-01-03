@@ -12,11 +12,13 @@ import com.dimsuz.yamm.presentation.baseui.util.appScope
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DrawerContextType
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
 import com.dimsuz.yamm.util.instance
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.messages.*
 import toothpick.config.Module
 
-class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>() {
+class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>(), Messages.View {
 
   override fun createScopedConfig() = object : Config {
     override val viewLayoutResource = R.layout.messages
@@ -69,9 +71,16 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
     super.onDestroy()
   }
 
+  override fun sendPostIntent(): Observable<String> {
+    return sendMessageButton.clicks().map { sendMessageTextView.text.toString() }
+  }
+
   override fun renderViewState(viewState: Messages.ViewState) {
     if (previousViewState?.posts != viewState.posts) {
       messagesAdapter.setData(viewState.posts)
+    }
+    if (viewState.postDraft != null) {
+      sendMessageTextView.setText(viewState.postDraft)
     }
   }
 

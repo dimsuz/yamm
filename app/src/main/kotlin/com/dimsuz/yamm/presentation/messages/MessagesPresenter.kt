@@ -11,11 +11,13 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 sealed class ScreenEvent
+
 private data class PostListChanged(val posts: List<Post>) : ScreenEvent()
 private data class PostListLoadError(val error: Throwable) : ScreenEvent()
 private      class PostListLoading : ScreenEvent()
 private      class PostListLoadFinished : ScreenEvent()
 private data class LiveConnectionError(val error: Throwable) : ScreenEvent()
+private      class PostSendSuccess : ScreenEvent()
 
 class MessagesPresenter @Inject constructor(
   schedulers: AppSchedulers,
@@ -24,11 +26,14 @@ class MessagesPresenter @Inject constructor(
 ) : BaseMviPresenter<Messages.View, Messages.ViewState, ScreenEvent>(schedulers) {
 
   override fun createIntents(): List<Observable<out ScreenEvent>> {
-    val postsListChanges = channelPostsInteractor.channelPosts()
+    val postsListChanges = intent { channelPostsInteractor.channelPosts() }
       .map(::PostListChanged)
-    val postStateChanges = channelPostsInteractor.stateEvents()
+    val postStateChanges = intent { channelPostsInteractor.stateEvents() }
       .map(this::postEventToScreenEvent)
-    return listOf(postsListChanges, postStateChanges)
+    val sendPostClicks = intent(Messages.View::sendPostIntent)
+      .doOnNext { channelPostsInteractor.addPost(it) }
+      .map { PostSendSuccess() }
+    return listOf(postsListChanges, postStateChanges, sendPostClicks)
   }
 
   override fun viewStateReducer(previousState: Messages.ViewState,
@@ -49,6 +54,9 @@ class MessagesPresenter @Inject constructor(
       is LiveConnectionError -> {
         previousState.copy(liveConnectionError = errorDetailsExtractor.extractErrorText(event.error))
       }
+      is PostSendSuccess -> {
+        previousState.copy(postDraft = null)
+      }
     }
   }
 
@@ -62,7 +70,8 @@ class MessagesPresenter @Inject constructor(
       posts = emptyList(),
       contentLoadingError = null,
       liveConnectionError = null,
-      showProgressBar = false
+      showProgressBar = false,
+      postDraft = null
     )
   }
 
