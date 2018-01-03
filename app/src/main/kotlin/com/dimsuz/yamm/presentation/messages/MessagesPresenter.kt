@@ -17,6 +17,7 @@ private data class PostListLoadError(val error: Throwable) : ScreenEvent()
 private      class PostListLoading : ScreenEvent()
 private      class PostListLoadFinished : ScreenEvent()
 private data class LiveConnectionError(val error: Throwable) : ScreenEvent()
+private data class PostInputEmptyStateChanged(val isEmpty: Boolean) : ScreenEvent()
 private      class PostSendSuccess : ScreenEvent()
 
 class MessagesPresenter @Inject constructor(
@@ -30,10 +31,14 @@ class MessagesPresenter @Inject constructor(
       .map(::PostListChanged)
     val postStateChanges = intent { channelPostsInteractor.stateEvents() }
       .map(this::postEventToScreenEvent)
+    val inputEmptyStateChanges = intent(Messages.View::postInputTextChangedIntent)
+      .map { it.isEmpty() }
+      .distinctUntilChanged()
+      .map { PostInputEmptyStateChanged(it) }
     val sendPostClicks = intent(Messages.View::sendPostIntent)
       .doOnNext { channelPostsInteractor.addPost(it) }
       .map { PostSendSuccess() }
-    return listOf(postsListChanges, postStateChanges, sendPostClicks)
+    return listOf(postsListChanges, postStateChanges, sendPostClicks, inputEmptyStateChanges)
   }
 
   override fun viewStateReducer(previousState: Messages.ViewState,
@@ -54,6 +59,11 @@ class MessagesPresenter @Inject constructor(
       is LiveConnectionError -> {
         previousState.copy(liveConnectionError = errorDetailsExtractor.extractErrorText(event.error))
       }
+      is PostInputEmptyStateChanged -> {
+        previousState.copy(
+          sendButtonVisible = !event.isEmpty,
+          attachButtonVisible = event.isEmpty)
+      }
       is PostSendSuccess -> {
         previousState.copy(postDraft = null)
       }
@@ -71,7 +81,9 @@ class MessagesPresenter @Inject constructor(
       contentLoadingError = null,
       liveConnectionError = null,
       showProgressBar = false,
-      postDraft = null
+      postDraft = null,
+      sendButtonVisible = false,
+      attachButtonVisible = true
     )
   }
 

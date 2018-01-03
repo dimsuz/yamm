@@ -7,6 +7,7 @@ import io.reactivex.Observable
 
 interface Messages {
   interface View : MviView<ViewState> {
+    fun postInputTextChangedIntent(): Observable<String>
     fun sendPostIntent(): Observable<String>
   }
 
@@ -15,7 +16,9 @@ interface Messages {
     override val contentLoadingError: String?,
     val liveConnectionError: String?,
     val posts: List<Post>,
-    val postDraft: String?
+    val postDraft: String?,
+    val sendButtonVisible: Boolean,
+    val attachButtonVisible: Boolean
   ) : HasLceState<String, ViewState> {
 
     override fun clearTransientState(): ViewState {

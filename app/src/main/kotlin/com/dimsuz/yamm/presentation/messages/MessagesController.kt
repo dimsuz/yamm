@@ -9,14 +9,17 @@ import com.dimsuz.yamm.presentation.MainActivity
 import com.dimsuz.yamm.presentation.baseui.ScopedMviController
 import com.dimsuz.yamm.presentation.baseui.util.activityUnsafe
 import com.dimsuz.yamm.presentation.baseui.util.appScope
+import com.dimsuz.yamm.presentation.baseui.util.isVisible
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DrawerContextType
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
 import com.dimsuz.yamm.util.instance
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.messages.*
 import toothpick.config.Module
+import java.util.concurrent.TimeUnit
 
 class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>(), Messages.View {
 
@@ -71,6 +74,13 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
     super.onDestroy()
   }
 
+  override fun postInputTextChangedIntent(): Observable<String> {
+    return sendMessageTextView
+      .textChanges()
+      .debounce(300, TimeUnit.MILLISECONDS)
+      .map { it.toString() }
+  }
+
   override fun sendPostIntent(): Observable<String> {
     return sendMessageButton.clicks()
       .map { sendMessageTextView.text.toString() }
@@ -86,6 +96,9 @@ class MessagesController : ScopedMviController<Messages.ViewState, Messages.View
     if (viewState.postDraft != null) {
       sendMessageTextView.setText(viewState.postDraft)
     }
+
+    sendMessageButton.isVisible = viewState.sendButtonVisible
+    attachFileButton.isVisible = viewState.attachButtonVisible
   }
 
 }
