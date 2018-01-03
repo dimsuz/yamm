@@ -13,3 +13,5 @@ inline fun <T> Iterable<T>.forEachApply(action: T.() -> Unit) {
 fun String.ellipsizeEnd(maxLength: Int): String {
   return if (length > maxLength) this.take(maxLength-1) + ellipsis else this
 }
+
+val Class<*>.simpleNameRelative get() = simpleName.takeLastWhile { it != '.' }
