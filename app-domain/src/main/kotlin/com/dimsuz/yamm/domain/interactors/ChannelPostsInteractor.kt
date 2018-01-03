@@ -100,26 +100,29 @@ class ChannelPostsInteractor @Inject constructor(
 
   private fun executeCommand(command: Command): Completable {
     return when (command) {
-      is Command.RunQuery -> {
-        val query = command.query
-        // TODO caching is needed here so that posts would be cached only if
-        // channel cache is invalidated somehow (either timebased or websocket told us)
-        Completable
-          .fromAction {
-            queryChanges.onNext(query)
-            stateEvents.onNext(ChannelPostEvent.Loading())
-          }
-          .andThen(Completable.defer {
-            postRepository
-              .fetchPosts(query.channelId, query.firstPage, query.lastPage, query.pageSize)
-              .andThen(Completable.fromAction { stateEvents.onNext(ChannelPostEvent.Idle()) })
-              .onErrorResumeNext({ e -> Completable.fromAction { stateEvents.onNext(ChannelPostEvent.LoadFailed(e)) }})
-          })
-      }
-      is Command.SendPost -> {
-        TODO("not implemented")
-      }
+      is Command.RunQuery -> createRunQueryOperation(command.query)
+      is Command.SendPost -> createSendPostOperation(command)
     }
+  }
+
+  private fun createRunQueryOperation(query: QueryState): Completable {
+    // TODO caching is needed here so that posts would be cached only if
+    // channel cache is invalidated somehow (either timebased or websocket told us)
+    return Completable
+      .fromAction {
+        queryChanges.onNext(query)
+        stateEvents.onNext(ChannelPostEvent.Loading())
+      }
+      .andThen(Completable.defer {
+        postRepository
+          .fetchPosts(query.channelId, query.firstPage, query.lastPage, query.pageSize)
+          .andThen(Completable.fromAction { stateEvents.onNext(ChannelPostEvent.Idle()) })
+          .onErrorResumeNext({ e -> Completable.fromAction { stateEvents.onNext(ChannelPostEvent.LoadFailed(e)) } })
+      })
+  }
+
+  private fun createSendPostOperation(command: Command.SendPost): Completable {
+    return postRepository.addNew(command.channelId, command.message)
   }
 
   private fun processServerEvent(event: ServerEvent) {

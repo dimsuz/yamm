@@ -3,6 +3,7 @@ package com.dimsuz.yamm.repositories
 import com.dimsuz.yamm.core.util.checkOrLog
 import com.dimsuz.yamm.data.sources.db.models.PostWithUserDbModel
 import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
+import com.dimsuz.yamm.data.sources.network.models.PostCreateParams
 import com.dimsuz.yamm.data.sources.network.services.MattermostAuthorizedApi
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.repositories.PostRepository
@@ -43,6 +44,14 @@ internal class PostRepositoryImpl @Inject constructor(
               persistence.replacePosts(postsDatabase)
             })
       }
+  }
+
+  override fun addNew(channelId: String, message: String): Completable {
+    // adding post should result in web socket event which would auto-insert it.
+    // so ignoring api result here hoping it would work
+    // (can reiterate this later and insert result in DB if this strategy fails)
+    return serviceApi.createPost(PostCreateParams(channelId, message, null, null, null))
+      .toCompletable()
   }
 
   override fun postsLive(channelId: String, firstPage: Int, lastPage: Int, pageSize: Int): Observable<List<Post>> {

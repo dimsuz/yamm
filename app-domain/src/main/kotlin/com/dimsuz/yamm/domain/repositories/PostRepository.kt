@@ -8,4 +8,5 @@ interface PostRepository {
   fun fetchPosts(channelId: String, firstPage: Int, lastPage: Int, pageSize: Int): Completable
   fun postsLive(channelId: String, firstPage: Int, lastPage: Int, pageSize: Int): Observable<List<Post>>
 
+  fun addNew(channelId: String, message: String): Completable
 }

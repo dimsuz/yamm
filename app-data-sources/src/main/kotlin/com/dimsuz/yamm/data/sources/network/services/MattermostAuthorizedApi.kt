@@ -1,6 +1,7 @@
 package com.dimsuz.yamm.data.sources.network.services
 
 import com.dimsuz.yamm.data.sources.network.models.ChannelJson
+import com.dimsuz.yamm.data.sources.network.models.PostCreateParams
 import com.dimsuz.yamm.data.sources.network.models.PostListJson
 import com.dimsuz.yamm.data.sources.network.models.TeamJson
 import com.dimsuz.yamm.data.sources.network.models.UserJson
@@ -30,4 +31,7 @@ interface MattermostAuthorizedApi {
                       @Query("since") sinceTimestamp: Int?,
                       @Query("before") beforePostId: String?,
                       @Query("after") afterPostId: String?): Single<PostListJson>
+
+  @POST("posts")
+  fun createPost(@Body params: PostCreateParams): Single<Any>
 }
