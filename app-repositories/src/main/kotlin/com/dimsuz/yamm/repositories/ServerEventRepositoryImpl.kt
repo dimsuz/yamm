@@ -1,26 +1,27 @@
 package com.dimsuz.yamm.repositories
 
+import com.dimsuz.yamm.data.sources.db.persistence.PostPersistence
 import com.dimsuz.yamm.data.sources.network.models.WebSocketAuthJson
 import com.dimsuz.yamm.data.sources.network.models.WebSocketMmEvent
 import com.dimsuz.yamm.data.sources.network.services.MattermostEventsApi
 import com.dimsuz.yamm.data.sources.network.services.WebSocketEvent
 import com.dimsuz.yamm.domain.errors.throwExpectedNotNull
 import com.dimsuz.yamm.domain.models.ServerEvent
-import com.dimsuz.yamm.domain.repositories.PostRepository
 import com.dimsuz.yamm.domain.repositories.ServerEventRepository
 import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.domain.repositories.UserRepository
-import com.dimsuz.yamm.repositories.mappers.toDomainModel
+import com.dimsuz.yamm.repositories.mappers.toDatabaseModel
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class ServerEventRepositoryImpl @Inject constructor(
   private val mattermostEventsApi: MattermostEventsApi,
   private val sessionManager: SessionManager,
   private val userRepository: UserRepository,
-  private val postRepository: PostRepository) : ServerEventRepository {
+  private val postPersistence: PostPersistence) : ServerEventRepository {
 
   override fun serverEventsLive(connectStateChanges: Observable<Boolean>): Observable<ServerEvent> {
     return connectStateChanges.distinctUntilChanged()
@@ -60,11 +61,13 @@ internal class ServerEventRepositoryImpl @Inject constructor(
         val channelId = postNM.channel_id ?: throwExpectedNotNull("posted.data.post", "channel_id")
         val channelName = data.channel_name ?: throwExpectedNotNull("posted.data", "channel_name")
         val teamId = data.team_id ?: throwExpectedNotNull("posted.data", "team_id")
+        // user must be always present along with the post, ensure that
         userRepository.getUser(userId)
-          .map { user ->
-            val post = postNM.toDomainModel(user)
-            postRepository.insert(post)
-            ServerEvent.Posted(channelId, teamId, channelName, post)
+          .doOnComplete { Timber.e("user $userId not found, not saving post without user") }
+          .map {
+            val postDbModel = postNM.toDatabaseModel()
+            postPersistence.replacePosts(listOf(postDbModel))
+            ServerEvent.Posted(channelId, teamId, channelName, postDbModel.id)
           }
       }
       is WebSocketMmEvent.Data.ChannelViewed -> {

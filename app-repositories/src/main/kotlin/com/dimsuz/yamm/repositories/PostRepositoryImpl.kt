@@ -45,10 +45,6 @@ internal class PostRepositoryImpl @Inject constructor(
       }
   }
 
-  override fun insert(post: Post) {
-    persistence.replacePosts(listOf(post.toDatabaseModel()))
-  }
-
   override fun postsLive(channelId: String, firstPage: Int, lastPage: Int, pageSize: Int): Observable<List<Post>> {
     check(firstPage <= lastPage)
     return persistence.getPostsLive(

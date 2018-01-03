@@ -8,7 +8,7 @@ sealed class ServerEvent {
     val channelId: String,
     val teamId: String,
     val channelName: String,
-    val post: Post) : ServerEvent()
+    val postId: String) : ServerEvent()
 
   data class ChannelViewed(
     val channelId: String) : ServerEvent()
