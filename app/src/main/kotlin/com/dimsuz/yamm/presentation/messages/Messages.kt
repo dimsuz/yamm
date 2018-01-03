@@ -5,7 +5,7 @@ import com.dimsuz.yamm.presentation.baseui.HasLceState
 import com.dimsuz.yamm.presentation.baseui.MviView
 import io.reactivex.Observable
 
-interface Messages {
+internal interface Messages {
   interface View : MviView<ViewState> {
     fun postInputTextChangedIntent(): Observable<String>
     fun sendPostIntent(): Observable<String>

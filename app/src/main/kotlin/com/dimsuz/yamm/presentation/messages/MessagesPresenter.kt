@@ -10,7 +10,7 @@ import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
 import javax.inject.Inject
 
-sealed class ScreenEvent
+internal sealed class ScreenEvent
 
 private data class PostListChanged(val posts: List<Post>) : ScreenEvent()
 private data class PostListLoadError(val error: Throwable) : ScreenEvent()
@@ -20,7 +20,7 @@ private data class LiveConnectionError(val error: Throwable) : ScreenEvent()
 private data class PostInputEmptyStateChanged(val isEmpty: Boolean) : ScreenEvent()
 private      class PostSendSuccess : ScreenEvent()
 
-class MessagesPresenter @Inject constructor(
+internal class MessagesPresenter @Inject constructor(
   schedulers: AppSchedulers,
   private val channelPostsInteractor: ChannelPostsInteractor,
   private val errorDetailsExtractor: ErrorDetailsExtractor

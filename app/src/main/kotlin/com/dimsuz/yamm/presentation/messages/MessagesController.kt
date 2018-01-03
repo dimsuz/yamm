@@ -21,7 +21,9 @@ import kotlinx.android.synthetic.main.messages.*
 import toothpick.config.Module
 import java.util.concurrent.TimeUnit
 
-class MessagesController : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>(), Messages.View {
+internal class MessagesController
+  : ScopedMviController<Messages.ViewState, Messages.View, MessagesPresenter>(),
+  Messages.View {
 
   override fun createScopedConfig() = object : Config {
     override val viewLayoutResource = R.layout.messages
