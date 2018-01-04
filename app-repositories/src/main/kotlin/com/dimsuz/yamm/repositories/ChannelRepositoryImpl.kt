@@ -18,6 +18,14 @@ internal class ChannelRepositoryImpl @Inject internal constructor(
   private val channelPersistence: ChannelPersistence,
   private val userRepository: UserRepository) : ChannelRepository {
 
+  override fun getChannelIdByName(name: String, teamId: String): String? {
+    return channelPersistence.getChannelByName(name, teamId)
+  }
+
+  override fun getChannelIds(userId: String, teamId: String): List<String> {
+    return channelPersistence.getUserChannelIds(userId, teamId)
+  }
+
   override fun refreshUserChannels(userId: String, teamId: String): Completable {
     return serviceApi.getUserChannels(userId, teamId)
       .map { channelsNetwork -> channelsNetwork.map { it.toDatabaseModel(userId, teamId) } }

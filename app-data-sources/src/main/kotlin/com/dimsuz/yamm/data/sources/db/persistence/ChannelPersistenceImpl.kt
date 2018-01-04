@@ -33,6 +33,21 @@ internal class ChannelPersistenceImpl @Inject constructor(
         ChannelDbModel.FACTORY.user_channelsMapper())
   }
 
+  override fun getChannelByName(name: String, teamId: String): String? {
+    return briteDatabase.readableDatabase
+      .executeDelightStatement(
+        ChannelDbModel.FACTORY.select_id_by_name(name, teamId),
+        ChannelDbModel.FACTORY.select_id_by_nameMapper())
+      .firstOrNull()
+  }
+
+  override fun getUserChannelIds(userId: String, teamId: String): List<String> {
+    return briteDatabase.readableDatabase
+      .executeDelightStatement(
+        ChannelDbModel.FACTORY.select_all_ids(userId, teamId),
+        ChannelDbModel.FACTORY.select_all_idsMapper())
+  }
+
   override fun getUserChannelsLive(userId: String,
                                    teamId: String): Observable<List<ChannelResolvedDbModel>> {
 

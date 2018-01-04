@@ -8,4 +8,6 @@ interface ChannelPersistence {
   fun replaceUserChannels(channels: List<ChannelDbModel>)
   fun getUserChannels(userId: String, teamId: String): List<ChannelDbModel>
   fun getUserChannelsLive(userId: String, teamId: String): Observable<List<ChannelResolvedDbModel>>
+  fun getChannelByName(name: String, teamId: String): String?
+  fun getUserChannelIds(userId: String, teamId: String): List<String>
 }

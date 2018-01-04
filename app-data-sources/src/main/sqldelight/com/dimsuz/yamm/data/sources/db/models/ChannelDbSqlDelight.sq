@@ -35,3 +35,14 @@ WHEN type = 'O' THEN 0
 WHEN type = 'P' THEN 1
 WHEN type = 'D' OR type = 'G' THEN 2
 ELSE 55 END ASC, display_name ASC, user.first_name ASC;
+
+select_id_by_name:
+SELECT id
+FROM channel
+WHERE name = ? AND team_id = ?
+LIMIT 1;
+
+select_all_ids:
+SELECT id
+FROM channel
+WHERE user_id = ? AND team_id = ?;

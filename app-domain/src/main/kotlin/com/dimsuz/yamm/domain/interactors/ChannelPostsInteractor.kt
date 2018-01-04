@@ -7,6 +7,7 @@ import com.dimsuz.yamm.domain.interactors.ChannelPostsCommandReducer.Command
 import com.dimsuz.yamm.domain.interactors.ChannelPostsCommandReducer.InputEvent
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.models.ServerEvent
+import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.PostRepository
 import com.dimsuz.yamm.domain.repositories.ServerEventRepository
 import io.reactivex.Completable
@@ -17,6 +18,8 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
+internal const val DEFAULT_CHANNEL_NAME = "town-square"
+
 sealed class ChannelPostEvent {
        class Loading : ChannelPostEvent()
   data class LoadFailed(val error: Throwable) : ChannelPostEvent()
@@ -26,6 +29,7 @@ sealed class ChannelPostEvent {
 
 class ChannelPostsInteractor @Inject constructor(
   private val postRepository: PostRepository,
+  private val channelRepository: ChannelRepository,
   private val serverEventRepository: ServerEventRepository,
   private val logger: Logger) {
 
@@ -48,6 +52,13 @@ class ChannelPostsInteractor @Inject constructor(
   fun setChannel(channelId: String) {
     checkMainThread()
     handleEvent(InputEvent.ChannelIdChanged(channelId))
+  }
+
+  fun setDefaultChannel(userId: String, teamId: String) {
+    val defaultChannelId = channelRepository.getChannelIdByName(DEFAULT_CHANNEL_NAME, teamId)
+      ?: channelRepository.getChannelIds(userId, teamId).firstOrNull().also { logNoDefaultChannel() }
+      ?: throw IllegalStateException("failed to get default channel: team has no channels")
+    setChannel(defaultChannelId)
   }
 
   fun addPost(message: String) {
@@ -131,6 +142,10 @@ class ChannelPostsInteractor @Inject constructor(
       is ServerEvent.Posted -> logger.debug("got post event!")
       is ServerEvent.Unknown -> logger.debug("unknown event")
     }
+  }
+
+  private fun logNoDefaultChannel() {
+    logger.error("team has no default channel, getting a first one available")
   }
 
 }
