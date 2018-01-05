@@ -2,9 +2,9 @@ package com.dimsuz.yamm
 
 import android.app.Application
 import com.dimsuz.yamm.domain.di.DomainModule
+import com.dimsuz.yamm.domain.util.AppConfig
 import com.dimsuz.yamm.repositories.di.RepositoriesCommonModule
 import com.dimsuz.yamm.repositories.di.RepositoriesModule
-import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso

@@ -3,11 +3,11 @@ package com.dimsuz.yamm.presentation.login.server_select
 import android.view.View
 import com.dimsuz.yamm.R
 import com.dimsuz.yamm.YammApplication
+import com.dimsuz.yamm.domain.util.AppConfig
 import com.dimsuz.yamm.navigation.SCREEN_LOGIN_METHOD_SELECT
 import com.dimsuz.yamm.presentation.baseui.BaseController
 import com.dimsuz.yamm.presentation.baseui.util.appScope
 import com.dimsuz.yamm.presentation.baseui.util.resourcesUnsafe
-import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import kotlinx.android.synthetic.main.login_server_select.*
 import ru.terrakok.cicerone.Router

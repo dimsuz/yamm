@@ -2,12 +2,12 @@ package com.dimsuz.yamm.presentation.login.method_select
 
 import android.view.View
 import com.dimsuz.yamm.R
+import com.dimsuz.yamm.domain.util.AppConfig
 import com.dimsuz.yamm.navigation.SCREEN_SSO_LOGIN
 import com.dimsuz.yamm.presentation.baseui.ScopedMviController
 import com.dimsuz.yamm.presentation.baseui.state_render.StateRenderer
 import com.dimsuz.yamm.presentation.baseui.state_render.YammLceStateRenderer
 import com.dimsuz.yamm.presentation.baseui.util.appScope
-import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.util.instance
 import kotlinx.android.synthetic.main.login_method_select.*
 import ru.terrakok.cicerone.Router

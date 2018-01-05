@@ -9,6 +9,7 @@ import com.dimsuz.yamm.domain.models.Team
 import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.SessionManager
 import com.dimsuz.yamm.domain.repositories.TeamRepository
+import com.dimsuz.yamm.domain.util.AppConfig
 import com.dimsuz.yamm.domain.util.AppSchedulers
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 internal class UserChannelsInteractorImpl @Inject constructor(
   private val sessionManager: SessionManager,
+  private val appConfig: AppConfig,
   private val teamRepository: TeamRepository,
   private val channelRepository: ChannelRepository,
   schedulers: AppSchedulers,

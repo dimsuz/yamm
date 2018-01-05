@@ -3,11 +3,11 @@ package com.dimsuz.yamm
 import android.content.Context
 import com.dimsuz.yamm.core.annotations.ApplicationContext
 import com.dimsuz.yamm.core.log.Logger
+import com.dimsuz.yamm.domain.util.AppConfig
 import com.dimsuz.yamm.presentation.navdrawer.context.base.DefaultNavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.main.MainNonAuthorizedNavDrawerContextFactory
-import com.dimsuz.yamm.util.AppConfig
 import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.dimsuz.yamm.util.DefaultAppSchedulers
 import com.dimsuz.yamm.util.DefaultErrorDetailsExtractor
