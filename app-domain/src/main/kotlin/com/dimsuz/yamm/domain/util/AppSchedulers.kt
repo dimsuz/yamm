@@ -1,4 +1,4 @@
-package com.dimsuz.yamm.util
+package com.dimsuz.yamm.domain.util
 
 import io.reactivex.Scheduler
 

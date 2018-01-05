@@ -2,7 +2,7 @@ package com.dimsuz.yamm.presentation.baseui
 
 import com.dimsuz.yamm.BuildConfig
 import com.dimsuz.yamm.core.util.ellipsizeEnd
-import com.dimsuz.yamm.util.AppSchedulers
+import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import timber.log.Timber

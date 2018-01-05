@@ -5,7 +5,7 @@ import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractor
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.presentation.baseui.BaseMviPresenter
 import com.dimsuz.yamm.presentation.baseui.RoutingAction
-import com.dimsuz.yamm.util.AppSchedulers
+import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
 import javax.inject.Inject

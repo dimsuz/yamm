@@ -8,7 +8,7 @@ import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFacto
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
 import com.dimsuz.yamm.presentation.navdrawer.context.main.MainNonAuthorizedNavDrawerContextFactory
 import com.dimsuz.yamm.util.AppConfig
-import com.dimsuz.yamm.util.AppSchedulers
+import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.dimsuz.yamm.util.DefaultAppSchedulers
 import com.dimsuz.yamm.util.DefaultErrorDetailsExtractor
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
