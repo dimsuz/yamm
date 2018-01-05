@@ -2,10 +2,12 @@ package com.dimsuz.yamm.presentation.messages
 
 import com.dimsuz.yamm.domain.interactors.ChannelPostEvent
 import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractor
+import com.dimsuz.yamm.domain.interactors.UserChannelsInteractor
+import com.dimsuz.yamm.domain.models.Channel
 import com.dimsuz.yamm.domain.models.Post
+import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.dimsuz.yamm.presentation.baseui.BaseMviPresenter
 import com.dimsuz.yamm.presentation.baseui.RoutingAction
-import com.dimsuz.yamm.domain.util.AppSchedulers
 import com.dimsuz.yamm.util.ErrorDetailsExtractor
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -19,9 +21,11 @@ private      class PostListLoadFinished : ScreenEvent()
 private data class LiveConnectionError(val error: Throwable) : ScreenEvent()
 private data class PostInputEmptyStateChanged(val isEmpty: Boolean) : ScreenEvent()
 private      class PostSendSuccess : ScreenEvent()
+private data class ChannelSwitched(val channel: Channel) : ScreenEvent()
 
 internal class MessagesPresenter @Inject constructor(
   schedulers: AppSchedulers,
+  private val userChannelsInteractor: UserChannelsInteractor,
   private val channelPostsInteractor: ChannelPostsInteractor,
   private val errorDetailsExtractor: ErrorDetailsExtractor
 ) : BaseMviPresenter<Messages.View, Messages.ViewState, ScreenEvent>(schedulers) {
@@ -38,7 +42,10 @@ internal class MessagesPresenter @Inject constructor(
     val sendPostClicks = intent(Messages.View::sendPostIntent)
       .doOnNext { channelPostsInteractor.addPost(it) }
       .map { PostSendSuccess() }
-    return listOf(postsListChanges, postStateChanges, sendPostClicks, inputEmptyStateChanges)
+    val channelChanges = intent { userChannelsInteractor.currentChannel() }
+      .doOnNext { channelPostsInteractor.setChannel(it.id) }
+      .map(::ChannelSwitched)
+    return listOf(postsListChanges, postStateChanges, sendPostClicks, inputEmptyStateChanges, channelChanges)
   }
 
   override fun viewStateReducer(previousState: Messages.ViewState,
@@ -66,6 +73,9 @@ internal class MessagesPresenter @Inject constructor(
       }
       is PostSendSuccess -> {
         previousState.copy(postDraft = null)
+      }
+      is ChannelSwitched -> {
+        previousState
       }
     }
   }

@@ -36,6 +36,14 @@ WHEN type = 'P' THEN 1
 WHEN type = 'D' OR type = 'G' THEN 2
 ELSE 55 END ASC, display_name ASC, user.first_name ASC;
 
+select_by_id:
+SELECT *
+FROM channel
+LEFT OUTER JOIN user
+ON channel.team_mate_id = user.id
+WHERE channel.id = ?
+LIMIT 1;
+
 select_id_by_name:
 SELECT id
 FROM channel

@@ -30,19 +30,32 @@ internal class UserChannelsInteractorImpl @Inject constructor(
 
   override fun createCommand(request: Request, state: State): Observable<Result> {
     return when (request) {
-      is Request.SetChannelId -> TODO()
-      is Request.UpdateUserChannels -> createUpdateChannelsCommand(request)
-      is Request.RegisterStateChange -> Observable.empty()
+      is Request.SetChannelId -> createSetChannelCommand(request, state)
+      is Request.UpdateUserChannels -> createUpdateChannelsCommand(request, state)
     }
   }
 
   override fun reduceState(previousState: State, commandResult: Result): State {
     return when (commandResult) {
       is Result.DefaultTeamAvailable -> previousState.copy(userId = commandResult.userId, team = commandResult.team )
+      is Result.CurrentChannelChanged -> previousState.copy(channel = commandResult.channel)
     }
   }
 
-  private fun createUpdateChannelsCommand(request: Request.UpdateUserChannels): Observable<Result> {
+  private fun createSetChannelCommand(request: Request.SetChannelId, state: State): Observable<Result> {
+    return if (state.channel?.id != request.channelId) {
+      channelRepository.getChannelById(request.channelId)
+        .doOnComplete({ logger.debug("failed to set channel ${request.channelId}") })
+        .flatMapObservable<Result> { channel ->
+          appConfig.setLastUsedChannelId(state.userId!!, state.team?.id!!, channel.id)
+          Observable.just(Result.CurrentChannelChanged(channel))
+        }
+    } else {
+      Observable.empty()
+    }
+  }
+
+  private fun createUpdateChannelsCommand(request: Request.UpdateUserChannels, state: State): Observable<Result> {
     return Completable.fromAction { stateEvents.onNext(UserChannelsEvent.Loading) }
       .andThen(teamRepository.userTeams(request.userId))
       .flatMapObservable { teams ->
@@ -51,7 +64,18 @@ internal class UserChannelsInteractorImpl @Inject constructor(
           .andThen(Completable.fromAction { stateEvents.onNext(UserChannelsEvent.Idle) })
           .onErrorResumeNext { e -> Completable.fromAction { stateEvents.onNext(UserChannelsEvent.LoadFailed(e)) } }
           .andThen(Observable.just(Result.DefaultTeamAvailable(request.userId, defaultTeam)))
+          .doOnNext({ updateCurrentChannel(request.userId, defaultTeam.id, state) })
       }
+  }
+
+  private fun updateCurrentChannel(userId: String, teamId: String, state: State) {
+    if (state.channel == null || (state.team != null && state.team.id != teamId)) {
+      val channelId = appConfig.getLastUsedChannelId(userId, teamId)
+        ?: channelRepository.getChannelIdByName(DEFAULT_CHANNEL_NAME, teamId)
+        ?: channelRepository.getChannelIds(userId, teamId).firstOrNull().also { logNoDefaultChannel() }
+        ?: throw IllegalStateException("failed to get default channel: team has no channels")
+      setChannelId(channelId)
+    }
   }
 
   override fun stateEvents(): Observable<UserChannelsEvent> {
@@ -60,6 +84,13 @@ internal class UserChannelsInteractorImpl @Inject constructor(
 
   override fun setChannelId(channelId: String) {
     scheduleRequest(Request.SetChannelId(channelId))
+  }
+
+  override fun currentChannel(): Observable<Channel> {
+    return stateChanges
+      .filter { it.channel != null }
+      .map { it.channel!! }
+      .distinctUntilChanged()
   }
 
   override fun userChannels(): Observable<List<Channel>> {
@@ -72,19 +103,24 @@ internal class UserChannelsInteractorImpl @Inject constructor(
       .doOnError { stateEvents.onNext(UserChannelsEvent.LoadFailed(it)) }
   }
 
+  private fun logNoDefaultChannel() {
+    logger.error("team has no default channel, getting a first one available")
+  }
+
   internal data class State(
     val userId: String? = null,
-    val team: Team? = null
+    val team: Team? = null,
+    val channel: Channel? = null
   )
 
   internal sealed class Request {
     data class SetChannelId(val channelId: String) : Request()
     data class UpdateUserChannels(val userId: String) : Request()
-    data class RegisterStateChange(val state: State) : Request()
   }
 
   internal sealed class Result {
     data class DefaultTeamAvailable(val userId: String, val team: Team): Result()
+    data class CurrentChannelChanged(val channel: Channel): Result()
   }
 
 }

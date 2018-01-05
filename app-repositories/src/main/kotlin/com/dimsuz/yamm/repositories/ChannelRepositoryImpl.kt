@@ -9,6 +9,7 @@ import com.dimsuz.yamm.domain.repositories.UserRepository
 import com.dimsuz.yamm.repositories.mappers.toDatabaseModel
 import com.dimsuz.yamm.repositories.mappers.toDomainModel
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,6 +25,11 @@ internal class ChannelRepositoryImpl @Inject internal constructor(
 
   override fun getChannelIds(userId: String, teamId: String): List<String> {
     return channelPersistence.getUserChannelIds(userId, teamId)
+  }
+
+  override fun getChannelById(channelId: String): Maybe<Channel> {
+    // TODO if missing in DB get from network by using serviceApi.getChannel() + cache it
+    return Maybe.fromCallable { channelPersistence.getChannelById(channelId)?.toDomainModel() }
   }
 
   override fun refreshUserChannels(userId: String, teamId: String): Completable {

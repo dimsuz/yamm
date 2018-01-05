@@ -7,7 +7,6 @@ import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractorImpl.Result
 import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractorImpl.State
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.models.ServerEvent
-import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.PostRepository
 import com.dimsuz.yamm.domain.repositories.ServerEventRepository
 import com.dimsuz.yamm.domain.util.AppSchedulers
@@ -22,7 +21,6 @@ internal const val DEFAULT_CHANNEL_NAME = "town-square"
 
 internal class ChannelPostsInteractorImpl @Inject constructor(
   private val postRepository: PostRepository,
-  private val channelRepository: ChannelRepository,
   private val serverEventRepository: ServerEventRepository,
   schedulers: AppSchedulers,
   private val logger: Logger)
@@ -37,13 +35,6 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
 
   override fun setChannel(channelId: String) {
     scheduleRequest(Request.SetChannelId(channelId))
-  }
-
-  fun setDefaultChannel(userId: String, teamId: String) {
-    val defaultChannelId = channelRepository.getChannelIdByName(DEFAULT_CHANNEL_NAME, teamId)
-      ?: channelRepository.getChannelIds(userId, teamId).firstOrNull().also { logNoDefaultChannel() }
-      ?: throw IllegalStateException("failed to get default channel: team has no channels")
-    setChannel(defaultChannelId)
   }
 
   override fun addPost(message: String) {
@@ -142,10 +133,6 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
       is ServerEvent.Posted -> logger.debug("got post event!")
       is ServerEvent.Unknown -> logger.debug("unknown event")
     }
-  }
-
-  private fun logNoDefaultChannel() {
-    logger.error("team has no default channel, getting a first one available")
   }
 
   internal sealed class Request {

@@ -7,6 +7,7 @@ interface UserChannelsInteractor {
   fun setChannelId(channelId: String)
   fun userChannels(): Observable<List<Channel>>
   fun stateEvents(): Observable<UserChannelsEvent>
+  fun currentChannel(): Observable<Channel>
 }
 
 sealed class UserChannelsEvent {

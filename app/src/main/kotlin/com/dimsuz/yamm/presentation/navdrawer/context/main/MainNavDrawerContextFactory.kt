@@ -27,7 +27,7 @@ class MainNavDrawerContextFactory @Inject constructor(
       items = userChannelsInteractor.userChannels()
         .map { chs -> chs.mapIndexed { i, ch -> ch.toDrawerItem(i) } },
       selectionObserver = { drawerItem ->
-        channelPostsInteractor.setChannel(payloadAsParam(drawerItem.payload, "channelId"))
+        userChannelsInteractor.setChannelId(payloadAsParam(drawerItem.payload, "channelId"))
       }
     )
   }
