@@ -2,20 +2,20 @@ package com.dimsuz.yamm.domain.interactors
 
 import com.dimsuz.yamm.core.log.Logger
 import com.dimsuz.yamm.core.util.checkMainThread
-import com.dimsuz.yamm.core.util.simpleNameRelative
-import com.dimsuz.yamm.domain.interactors.ChannelPostsCommandReducer.Command
-import com.dimsuz.yamm.domain.interactors.ChannelPostsCommandReducer.InputEvent
+import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractorImpl.Request
+import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractorImpl.Result
+import com.dimsuz.yamm.domain.interactors.ChannelPostsInteractorImpl.State
 import com.dimsuz.yamm.domain.models.Post
 import com.dimsuz.yamm.domain.models.ServerEvent
 import com.dimsuz.yamm.domain.repositories.ChannelRepository
 import com.dimsuz.yamm.domain.repositories.PostRepository
 import com.dimsuz.yamm.domain.repositories.ServerEventRepository
+import com.dimsuz.yamm.domain.util.AppSchedulers
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.Disposables
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
 
 internal const val DEFAULT_CHANNEL_NAME = "town-square"
@@ -24,27 +24,19 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
   private val postRepository: PostRepository,
   private val channelRepository: ChannelRepository,
   private val serverEventRepository: ServerEventRepository,
-  private val logger: Logger) : ChannelPostsInteractor {
+  schedulers: AppSchedulers,
+  private val logger: Logger)
+  : ReactiveInteractor<State, Request, Result>(State(), logger, schedulers), ChannelPostsInteractor {
 
-  private val queryChanges = BehaviorSubject.create<QueryState>().toSerialized()
   private val stateEvents = BehaviorSubject.create<ChannelPostEvent>().toSerialized()
-  private val commandQueue = PublishSubject.create<Command>().toSerialized()
   private var foregroundChangesSubscription = Disposables.disposed()
-  private val commandReducer = ChannelPostsCommandReducer()
-
-  init {
-    commandQueue
-      .concatMap { executeCommand(it).toObservable<Unit>() }
-      .subscribe({}, { throw RuntimeException("commands in queue must not reach error state, implement onError()", it)})
-  }
 
   override fun stateEvents(): Observable<ChannelPostEvent> {
     return stateEvents.doOnNext { logger.debug("state event: $it") }
   }
 
   override fun setChannel(channelId: String) {
-    checkMainThread()
-    handleEvent(InputEvent.ChannelIdChanged(channelId))
+    scheduleRequest(Request.SetChannelId(channelId))
   }
 
   fun setDefaultChannel(userId: String, teamId: String) {
@@ -55,12 +47,11 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
   }
 
   override fun addPost(message: String) {
-    handleEvent(InputEvent.SendPostRequested(message))
+    scheduleRequest(Request.SendPost(message))
   }
 
-  override fun loadAnotherPage() {
-    checkMainThread()
-    handleEvent(InputEvent.NextPageRequested())
+  override fun loadMoreMessages() {
+    scheduleRequest(Request.LoadMoreMessages())
   }
 
   override fun setForegroundStateChanges(changes: Observable<Boolean>) {
@@ -81,52 +72,68 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
     foregroundChangesSubscription.dispose()
   }
 
+  override fun createCommand(request: Request, state: State): Observable<Result> {
+    return when (request) {
+      is Request.SetChannelId -> createSetChannelIdCommand(request)
+      is Request.SendPost -> createSendPostCommand(request, state)
+      is Request.LoadMoreMessages -> createLoadMoreMessagesCommand(state)
+    }
+  }
+
+  override fun reduceState(previousState: State, commandResult: Result): State {
+    return when (commandResult) {
+      is Result.QueryChanged -> previousState.copy(query = commandResult.query)
+    }
+  }
+
+
   override fun channelPosts(): Observable<List<Post>> {
     checkMainThread()
-    return queryChanges
-      .switchMap { queryState ->
-        with(queryState) {
-          logger.debug("query changed $queryState")
+    return stateChanges.filter { it.query != null }
+      .switchMap { state ->
+        with(state.query!!) {
+          logger.debug("query changed $this")
           postRepository.postsLive(channelId, firstPage, lastPage, pageSize)
         }
       }
       .doOnError { logger.error(it, "failed to read db") }
   }
 
-  private fun handleEvent(event: InputEvent) {
-    Timber.d("handling event: ${event.javaClass.simpleNameRelative}")
-    val command = commandReducer.handleEvent(event)
-    if (command != null) {
-      Timber.d("scheduling new command: ${command.javaClass.simpleNameRelative}")
-      commandQueue.onNext(command)
-    }
+  private fun createSetChannelIdCommand(request: Request.SetChannelId): Observable<Result> {
+    return Single.just(QueryState(request.channelId))
+      .flatMapObservable { query -> createRunQueryOperation(query) }
   }
 
-  private fun executeCommand(command: Command): Completable {
-    return when (command) {
-      is Command.RunQuery -> createRunQueryOperation(command.query)
-      is Command.SendPost -> createSendPostOperation(command)
-    }
+  private fun createSendPostCommand(request: Request.SendPost, state: State): Observable<Result> {
+    return Single
+      .fromCallable {
+        state.query?.channelId ?: throw IllegalStateException("expected channelId to be set when sending post")
+      }
+      .flatMapCompletable { channelId -> postRepository.addNew(channelId, request.message) }
+      .toObservable()
   }
 
-  private fun createRunQueryOperation(query: QueryState): Completable {
+  private fun createLoadMoreMessagesCommand(state: State): Observable<Result> {
+    return Single
+      .fromCallable {
+        state.query ?: throw IllegalStateException("expected query to be set when sending post")
+      }
+      .map { it.copy(lastPage = it.lastPage + 1) }
+      .flatMapObservable { query -> createRunQueryOperation(query) }
+  }
+
+
+  private fun createRunQueryOperation(query: QueryState): Observable<Result> {
     // TODO caching is needed here so that posts would be cached only if
     // channel cache is invalidated somehow (either timebased or websocket told us)
-    return Completable
-      .fromAction {
-        queryChanges.onNext(query)
-        stateEvents.onNext(ChannelPostEvent.Loading())
-      }
+    return Completable.fromAction { stateEvents.onNext(ChannelPostEvent.Loading()) }
       .andThen(Completable.defer {
         postRepository
           .fetchPosts(query.channelId, query.firstPage, query.lastPage, query.pageSize)
           .andThen(Completable.fromAction { stateEvents.onNext(ChannelPostEvent.Idle()) })
           .onErrorResumeNext({ e -> Completable.fromAction { stateEvents.onNext(ChannelPostEvent.LoadFailed(e)) } })
       })
-  }
-
-  private fun createSendPostOperation(command: Command.SendPost): Completable {
-    return postRepository.addNew(command.channelId, command.message)
+      .andThen(Observable.just<Result>(Result.QueryChanged(query)))
   }
 
   private fun processServerEvent(event: ServerEvent) {
@@ -141,4 +148,21 @@ internal class ChannelPostsInteractorImpl @Inject constructor(
     logger.error("team has no default channel, getting a first one available")
   }
 
+  internal sealed class Request {
+    data class SetChannelId(val channelId: String) : Request()
+    data class SendPost(val message: String): Request()
+         class LoadMoreMessages : Request()
+  }
+
+  internal sealed class Result {
+    data class QueryChanged(val query: QueryState): Result()
+  }
+
+  internal data class State(val query: QueryState? = null)
 }
+
+internal data class QueryState(
+  val channelId: String,
+  val firstPage: Int = 0,
+  val lastPage: Int = 0,
+  val pageSize: Int = 60)

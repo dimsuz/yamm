@@ -7,7 +7,7 @@ interface ChannelPostsInteractor {
   fun stateEvents(): Observable<ChannelPostEvent>
   fun setChannel(channelId: String)
   fun addPost(message: String)
-  fun loadAnotherPage()
+  fun loadMoreMessages()
   fun setForegroundStateChanges(changes: Observable<Boolean>)
   fun resetForegroundStateChanges()
   fun channelPosts(): Observable<List<Post>>
