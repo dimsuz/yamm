@@ -1,6 +1,7 @@
 package com.dimsuz.yamm
 
 import android.app.Application
+import com.dimsuz.yamm.domain.di.DomainModule
 import com.dimsuz.yamm.repositories.di.RepositoriesCommonModule
 import com.dimsuz.yamm.repositories.di.RepositoriesModule
 import com.dimsuz.yamm.util.AppConfig
@@ -61,6 +62,7 @@ class YammApplication : Application() {
       Toothpick.openScopes(this, FULL_APP_SCOPE).apply {
         installModules(
           RepositoriesModule(serverUrl),
+          DomainModule(),
           AuthorizedApplicationModule()
         )
       }
