@@ -9,7 +9,7 @@ import io.reactivex.subjects.PublishSubject
 internal abstract class ReactiveInteractor<StateType, in RequestType, ResultType>(
   initialState: StateType,
   logger: Logger,
-  schedulers: AppSchedulers) {
+  protected val schedulers: AppSchedulers) {
 
   protected val stateChanges: Observable<StateType>
   private val requestStream = PublishSubject.create<RequestType>()

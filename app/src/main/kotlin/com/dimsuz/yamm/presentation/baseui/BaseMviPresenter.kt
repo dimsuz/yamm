@@ -9,7 +9,7 @@ import timber.log.Timber
 
 typealias RoutingAction = () -> Unit
 
-abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(private val schedulers: AppSchedulers,
+abstract class BaseMviPresenter<V : MviView<VS>, VS, EV>(protected val schedulers: AppSchedulers,
                                                          private val skipRenderOfInitialState: Boolean = false,
                                                          private val logStateChanges: Boolean = BuildConfig.DEBUG) : MviBasePresenter<V, VS>() {
   final override fun bindIntents() {

@@ -28,10 +28,15 @@ internal class UserChannelsInteractorImpl @Inject constructor(
 
   private val stateEvents = BehaviorSubject.create<UserChannelsEvent>().toSerialized()
 
+  init {
+    scheduleLastUsedChannelSwitch()
+  }
+
   override fun createCommand(request: Request, state: State): Observable<Result> {
     return when (request) {
       is Request.SetChannelId -> createSetChannelCommand(request, state)
-      is Request.UpdateUserChannels -> createUpdateChannelsCommand(request, state)
+      is Request.SetLastUsedChannel -> createSetLastUseChannelCommand(request, state)
+      is Request.UpdateUserChannels -> createUpdateChannelsCommand(request)
     }
   }
 
@@ -55,7 +60,19 @@ internal class UserChannelsInteractorImpl @Inject constructor(
     }
   }
 
-  private fun createUpdateChannelsCommand(request: Request.UpdateUserChannels, state: State): Observable<Result> {
+  private fun createSetLastUseChannelCommand(request: Request.SetLastUsedChannel, state: State): Observable<Result> {
+    return if (state.channel == null || (state.team != null && state.team.id != request.team.id)) {
+      val channelId = appConfig.getLastUsedChannelId(request.userId, request.team.id)
+        ?: channelRepository.getChannelIdByName(DEFAULT_CHANNEL_NAME, request.team.id)
+        ?: channelRepository.getChannelIds(request.userId, request.team.id).firstOrNull().also { logNoDefaultChannel() }
+        ?: throw IllegalStateException("failed to get default channel: team has no channels")
+      createSetChannelCommand(Request.SetChannelId(channelId), state)
+    } else {
+      Observable.empty()
+    }
+  }
+
+  private fun createUpdateChannelsCommand(request: Request.UpdateUserChannels): Observable<Result> {
     return Completable.fromAction { stateEvents.onNext(UserChannelsEvent.Loading) }
       .andThen(teamRepository.userTeams(request.userId))
       .flatMapObservable { teams ->
@@ -64,18 +81,7 @@ internal class UserChannelsInteractorImpl @Inject constructor(
           .andThen(Completable.fromAction { stateEvents.onNext(UserChannelsEvent.Idle) })
           .onErrorResumeNext { e -> Completable.fromAction { stateEvents.onNext(UserChannelsEvent.LoadFailed(e)) } }
           .andThen(Observable.just(Result.DefaultTeamAvailable(request.userId, defaultTeam)))
-          .doOnNext({ updateCurrentChannel(request.userId, defaultTeam.id, state) })
       }
-  }
-
-  private fun updateCurrentChannel(userId: String, teamId: String, state: State) {
-    if (state.channel == null || (state.team != null && state.team.id != teamId)) {
-      val channelId = appConfig.getLastUsedChannelId(userId, teamId)
-        ?: channelRepository.getChannelIdByName(DEFAULT_CHANNEL_NAME, teamId)
-        ?: channelRepository.getChannelIds(userId, teamId).firstOrNull().also { logNoDefaultChannel() }
-        ?: throw IllegalStateException("failed to get default channel: team has no channels")
-      setChannelId(channelId)
-    }
   }
 
   override fun stateEvents(): Observable<UserChannelsEvent> {
@@ -103,6 +109,16 @@ internal class UserChannelsInteractorImpl @Inject constructor(
       .doOnError { stateEvents.onNext(UserChannelsEvent.LoadFailed(it)) }
   }
 
+  private fun scheduleLastUsedChannelSwitch() {
+    // waits until user and team data is available
+    stateChanges
+      .filter({ it.userId != null && it.team != null })
+      .firstOrError()
+      .observeOn(schedulers.ui)
+      .subscribe { state -> scheduleRequest(Request.SetLastUsedChannel(state.userId!!, state.team!!)) }
+  }
+
+
   private fun logNoDefaultChannel() {
     logger.error("team has no default channel, getting a first one available")
   }
@@ -115,6 +131,7 @@ internal class UserChannelsInteractorImpl @Inject constructor(
 
   internal sealed class Request {
     data class SetChannelId(val channelId: String) : Request()
+    data class SetLastUsedChannel(val userId: String, val team: Team): Request()
     data class UpdateUserChannels(val userId: String) : Request()
   }
 

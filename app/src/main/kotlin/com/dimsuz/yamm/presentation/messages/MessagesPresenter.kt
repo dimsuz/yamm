@@ -43,6 +43,7 @@ internal class MessagesPresenter @Inject constructor(
       .doOnNext { channelPostsInteractor.addPost(it) }
       .map { PostSendSuccess() }
     val channelChanges = intent { userChannelsInteractor.currentChannel() }
+      .observeOn(schedulers.ui)
       .doOnNext { channelPostsInteractor.setChannel(it.id) }
       .map(::ChannelSwitched)
     return listOf(postsListChanges, postStateChanges, sendPostClicks, inputEmptyStateChanges, channelChanges)
