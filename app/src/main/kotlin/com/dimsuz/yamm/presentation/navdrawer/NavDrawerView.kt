@@ -3,6 +3,7 @@ package com.dimsuz.yamm.presentation.navdrawer
 import android.app.Activity
 import android.support.v7.widget.Toolbar
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextManager
+import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerContext
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerItem
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
@@ -10,6 +11,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 class NavDrawerView private constructor(private val activity: Activity,
                                         private val contextManager: NavDrawerContextManager) {
@@ -19,6 +21,8 @@ class NavDrawerView private constructor(private val activity: Activity,
       return NavDrawerView(activity, contextManager)
     }
   }
+
+  private var previousState: NavDrawerContext.ItemsState? = null
 
   private var navigationDrawer: Drawer = DrawerBuilder()
     .withActivity(activity)
@@ -53,9 +57,22 @@ class NavDrawerView private constructor(private val activity: Activity,
     return itemClicks
   }
 
-  fun render(items: List<NavDrawerItem>) {
-    navigationDrawer.removeAllItems()
-    navigationDrawer.addItems(*items.map({ it.toIDrawerItem() }).toTypedArray())
+  fun render(itemsState: NavDrawerContext.ItemsState) {
+    if (previousState?.items != itemsState.items) {
+      Timber.d("rendering nav drawer items")
+      navigationDrawer.removeAllItems()
+      navigationDrawer.addItems(*itemsState.items.map({ it.toIDrawerItem() }).toTypedArray())
+    }
+    if (previousState?.selectedItem != itemsState.selectedItem) {
+      if (itemsState.selectedItem != null) {
+        navigationDrawer.setSelection(itemsState.selectedItem.id, false)
+      } else {
+        // optimize a bit because doing .deselect() blindly would invalidate whole adapter (create a PR on github?)
+        if (navigationDrawer.currentSelection != -1L) {
+          navigationDrawer.deselect(navigationDrawer.currentSelection)
+        }
+      }
+    }
   }
 }
 

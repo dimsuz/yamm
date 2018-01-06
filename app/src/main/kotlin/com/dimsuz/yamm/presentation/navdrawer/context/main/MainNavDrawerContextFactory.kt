@@ -8,6 +8,9 @@ import com.dimsuz.yamm.presentation.navdrawer.context.base.DrawerContextType
 import com.dimsuz.yamm.presentation.navdrawer.context.base.NavDrawerContextFactory
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerContext
 import com.dimsuz.yamm.presentation.navdrawer.models.NavDrawerItem
+import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainNavDrawerContextFactory @Inject constructor(
@@ -24,12 +27,29 @@ class MainNavDrawerContextFactory @Inject constructor(
   private fun createMessagesContext(): NavDrawerContext {
     return NavDrawerContext(
       type = DrawerContextType.Messages,
-      items = userChannelsInteractor.userChannels()
-        .map { chs -> chs.mapIndexed { i, ch -> ch.toDrawerItem(i) } },
+      items = getItemStateChanges(),
       selectionObserver = { drawerItem ->
         userChannelsInteractor.setChannelId(payloadAsParam(drawerItem.payload, "channelId"))
       }
     )
+  }
+
+  private fun getItemStateChanges(): Observable<NavDrawerContext.ItemsState> {
+    // channelItems() includes mapping to drawer items, ensuring that it won't repeat whenever currentChannel changes,
+    // only if items themselves are changed
+    return Observable
+      .combineLatest(channelItems(), userChannelsInteractor.currentChannel(),
+        BiFunction { items: List<NavDrawerItem>, cur: Channel -> items to cur })
+      .map { (items, cur) ->
+        val selected = items.find { (it.payload as String) == cur.id }
+        NavDrawerContext.ItemsState(items, selected)
+      }
+  }
+
+  private fun channelItems(): Observable<List<NavDrawerItem>> {
+    return userChannelsInteractor.userChannels()
+      .map { chs -> chs.mapIndexed { i, ch -> ch.toDrawerItem(i) } }
+      .doOnNext { Timber.e("reindexing channel drawer items; remove me if you don't see many of me on channel switch") }
   }
 }
 

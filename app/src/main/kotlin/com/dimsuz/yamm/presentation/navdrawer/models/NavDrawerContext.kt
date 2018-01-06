@@ -5,6 +5,11 @@ import io.reactivex.Observable
 
 data class NavDrawerContext(
   val type: DrawerContextType,
-  val items: Observable<List<NavDrawerItem>>,
+  val items: Observable<ItemsState>,
   val selectionObserver: (NavDrawerItem) -> Unit
-)
+) {
+  data class ItemsState(
+    val items: List<NavDrawerItem>,
+    val selectedItem: NavDrawerItem?
+  )
+}
