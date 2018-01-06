@@ -10,6 +10,7 @@ internal fun ChannelJson.toDatabaseModel(userId: String, teamId: String): Channe
   return ChannelDbModel(
     id = this.id ?: throw ModelMapException("channel without id: $this"),
     userId = userId,
+    // (!) must not rely on "team_id" present in channel's json module, it's often empty! (for direct channels?)
     teamId = teamId,
     type = this.type,
     displayName = this.display_name,
