@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app-data-sources" />
             <option value="$PROJECT_DIR$/app-domain" />
             <option value="$PROJECT_DIR$/app-repositories" />
+            <option value="$PROJECT_DIR$/lib-markdown" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
