@@ -24,7 +24,7 @@ import org.commonmark.node.StrongEmphasis
 import org.commonmark.node.Text
 import org.commonmark.node.ThematicBreak
 
-class SpannableBuildVisitor(private val writer: SpannableWriter) : AbstractVisitor() {
+internal class SpannableBuildVisitor(private val writer: SpannableWriter) : AbstractVisitor() {
 
   override fun visit(blockQuote: BlockQuote) {
     super.visit(blockQuote)

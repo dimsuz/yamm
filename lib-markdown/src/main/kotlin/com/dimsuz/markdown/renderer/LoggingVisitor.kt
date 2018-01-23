@@ -25,7 +25,7 @@ import org.commonmark.node.Text
 import org.commonmark.node.ThematicBreak
 import timber.log.Timber
 
-class LoggingVisitor : AbstractVisitor() {
+internal class LoggingVisitor : AbstractVisitor() {
 
   override fun visit(blockQuote: BlockQuote) {
     Timber.d("visiting $blockQuote")

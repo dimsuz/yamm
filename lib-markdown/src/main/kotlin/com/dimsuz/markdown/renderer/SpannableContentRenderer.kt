@@ -7,7 +7,7 @@ import org.commonmark.renderer.Renderer
 import java.lang.Appendable
 import java.lang.StringBuilder
 
-class SpannableContentRenderer : Renderer {
+internal class SpannableContentRenderer : Renderer {
 
   fun renderToSpannable(node: Node): SpannableString {
     val sb = StringBuilder()
