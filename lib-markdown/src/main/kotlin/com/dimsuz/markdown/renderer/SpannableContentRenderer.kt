@@ -5,12 +5,11 @@ import android.text.SpannableStringBuilder
 import org.commonmark.node.Node
 import org.commonmark.renderer.Renderer
 import java.lang.Appendable
-import java.lang.StringBuilder
 
 internal class SpannableContentRenderer : Renderer {
 
   fun renderToSpannable(node: Node): SpannableString {
-    val sb = StringBuilder()
+    val sb = SpannableStringBuilder()
     render(node, sb)
     return SpannableString(sb)
   }
