@@ -43,7 +43,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.junit
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     // NOTE: whenever changing a list of dependent modules, think twice if this is really needed,
     // especially when *adding* a new module, especially if module you are adding are already present
