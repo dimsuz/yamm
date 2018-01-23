@@ -24,6 +24,19 @@
         android:text="Render"
         app:layout_constraintTop_toBottomOf="@+id/editText"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/renderSampleButton"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        />
+
+    <Button
+        android:id="@+id/renderSampleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="Sample 1"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintStart_toEndOf="@+id/primaryButton"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
@@ -32,11 +45,18 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
+        android:padding="16dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/primaryButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         >
+
+        <TextView
+            android:id="@+id/markdownOutputView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </ScrollView>
 

@@ -51,6 +51,7 @@ dependencies {
     implementation project(path: ':app-core')
     implementation project(path: ':app-domain')
     implementation project(path: ':app-repositories') // notice: no dependency on app-data-sources!
+    implementation project(path: ':lib-markdown') // notice: no dependency on app-data-sources!
 
     compile rootProject.ext.supportLibAppCompat
     compile rootProject.ext.supportLibDesign
