@@ -1,6 +1,7 @@
 package com.dimsuz.markdown.renderer
 
 import org.commonmark.node.AbstractVisitor
+import org.commonmark.node.Block
 import org.commonmark.node.BlockQuote
 import org.commonmark.node.BulletList
 import org.commonmark.node.Code
@@ -17,6 +18,7 @@ import org.commonmark.node.Image
 import org.commonmark.node.IndentedCodeBlock
 import org.commonmark.node.Link
 import org.commonmark.node.ListItem
+import org.commonmark.node.Node
 import org.commonmark.node.OrderedList
 import org.commonmark.node.Paragraph
 import org.commonmark.node.SoftLineBreak
@@ -39,11 +41,15 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(document: Document) {
-    super.visit(document)
+    writer.start()
+    visitChildren(document)
+    writer.end()
   }
 
   override fun visit(emphasis: Emphasis) {
-    super.visit(emphasis)
+    writer.pushEmphasis(TextEmphasis.Italic)
+    visitChildren(emphasis)
+    writer.popEmphasis()
   }
 
   override fun visit(fencedCodeBlock: FencedCodeBlock) {
@@ -55,7 +61,9 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(heading: Heading) {
-    super.visit(heading)
+    writer.pushTextSize(getHeadingTextSize(heading.level))
+    visitChildren(heading)
+    writer.popTextSize()
   }
 
   override fun visit(thematicBreak: ThematicBreak) {
@@ -91,7 +99,7 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(paragraph: Paragraph) {
-    super.visit(paragraph)
+    visitChildren(paragraph)
   }
 
   override fun visit(softLineBreak: SoftLineBreak) {
@@ -99,11 +107,13 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(strongEmphasis: StrongEmphasis) {
-    super.visit(strongEmphasis)
+    writer.pushEmphasis(TextEmphasis.Strong)
+    visitChildren(strongEmphasis)
+    writer.popEmphasis()
   }
 
   override fun visit(text: Text) {
-    super.visit(text)
+    writer.text(text.literal)
   }
 
   override fun visit(customBlock: CustomBlock) {
@@ -113,4 +123,30 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   override fun visit(customNode: CustomNode) {
     super.visit(customNode)
   }
+
+  override fun visitChildren(node: Node) {
+    if (node is Block && node !is Document) {
+      if (!node.isFirstChild()) {
+        writer.line()
+        writer.line()
+      }
+    }
+    super.visitChildren(node)
+  }
+}
+
+private fun getHeadingTextSize(level: Int): Int {
+  return when (level) {
+    1 -> 56
+    2 -> 45
+    3 -> 34
+    4 -> 24
+    5 -> 20
+    6 -> 16
+    else -> 16
+  }
+}
+
+private fun Node.isFirstChild(): Boolean {
+  return this.parent.firstChild == this
 }
