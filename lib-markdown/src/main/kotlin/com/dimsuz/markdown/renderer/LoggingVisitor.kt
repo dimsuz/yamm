@@ -17,6 +17,7 @@ import org.commonmark.node.Image
 import org.commonmark.node.IndentedCodeBlock
 import org.commonmark.node.Link
 import org.commonmark.node.ListItem
+import org.commonmark.node.Node
 import org.commonmark.node.OrderedList
 import org.commonmark.node.Paragraph
 import org.commonmark.node.SoftLineBreak
@@ -28,112 +29,124 @@ import timber.log.Timber
 internal class LoggingVisitor : AbstractVisitor() {
 
   override fun visit(blockQuote: BlockQuote) {
-    Timber.d("visiting $blockQuote")
+    log("$blockQuote")
     super.visit(blockQuote)
   }
 
   override fun visit(bulletList: BulletList) {
-    Timber.d("visiting $bulletList")
+    log("$bulletList")
     super.visit(bulletList)
   }
 
   override fun visit(code: Code) {
-    Timber.d("visiting $code")
+    log("$code")
     super.visit(code)
   }
 
   override fun visit(document: Document) {
-    Timber.d("visiting $document")
+    log("$document")
     super.visit(document)
   }
 
   override fun visit(emphasis: Emphasis) {
-    Timber.d("visiting $emphasis")
+    log("$emphasis")
     super.visit(emphasis)
   }
 
   override fun visit(fencedCodeBlock: FencedCodeBlock) {
-    Timber.d("visiting $fencedCodeBlock")
+    log("$fencedCodeBlock")
     super.visit(fencedCodeBlock)
   }
 
   override fun visit(hardLineBreak: HardLineBreak) {
-    Timber.d("visiting $hardLineBreak")
+    log("$hardLineBreak")
     super.visit(hardLineBreak)
   }
 
   override fun visit(heading: Heading) {
-    Timber.d("visiting $heading")
+    log("$heading")
     super.visit(heading)
   }
 
   override fun visit(thematicBreak: ThematicBreak) {
-    Timber.d("visiting $thematicBreak")
+    log("$thematicBreak")
     super.visit(thematicBreak)
   }
 
   override fun visit(htmlInline: HtmlInline) {
-    Timber.d("visiting $htmlInline")
+    log("$htmlInline")
     super.visit(htmlInline)
   }
 
   override fun visit(htmlBlock: HtmlBlock) {
-    Timber.d("visiting $htmlBlock")
+    log("$htmlBlock")
     super.visit(htmlBlock)
   }
 
   override fun visit(image: Image) {
-    Timber.d("visiting $image")
+    log("$image")
     super.visit(image)
   }
 
   override fun visit(indentedCodeBlock: IndentedCodeBlock) {
-    Timber.d("visiting $indentedCodeBlock")
+    log("$indentedCodeBlock")
     super.visit(indentedCodeBlock)
   }
 
   override fun visit(link: Link) {
-    Timber.d("visiting $link")
+    log("$link")
     super.visit(link)
   }
 
   override fun visit(listItem: ListItem) {
-    Timber.d("visiting $listItem")
+    log("$listItem")
     super.visit(listItem)
   }
 
   override fun visit(orderedList: OrderedList) {
-    Timber.d("visiting $orderedList")
+    log("$orderedList")
     super.visit(orderedList)
   }
 
   override fun visit(paragraph: Paragraph) {
-    Timber.d("visiting $paragraph")
+    log("$paragraph")
     super.visit(paragraph)
   }
 
   override fun visit(softLineBreak: SoftLineBreak) {
-    Timber.d("visiting $softLineBreak")
+    log("$softLineBreak")
     super.visit(softLineBreak)
   }
 
   override fun visit(strongEmphasis: StrongEmphasis) {
-    Timber.d("visiting $strongEmphasis")
+    log("$strongEmphasis")
     super.visit(strongEmphasis)
   }
 
   override fun visit(text: Text) {
-    Timber.d("visiting $text")
+    log("$text")
     super.visit(text)
   }
 
   override fun visit(customBlock: CustomBlock) {
-    Timber.d("visiting $customBlock")
+    log("$customBlock")
     super.visit(customBlock)
   }
 
   override fun visit(customNode: CustomNode) {
-    Timber.d("visiting $customNode")
+    log("$customNode")
     super.visit(customNode)
+  }
+
+  private var indentLevel = 0
+
+  override fun visitChildren(parent: Node?) {
+    indentLevel++
+    super.visitChildren(parent)
+    indentLevel--
+  }
+
+  private fun log(message: String) {
+    Timber.d(".".repeat(indentLevel*4) + message)
   }
 }
