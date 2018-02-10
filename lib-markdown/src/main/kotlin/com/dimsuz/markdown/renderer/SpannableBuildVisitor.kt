@@ -33,7 +33,9 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(bulletList: BulletList) {
-    super.visit(bulletList)
+    writer.startBulletList()
+    visitChildren(bulletList)
+    writer.endBulletList()
   }
 
   override fun visit(code: Code) {
@@ -91,7 +93,9 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(listItem: ListItem) {
-    super.visit(listItem)
+    writer.startListItem()
+    visitChildren(listItem)
+    writer.endListItem()
   }
 
   override fun visit(orderedList: OrderedList) {
