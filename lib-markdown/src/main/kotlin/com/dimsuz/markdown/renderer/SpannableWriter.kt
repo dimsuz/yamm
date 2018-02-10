@@ -1,8 +1,12 @@
 package com.dimsuz.markdown.renderer
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import java.util.*
 
 private const val DEFAULT_TEXT_SIZE_SP = 14
@@ -38,6 +42,7 @@ internal class SpannableWriter(private val builder: SpannableStringBuilder) {
   fun text(text: String) {
     builder.append(text)
     applyTextSizeSpan(text)
+    applyEmphasisSpan(text)
   }
 
   private fun applyTextSizeSpan(text: String) {
@@ -49,6 +54,29 @@ internal class SpannableWriter(private val builder: SpannableStringBuilder) {
         builder.length,
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
+  }
+
+  private fun applyEmphasisSpan(text: String) {
+    val emphasis = emphasisStack.peek() ?: return
+    val span: Any = when (emphasis) {
+      TextEmphasis.Italic -> {
+        StyleSpan(Typeface.ITALIC)
+      }
+      TextEmphasis.Strong -> {
+        StyleSpan(Typeface.BOLD)
+      }
+      TextEmphasis.StrikeThrough -> {
+        StrikethroughSpan()
+      }
+      TextEmphasis.Underline -> {
+        UnderlineSpan()
+      }
+    }
+    builder.setSpan(
+      span,
+      builder.length - text.length,
+      builder.length,
+      Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
   }
 
   fun line() {
