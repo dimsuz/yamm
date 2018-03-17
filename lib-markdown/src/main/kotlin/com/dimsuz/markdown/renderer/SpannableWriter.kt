@@ -10,10 +10,11 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import java.util.*
 
-private const val DEFAULT_TEXT_SIZE_SP = 14
-
-internal class SpannableWriter(private val builder: SpannableStringBuilder) {
-  private val textSizeStack = ArrayDeque<Int>().apply { push(DEFAULT_TEXT_SIZE_SP) }
+internal class SpannableWriter(
+  private val builder: SpannableStringBuilder,
+  private val config: Config = createDefaultConfig())
+{
+  private val textSizeStack = ArrayDeque<Int>().apply { push(config.textSizeSp) }
   private val emphasisStack = ArrayDeque<TextEmphasis>()
   private var bulletItemStartIndex = Integer.MIN_VALUE
   private var orderedItemStartIndex = Integer.MIN_VALUE
@@ -83,8 +84,8 @@ internal class SpannableWriter(private val builder: SpannableStringBuilder) {
   }
 
   private fun applyTextSizeSpan(text: String) {
-    val textSize = textSizeStack.peek() ?: DEFAULT_TEXT_SIZE_SP
-    if (textSize != DEFAULT_TEXT_SIZE_SP) {
+    val textSize = textSizeStack.peek() ?: config.textSizeSp
+    if (textSize != config.textSizeSp) {
       builder.setSpan(
         AbsoluteSizeSpan(textSize, true),
         builder.length - text.length,
@@ -134,4 +135,14 @@ internal class SpannableWriter(private val builder: SpannableStringBuilder) {
     builder.appendln()
   }
 
+  data class Config(
+    val textSizeSp: Int
+  )
+
+}
+
+private fun createDefaultConfig(): SpannableWriter.Config {
+  return SpannableWriter.Config(
+    textSizeSp = 14
+  )
 }
