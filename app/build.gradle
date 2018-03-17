@@ -67,7 +67,7 @@ dependencies {
     compile rootProject.ext.toothpickRuntime
     kapt rootProject.ext.toothpickProcessor
 
-    implementation rootProject.ext.picassoSnapshot
+    implementation rootProject.ext.picasso
     implementation rootProject.ext.rxBinding
 
     implementation("com.mikepenz:materialdrawer:6.0.1@aar") {

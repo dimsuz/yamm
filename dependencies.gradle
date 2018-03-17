@@ -40,6 +40,7 @@ ext {
   toothpickRuntime = 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.1'
   toothpickProcessor = 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.1'
 
+  picasso = 'com.squareup.picasso:picasso:2.71828'
   picassoSnapshot = 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
 
   junit = 'junit:junit:4.12'
