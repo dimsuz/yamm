@@ -1,10 +1,13 @@
 package com.dimsuz.markdown.renderer
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.BackgroundColorSpan
 import android.text.style.BulletSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -83,6 +86,11 @@ internal class SpannableWriter(
     applyEmphasisSpan(text)
   }
 
+  fun inlineText(text: String) {
+    builder.append(text)
+    applyInlineTextSpan(text)
+  }
+
   private fun applyTextSizeSpan(text: String) {
     val textSize = textSizeStack.peek() ?: config.textSizeSp
     if (textSize != config.textSizeSp) {
@@ -129,6 +137,22 @@ internal class SpannableWriter(
   }
 
   private fun applyOrderedListItemSpan(startIndex: Int, endIndex: Int) {
+    // TODO
+  }
+
+  private fun applyInlineTextSpan(text: String) {
+    builder.setSpan(
+      BackgroundColorSpan(config.inlineTextBackgroundColor),
+      builder.length - text.length,
+      builder.length,
+      Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    )
+    builder.setSpan(
+      ForegroundColorSpan(config.inlineTextForegroundColor),
+      builder.length - text.length,
+      builder.length,
+      Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    )
   }
 
   fun line() {
@@ -136,13 +160,17 @@ internal class SpannableWriter(
   }
 
   data class Config(
-    val textSizeSp: Int
+    val textSizeSp: Int,
+    val inlineTextBackgroundColor: Int,
+    val inlineTextForegroundColor: Int
   )
 
 }
 
 private fun createDefaultConfig(): SpannableWriter.Config {
   return SpannableWriter.Config(
-    textSizeSp = 14
+    textSizeSp = 14,
+    inlineTextBackgroundColor = Color.argb(26, 61, 60, 64),
+    inlineTextForegroundColor = Color.argb(222, 0, 0, 0)
   )
 }

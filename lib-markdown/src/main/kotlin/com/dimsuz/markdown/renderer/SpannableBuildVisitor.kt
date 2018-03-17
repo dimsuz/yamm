@@ -39,7 +39,7 @@ internal class SpannableBuildVisitor(private val writer: SpannableWriter) : Abst
   }
 
   override fun visit(code: Code) {
-    super.visit(code)
+    writer.inlineText(code.literal)
   }
 
   override fun visit(document: Document) {
