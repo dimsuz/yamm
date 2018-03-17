@@ -8,9 +8,7 @@ buildscript {
     ext.min_sdk_version = 19
     repositories {
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -25,9 +23,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
     }
 }
 
